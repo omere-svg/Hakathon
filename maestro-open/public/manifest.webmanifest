@@ -1,0 +1,12 @@
+{
+  "name": "Maestro Open",
+  "short_name": "Maestro",
+  "description": "A real AI tutor that runs privately on your device, at $0 — offline-capable.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0e0e10",
+  "theme_color": "#0e0e10",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
