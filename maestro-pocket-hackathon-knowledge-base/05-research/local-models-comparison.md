@@ -1,69 +1,111 @@
 # Local Models Comparison
 
 > Which on-device model should the Maestro Open tutor run? Constraint: must run **in the browser via WebLLM/WebGPU** (see [webllm-research.md](webllm-research.md)), on devices ranging from **cheap Android phones to laptops**. The teaching quality bar is set by the **10 TutorBench failure scenarios** ([../03-scenarios-and-evals](../03-scenarios-and-evals)).
+>
+> **Update — 2026-07-02:** rewritten after verifying the **actual WebLLM prebuilt registry** (`config.ts`) and researching the 2026 small-model landscape. Two changes from the prior version: (1) **Qwen3 (0.6B / 1.7B / 4B) is now prebuilt in WebLLM** and is a genuine generational jump — it becomes our recommended family; (2) **SmolLM3-3B is NOT in the WebLLM registry** (only SmolLM2 is), so the earlier "SmolLM3 desktop upgrade" idea is dropped — it would require self-compiling MLC, out of scope. Also reframed for the **current architecture**: a fully model-driven milestone engine with **no deterministic net** and grammar/JSON mode **disabled**, which raises the reasoning + free-text-JSON bar on the model.
 
 ---
 
-## 1. The realistic candidate set
+## 0. Why the model choice matters MORE now than in the v2.5 design
 
-We can only use models that exist as **WebLLM prebuilt artifacts** (or that we compile ourselves with MLC — out of scope for a hackathon). Sizes below are the **WebGPU VRAM required** for the `q4f16_1` (4-bit) build, which is what we'd actually ship. "Footprint" = roughly the download size.
+The old design treated the model as "the voice" and let deterministic guardrails own correctness. **That is no longer the architecture.** The shipped engine ([`engine/milestone/engine.ts`](../../maestro-open/src/engine/milestone/engine.ts)) is **fully model-driven with no verify/guard net** — the local model owns decomposition, per-milestone assessment, cross-check/sync, teaching, and suggestion generation. On top of that, WebLLM 0.2.84's grammar/JSON-schema mode is **disabled** (`config/features.ts` — it throws an uncatchable error and hangs the turn), so every JSON verdict is parsed from **free text** via a regex fallback ([`json.ts`](../../maestro-open/src/engine/milestone/json.ts)).
 
-| Model | Params | `q4f16_1` VRAM (approx) | Context | Teaching quality (small-model lens) | Best fit |
+Consequence: the deciding qualities are now **instruction-following + light reasoning (for assessment) + clean JSON without a grammar to lean on**. That is exactly where Qwen3 improves most over Qwen2.5. Model choice is now a first-order quality lever, not a cosmetic one.
+
+## 1. The realistic candidate set (verified against WebLLM `config.ts`, q4f16_1 builds)
+
+We can only use models that exist as **WebLLM prebuilt artifacts**. VRAM below is the figure WebLLM reports for the `q4f16_1` (4-bit) build we'd actually ship; it is close to the download size.
+
+| Model | Params | `q4f16_1` VRAM | In WebLLM? | Teaching-quality lens (small-model) | Best fit |
 |---|---|---|---|---|---|
-| **SmolLM2-360M-Instruct** | 0.36B | ~0.4 GB | 4k | Weak. OK for canned/scaffolded flows, unreliable free reasoning. | Absolute floor / no-WebGPU WASM fallback |
-| **Qwen2.5-0.5B-Instruct** | 0.5B | ~0.95 GB | 4k+ | Surprisingly decent instruction-following for size; still error-prone on math/logic. | Low-end Android safe default |
-| **Llama-3.2-1B-Instruct** | 1B | ~0.9–1.1 GB | 4k+ | Good instruction-following, friendly tone; weak multi-step reasoning. | Mid phones; good tone for empathy scenarios |
-| **Qwen2.5-1.5B-Instruct** | 1.5B | ~1.6 GB | 4k+ | **Best quality-per-MB in the runnable-on-phones range.** Strong instruction-following, decent code + structured output. | ⭐ **Default target** |
-| **Gemma-2-2b-it** | 2B | ~1.6–2.5 GB | 4k+ | Strong, polished tone; heavier. | Higher-end phones / tablets |
-| **Qwen2.5-3B-Instruct** | 3B | ~2.5–2.9 GB | 4k+ | **Leads the 3B class**; best reasoning + code we can run without a real GPU desktop. | ⭐ **Laptop / desktop tier** |
-| **Llama-3.2-3B-Instruct** | 3B | ~2.3–3.0 GB | 4k+ | Solid all-rounder, great tone, but weaker reliable JSON/structured output than Qwen. | Laptop alt (tone-sensitive) |
-| **Phi-3.5-mini-instruct** | 3.8B | ~2.5–5.5 GB | 4k+ | Strong on technical/STEM reasoning, **but** high repetition + poor length compliance in some evals → risky for chat. | Optional "STEM-heavy desktop" |
+| **SmolLM2-360M-Instruct** | 0.36B | ~0.38 GB | ✅ | Weak; canned/scaffolded flows only. | WASM/no-WebGPU floor |
+| **Qwen2.5-0.5B-Instruct** | 0.5B | ~0.95 GB | ✅ | Decent instruction-following for size; error-prone reasoning. | Ultra-safe low-end floor |
+| **gemma3-1b-it** | 1B | ~0.71 GB | ✅ | Tiny + polished tone, but weaker *free-text JSON* than Qwen → risky for our parse-from-text path. | Optional light option, not default |
+| **Qwen3-0.6B** | 0.6B | ~1.4 GB | ✅ | New-gen 0.6B; better instruction-following + JSON than Qwen2.5-0.5B. | ⭐ **Low tier** |
+| **Llama-3.2-1B-Instruct** | 1B | ~0.88 GB | ✅ | Friendly tone; weak multi-step reasoning + weaker JSON reliability. | Tone-sensitive low alt |
+| **SmolLM2-1.7B-Instruct** | 1.7B | ~1.77 GB | ✅ | Solid for size; behind Qwen3-1.7B on reasoning. | Alt mid |
+| **Qwen2.5-1.5B-Instruct** | 1.5B | ~1.63 GB | ✅ | Previous default; strong quality-per-MB. | Superseded by Qwen3-1.7B |
+| **Qwen3-1.7B** | 1.7B | ~2.0 GB | ✅ | **≈ Qwen2.5-3B-class reasoning at a phone footprint** (per Qwen3 report); native JSON/tool-calling. | ⭐ **Default / mid** |
+| **Qwen2.5-3B-Instruct** | 3B | ~2.5 GB | ✅ | Prior laptop tier; strong. | Superseded by Qwen3-4B |
+| **Llama-3.2-3B-Instruct** | 3B | ~2.26 GB | ✅ | Good tone, but **JSON parse rate ~48–57%** — too low for our parse-from-text path. | Avoid as spine |
+| **Qwen3-4B** | 4B | ~3.4 GB | ✅ | Best in-browser quality we can run; strongest assessment reasoning. | ⭐ **High / laptop** |
+| **Phi-4-mini-instruct** | 3.8B | ~3.44 GB | ✅ | Strong STEM reasoning; historically repetition/length-compliance risk in chat. | Optional STEM power-user |
+| SmolLM3-3B | 3B | — | ❌ **not in WebLLM** | Beats Qwen2.5-3B on paper, but unavailable without self-compiling MLC. | Out of scope |
 
 Notes that drive the decision:
-- **Structured output reliability matters to us** because our guardrail layer enforces JSON-shaped tutor turns (intent, mode, message). Reports put **Llama-3.2-3B JSON parse reliability around ~48–57%** — too low to lean on; **Qwen2.5** is the more reliable structured-output family at small sizes. This is why Qwen is our spine.
-- **Phi-3.5** is the strongest *reasoner* per GB but shows **repetition / length-compliance problems** in production text generation — fine as an optional power-user choice, not the default chat tutor.
-- **SmolLM3-3B** (newer) reportedly beats Llama-3.2-3B and Qwen2.5-3B at the 3B scale; if a stable WebLLM build is available, it's a drop-in upgrade for the desktop tier. Verify availability before relying on it.
+- **Free-text JSON reliability is now critical** (grammar mode is off; we parse verdicts from text). **Qwen** is the most reliable structured family at small sizes; **Llama-3.2-3B's ~48–57% JSON parse rate** disqualifies it as the spine. This is why we stay on the Qwen line.
+- **Qwen3 is a real generational jump.** Alibaba's Qwen3 report positions **Qwen3-1.7B (non-thinking) against Qwen2.5-3B-Instruct**, and the family adds first-class JSON/tool-calling and better instruction-following — the exact axes our netless engine leans on. Footprint rises modestly (1.63→2.0 GB for the mid tier).
+- **SmolLM3-3B is not prebuilt in WebLLM** — drop it (would need MLC self-compile).
 
-## 2. Which model should we *start* with
+## 2. Which model to START with (and demo)
 
-**Start with `Qwen2.5-1.5B-Instruct-q4f16_1`.**
+**Default / dev / demo: `Qwen3-1.7B-q4f16_1-MLC` (~2.0 GB), run in non-thinking mode.**
 
 Why:
-- ~1.6 GB fits the **phone-first reality** (most Masterschool students study on phones) while still following multi-turn instructions and emitting structured output well enough for our guardrail JSON.
-- Best **quality-per-megabyte** in the "runs on a mid Android" band — the sweet spot between SmolLM (too weak to teach) and 3B (too heavy for many phones).
-- Same family scales cleanly: dev on 1.5B, offer 3B to laptops, drop to 0.5B for weak devices — one prompt style across the tier.
+- ~2.0 GB still fits the **phone-first reality** while delivering ~3B-class assessment reasoning — the quality our netless milestone loop depends on to judge "is this milestone achieved?"
+- Best **quality-per-MB** in the runs-on-a-decent-phone band, and the same family scales cleanly across tiers (one prompt style: dev on 1.7B, 4B to laptops, 0.6B to weak devices).
+- Native JSON/tool-calling gives cleaner free-text JSON for `parseAchieved` / decomposition / sync than Qwen2.5.
 
-This is the model we build and demo against. The guardrail layer (not the model) is what makes it *teach correctly* on the 10 scenarios.
+## 3. ⚠️ Qwen3-specific requirement — run NON-THINKING (`/no_think`)
 
-## 3. Which model is safest for a mobile / laptop demo
+Qwen3 is a **hybrid thinking model**. Left in thinking mode it emits `<think>…</think>` blocks, which will:
+1. **Break `extractJson` / `parseAchieved`** (the reasoning text is not valid JSON), and
+2. **Triple latency** — and the engine already does **2–3 serial on-device calls per student turn** (see [milestone-engine-weak-spots.md](milestone-engine-weak-spots.md) #5).
 
-- **Safest phone demo:** `Qwen2.5-0.5B-Instruct-q4f16_1` (~0.95 GB). Almost always loads on a WebGPU phone without OOM; fast. Quality is lower, but with our guardrails + canned lesson scaffolds it still demos well and **won't crash on stage** — the #1 demo risk on mobile is an iOS/Android OOM kill.
-- **Safest laptop demo:** `Qwen2.5-3B-Instruct-q4f16_1` (~2.5–2.9 GB) on a Chrome/Edge laptop with a real/integrated GPU. Best visible quality without crash risk. This is what we'd run for the **main on-stage demo**.
-- **Demo rule:** pre-download and pre-cache the model on the demo device before presenting (first download is the only slow part). Have the 0.5B as a hot backup if the venue device is weak.
+**Mandatory when moving to Qwen3:**
+- Append **`/no_think`** to the system prompt on *every* engine call ([`prompts.ts`](../../maestro-open/src/engine/milestone/prompts.ts)) — the reliable soft switch in WebLLM (there's no `apply_chat_template` kwargs surface in the browser API).
+- **Strip any `<think>…</think>` block** in [`json.ts`](../../maestro-open/src/engine/milestone/json.ts) before parsing (belt-and-suspenders).
+- On the WebLLM version that ships Qwen3, **re-test the `structuredOutput` flag** — if JSON-grammar mode is fixed, re-enabling it directly kills weak-spot #3 (fragile achievement parsing) and is the single biggest reliability win.
 
-## 4. Tradeoffs: quality vs. speed vs. memory
+(Thinking mode *could* help the assessment step specifically, but with grammar off + regex parsing + a 3-call turn, force non-thinking everywhere for the hackathon; revisit selectively later.)
 
-The three axes pull against each other; there is no single winner, which is exactly why we ship a **device-tiered picker** ([mobile-device-strategy.md](mobile-device-strategy.md)) rather than one model.
+## 4. Safest demo choices
 
-- **Quality ↑ with size**, but so does **memory** (crash risk on phones/Safari) and **latency** (tokens/sec drops on weak GPUs → laggy chat).
-- **Memory is the hard wall**, not speed: a model that's slightly slow is annoying; a model that exceeds the device budget **crashes the tab**. So we size *down* to fit memory first, then accept the quality hit and **buy back quality with guardrails + deterministic tools** (calculator, code-runner, lesson scaffolds) instead of a bigger model.
-- **Speed/UX:** stream tokens, keep tutor turns short (our pedagogy wants short Socratic turns anyway — see the scenario answers), and use the model for *phrasing*, not for *facts*.
-- **The key reframe:** we are **not** trying to pick a model smart enough to teach well unaided — no sub-3B model is. We pick the **largest model that reliably fits the device**, and let the architecture guarantee correctness and pedagogy. Model = the voice; guardrails = the teacher.
+- **Safest phone demo:** `Qwen3-0.6B` (~1.4 GB) or the ultra-safe `Qwen2.5-0.5B` (~0.95 GB). Almost always loads on a WebGPU phone without OOM; fast. The #1 on-stage mobile risk is an iOS/Android OOM kill, not quality.
+- **Safest laptop demo:** `Qwen3-4B` (~3.4 GB) on a Chrome/Edge laptop with a real/integrated GPU — best visible quality, low crash risk. This is the main on-stage demo model.
+- **Demo rule:** pre-download and pre-cache the model on the demo device before presenting (first download is the only slow part). Keep the 0.6B as a hot backup if the venue device is weak.
+
+## 5. Tradeoffs: quality vs. speed vs. memory
+
+- **Quality ↑ with size**, but so do **memory** (crash risk on phones/Safari) and **latency** (tokens/sec drops on weak GPUs → laggy chat, amplified by our 2–3 calls/turn).
+- **Memory is the hard wall**, not speed: a slow model is annoying; a model that exceeds the device budget **crashes the tab**. Size *down* to fit memory first.
+- **The reframe for the current engine:** we pick the **largest model that reliably fits the device** and run it non-thinking for latency, because the model — not a guardrail layer — is now doing the judging. Cheap deterministic *rails* (attempt counters, `<think>`-strip, evidence-cited verdicts; see weak-spots doc) buy back reliability without moving the judgment off the model.
 
 ### Decision summary
-| Tier | Device | Model | Rationale |
-|---|---|---|---|
-| Floor / fallback | No WebGPU, very weak | SmolLM2-360M (WASM) or lite mode | Just needs to run / degrade gracefully |
-| Low | Cheap/old Android, iOS | Qwen2.5-0.5B | Loads without OOM, fast |
-| **Default** | Mid phone | **Qwen2.5-1.5B** | Best quality-per-MB on phones |
-| Desktop | Laptop / good GPU | **Qwen2.5-3B** | Best visible quality, low crash risk |
-| Power (optional) | Strong GPU, STEM | Phi-3.5-mini / SmolLM3-3B | Extra reasoning for technical tracks |
+| Tier | Device | Model (`q4f16_1`) | ~VRAM | Rationale |
+|---|---|---|---|---|
+| Floor / fallback | No WebGPU, very weak | SmolLM2-360M (WASM) or Lite mode | ~0.38 GB | Just needs to run / degrade gracefully |
+| **Low** | Cheap ≤4 GB Android, older iOS | **Qwen3-0.6B** (ultra-safe alt: Qwen2.5-0.5B) | ~1.4 / 0.95 GB | Loads without OOM, fast |
+| **Default** ⭐ | Modern phone 6 GB+, iPhone iOS 26 | **Qwen3-1.7B** | ~2.0 GB | ≈ 3B-class reasoning at phone footprint |
+| **High** | Laptop / good GPU | **Qwen3-4B** | ~3.4 GB | Best visible quality, low crash risk |
+| Power (optional) | Strong GPU, STEM track | Phi-4-mini | ~3.44 GB | Extra STEM reasoning |
+
+## 6. How much work is a model swap? (implementation note)
+
+The model is fully parameterized: `MODELS` catalog → `getSelectedModelId()` → `createWebLLMEngine(onProgress, modelId)` ([`engine.ts`](../../maestro-open/src/llm/engine.ts)). Nothing downstream hardcodes a model.
+
+- **Within a family (Qwen 0.6→1.7→4B):** editing the `MODELS` array in [`models.ts`](../../maestro-open/src/llm/models.ts) (+ collapsing the duplicate `DEFAULT_MODEL` in [`webllm.ts`](../../maestro-open/src/llm/webllm.ts) onto it). Effectively one place. Also update `approxGB`/`tier` and the `recommendModel()` memory thresholds.
+- **Across families (Qwen2.5 → Qwen3):** the above **plus** the `/no_think` switch and `<think>`-strip in §3. Required, not optional — but ~2 small edits.
+
+## 7. Auto-matching the model to the device (feasibility)
+
+Doable and already scaffolded (`recommendModel()` reads `navigator.deviceMemory`), but signals are coarse: `deviceMemory` is rounded, capped at 8, and **`undefined` on Safari/iOS**. Ship it as **defense-in-depth**, not a single trusted call:
+1. Coarse pick from `deviceMemory` / UA, **upgraded** by reading **WebGPU adapter limits** (`maxBufferSize`, `maxStorageBufferBindingSize`) — a real ceiling (probe specced in [mobile-device-strategy.md](mobile-device-strategy.md), not yet wired).
+2. **Attempt load → catch OOM → auto-step-down one tier** and tell the user. This is the only reliable guarantee; signals alone will occasionally mispredict.
+3. **User override** (the Settings picker already exists) + persist the choice.
+
+Answer to the brief's explicit question ("ask the device vs. one model for all"): **auto-detect + override — both, with an OOM step-down net.**
 
 ---
 
 ### Sources
+- [WebLLM prebuilt config (`config.ts`, verified model IDs + VRAM)](https://github.com/mlc-ai/web-llm/blob/main/src/config.ts)
 - [WebLLM prebuilt model list (GitHub issue #683)](https://github.com/mlc-ai/web-llm/issues/683)
-- [mlc-ai/web-llm (GitHub)](https://github.com/mlc-ai/web-llm)
-- [Best Open-Source Small Language Models in 2026 (BentoML)](https://www.bentoml.com/blog/the-best-open-source-small-language-models)
+- [Qwen3 Technical Report (arXiv 2505.09388)](https://arxiv.org/pdf/2505.09388) — small-tier positioning vs Qwen2.5
+- [Qwen3 full lineup guide 2026](https://baeseokjae.github.io/posts/qwen-3-full-lineup-guide-2026/) — thinking/non-thinking, edge sizing
+- [Disabling Qwen3 thinking (QwenLM discussion #1300)](https://github.com/QwenLM/Qwen3/discussions/1300)
+- [Best Open-Source Small Language Models in 2026 (BentoML)](https://www.bentoml.com/blog/the-best-open-source-small-language-models) — SmolLM3 / 3B-class comparison
 - [Small LLM Performance Benchmark (AscentCore, 2026)](https://ascentcore.com/2026/04/01/small-llm-performance-benchmark/)
 - [Best Models Under 3B (InsiderLLM)](https://insiderllm.com/guides/best-models-under-3b-parameters/)
+</content>
+</invoke>

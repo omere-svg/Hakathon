@@ -1,24 +1,24 @@
-import { useState } from 'react';
-import { DEFAULT_FLAGS, getFlags, resetFlags, setFlags, type FeatureFlags } from '../config/features';
-import { MODELS, getSelectedModelId, recommendModel, setSelectedModelId } from '../llm/models';
-import { clearAllProgress } from '../storage/progress';
+import { useEffect, useState } from 'react';
+import { getFlags, resetFlags, setFlags, type FeatureFlags } from '../config/features';
+import { MODELS, getSelectedModelId, recommendModel, recommendModelAsync, setSelectedModelId } from '../llm/models';
 
-// On-device control surface: toggle each feature module and pick the model. Everything
-// here is modular — turning a feature off must never break the rest of the app.
+// On-device control surface: pick the model, and (in dev) toggle Qwen3 thinking to feel its
+// latency cost. The milestone engine reads only these two settings; everything else the tutor
+// does lives in the engine, not behind a flag.
 
-const TOGGLES: { key: keyof FeatureFlags; label: string; help: string }[] = [
-  { key: 'structuredOutput', label: 'Grammar-constrained turns', help: 'Force JSON-shaped replies (reliability on small models).' },
-  { key: 'repair', label: 'Verify → re-prompt', help: 'Re-ask the model with a correction when it breaks a rule.' },
-  { key: 'exemplars', label: 'Few-shot exemplars', help: 'Inject authored gold examples so the model imitates.' },
-  { key: 'prefixCache', label: 'Prefix-cache layout', help: 'Put the constant prompt first for KV reuse / lower latency.' },
-  { key: 'persistence', label: 'Persistent progress', help: 'Remember the student across sessions (on-device).' },
-  { key: 'spacedRepetition', label: 'Spaced repetition', help: 'Revisit weak concepts over time.' },
-];
+const IS_DEV = typeof import.meta !== 'undefined' && Boolean(import.meta.env?.DEV);
 
 export function SettingsPage() {
   const [flags, setLocal] = useState<FeatureFlags>(getFlags());
   const [modelId, setModel] = useState<string>(getSelectedModelId());
-  const rec = recommendModel();
+  // Coarse pick shown instantly; upgraded to the probe-backed pick once the adapter responds.
+  const [rec, setRec] = useState(recommendModel());
+
+  useEffect(() => {
+    let alive = true;
+    recommendModelAsync().then((m) => { if (alive) setRec(m); }).catch(() => {});
+    return () => { alive = false; };
+  }, []);
 
   function update(patch: Partial<FeatureFlags>) {
     setLocal(setFlags(patch));
@@ -27,7 +27,7 @@ export function SettingsPage() {
   return (
     <div className="evals">
       <h1>Settings</h1>
-      <div className="sub">Every feature is an independent module. Toggle anything off if your device struggles — the rest keeps working. Model changes apply on reload.</div>
+      <div className="sub">Maestro Open runs a real model privately on your device. Pick the model that fits it — model changes apply on reload.</div>
 
       <h2 className="bench-h2">On-device model</h2>
       <div className="settings-block">
@@ -42,43 +42,30 @@ export function SettingsPage() {
         <div className="settings-help">Recommended for this device: <b>{rec.label}</b>. Reload the Lesson after changing.</div>
       </div>
 
-      <h2 className="bench-h2">Engine features</h2>
-      <div className="settings-list">
-        {TOGGLES.map((t) => (
-          <label className="settings-row" key={t.key}>
-            <input
-              type="checkbox"
-              checked={Boolean(flags[t.key])}
-              onChange={(e) => update({ [t.key]: e.target.checked } as Partial<FeatureFlags>)}
-            />
-            <span>
-              <b>{t.label}</b>
-              <span className="settings-help">{t.help}</span>
-            </span>
-          </label>
-        ))}
-        <label className="settings-row">
-          <input
-            type="number"
-            min={1}
-            max={5}
-            value={flags.bestOfN}
-            onChange={(e) => update({ bestOfN: Math.max(1, Math.min(5, Number(e.target.value) || 1)) })}
-            style={{ width: 56 }}
-          />
-          <span>
-            <b>Best-of-N candidates</b>
-            <span className="settings-help">Generate N drafts; the verifier picks the first clean one (1 = off).</span>
-          </span>
-        </label>
-      </div>
+      {IS_DEV && (
+        <>
+          <h2 className="bench-h2">Dev experiment</h2>
+          <div className="settings-list">
+            <label className="settings-row">
+              <input
+                type="checkbox"
+                checked={Boolean(flags.thinking)}
+                onChange={(e) => update({ thinking: e.target.checked })}
+              />
+              <span>
+                <b>Qwen3 thinking mode</b>
+                <span className="settings-help">
+                  On → the model reasons in a &lt;think&gt; block before answering (slower). Off → /no_think.
+                  Toggle to compare latency. Reload the Lesson after changing. (Dev only; no effect on non-Qwen3 models.)
+                </span>
+              </span>
+            </label>
+          </div>
+        </>
+      )}
 
       <div style={{ display: 'flex', gap: 10, marginTop: 16, flexWrap: 'wrap' }}>
-        <button className="run-btn" onClick={() => { setLocal(resetFlags()); }}>Reset features to defaults</button>
-        <button className="run-btn" onClick={() => { clearAllProgress(); }}>Reset lesson progress</button>
-      </div>
-      <div className="settings-help" style={{ marginTop: 8 }}>
-        Defaults: best-of-{DEFAULT_FLAGS.bestOfN}, structured/repair/exemplars on.
+        <button className="run-btn" onClick={() => { setLocal(resetFlags()); }}>Reset settings to defaults</button>
       </div>
     </div>
   );

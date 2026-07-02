@@ -1,7 +1,9 @@
 # Offline-to-On-Device Pipeline — "Smart Offline / Lean Online" (v2.5)
 
-> Research + definitive design for how intelligence is distributed across our pipeline.
-> Builds on [tutoring-architecture-patterns.md](tutoring-architecture-patterns.md) (ITS / CBM / dialogue-system grounding) and the v2 engine in [../06-product-decisions/architecture.md](../06-product-decisions/architecture.md).
+> ⚠️ **HISTORICAL — describes the REMOVED verify engine.** The **verification layer** and the **authored knowledge-component content model** in this doc were built and then **removed**; the current build is the model-driven **Milestone Engine** ([../06-product-decisions/architecture.md](../06-product-decisions/architecture.md)), which teaches directly from Mastery Goals with **no authored JSON and no deterministic verifier**. Kept for two reasons: (1) the **offline-authoring thesis** (§0–1) is still the reference design for a *future* content pipeline (roadmap "Later"), and (2) the §3 failure-mode analysis still catalogues where small models slip. Ignore the C1–C10 / orchestrator / `verify.ts` / `eval:check` / `smoke` specifics — that code no longer exists.
+>
+> Research + design for how intelligence *could* be distributed across an authoring pipeline.
+> Builds on [tutoring-architecture-patterns.md](tutoring-architecture-patterns.md) (ITS / CBM / dialogue-system grounding).
 > Thesis in one line: **move every expensive judgment to a strong model OFFLINE (once per course), and keep the on-device small model's job as narrow as possible — conversational realization of a pre-authored plan — with a deterministic verifier closing the gap.**
 
 ---
@@ -165,4 +167,4 @@ What was implemented from this research, and issues resolved during the build (a
 ### Sources / consistency
 - Consistent with [tutoring-architecture-patterns.md](tutoring-architecture-patterns.md) (ITS domain/student/tutor split; CBM constraints; "what to say vs how to say it").
 - Small-model role grounded in [local-models-comparison.md](local-models-comparison.md) and [webllm-research.md](webllm-research.md).
-- Supersedes the v1 "deterministic brain" framing in [../06-product-decisions/architecture-spec.md](../06-product-decisions/architecture-spec.md) (historical).
+- The v1 "deterministic brain" spec and this v2.5 verify design were both superseded by the model-driven Milestone Engine ([../06-product-decisions/architecture.md](../06-product-decisions/architecture.md)).

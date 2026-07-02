@@ -1,40 +1,41 @@
-# Roadmap — from working slice to real, best-in-class software
+# Roadmap — Maestro Open
 
-> Headline: **runs great on a small LLM, locally on the user's phone, at $0.** Every non-core feature is an independent, toggleable **module** (Settings page / `src/config/features.ts`) so it can be disabled on a struggling device without breaking the rest.
-> Techniques: [../05-research/small-llm-performance-playbook.md](../05-research/small-llm-performance-playbook.md). Architecture: [architecture.md](architecture.md).
-> Status: ✅ done · 🟡 partial/scaffolded · ⬜ not started. **Verify everything: `npm run verify:all`** (build + verifier tests + smoke + content validation).
+> Headline: **a model-driven tutor that runs great on a small LLM, locally on the user's phone, at $0.** Architecture: [architecture.md](architecture.md). Small-model techniques: [../05-research/small-llm-performance-playbook.md](../05-research/small-llm-performance-playbook.md).
+> Status: ✅ done · 🟡 partial · ⬜ not started. **Verify:** `npm run verify:all` (= typecheck + build).
+>
+> **Note (2026-07):** the project pivoted from a deterministic verify-and-repair engine (constraints C1–C10, `/evals`, `/benchmark`, authored-KC content model) to the **Milestone Engine**. That old engine and its dead code were removed; this roadmap reflects the current build only.
 
-## Phase 0 — Engine foundation ✅
-LLM-first v2.5 pipeline (cues → tools-grade → situation+brief → LLM draft → verify→re-prompt → guard scrub → commit); presentation guidelines; 10 constraints C1–C10; tools; honest stance (no template fallback; unsupported screen). While-loop + BIZ lessons. Tests green.
+## Done ✅
 
-## Phase 1 — Make the small model demonstrably GREAT ✅ (tunable, can deepen)
-- ✅ **Grammar/JSON-constrained structured turns** (`completeStructured` + `STRUCTURED_INSTRUCTION`/`renderStructured`) — flag `structuredOutput`.
-- ✅ **Best-of-N + verifier-pick** — sample N drafts, verifier picks the first clean one — flag `bestOfN`.
-- ✅ **Authored few-shot exemplars** per act (`KnowledgeComponent.exemplars`) — flag `exemplars`.
-- ✅ **Verify→re-prompt** with precise corrections — flag `repair`.
-- 🟡 **Logit answer-ban** in challenge mode — currently the `guard()` scrub gives the structural C2 guarantee; a true decoder-level token ban is a future upgrade.
+**Milestone Engine (the product).** Model-driven Goal→Milestone flow, engine-agnostic `TutorEngine` contract:
+- ✅ **Bounded recursive decomposition** (`decompose.ts`) — split each Mastery Goal into ordered micro-milestones; caps `maxDepth 3 / maxLeaves 8 / maxCalls 12`; graceful fallback to the brief's goals.
+- ✅ **Milestone loop** (`engine.ts`) — per turn: assess (`{achieved, evidence}`) → teach-again or sync + advance; **strict per-milestone context isolation** (window 8); minimal bridge across transitions.
+- ✅ **Free-text JSON salvage** (`json.ts`) — robust extraction of `achieved` / sub-goals / suggestion lists without grammar mode.
+- ✅ **Dynamic suggestion chips** — model proposes 4 quick replies per turn (static fallback).
+- ✅ **Transparency dev panel** — mastery goals, live goal decomposition, and every on-device LLM call (prompt/response/latency).
 
-## Phase 2 — PROVE it (demo centerpiece) ✅
-- ✅ **Benchmark page** (`/benchmark`): pick a model → runs the 10 failure modes **with engine vs raw**, reports **pass-rate, median latency, repair count**, and the **lift**. Run it on your phone to show the gain.
-- ✅ Per-turn **latency + repair** metrics in the runner.
+**Content.** ✅ Lessons parsed from the Maestro Week-3 course reference (`domain/exampleLessons.ts` → `LessonBrief`); a random lesson per load. **Content-free** — no authoring pipeline required.
 
-## Phase 3 — Run on the user's real phone (reach) ✅ / 🟡
-- ✅ **Device-tiered model picker** (`src/llm/models.ts`, Settings) — auto-recommends 0.5B/1.5B/3B by device memory; manual override; persists.
-- ✅ **Prefix-cache-friendly prompt layout** (constant prefix first) — flag `prefixCache`. 🟡 explicit cross-turn KV reuse pending runtime support.
-- ✅ **PWA** — manifest + icon + service worker (app-shell offline, network-first navigations; prod-only registration). Weights cached by WebLLM.
-- 🟡 **WASM/CPU fallback** — `src/llm/wasm.ts` is a typed extension point; full wllama runtime not implemented (honest unsupported screen is the floor).
+**Reach / device.** 
+- ✅ **Device-tiered model picker** (`llm/models.ts`) — Qwen3 family (0.6B/1.7B/4B) + Qwen2.5-0.5B floor; `probeDevice`/`pickModel` from WebGPU adapter limits + `deviceMemory` + iOS detection; manual override; persists. (See [../05-research/mobile-device-strategy.md](../05-research/mobile-device-strategy.md).)
+- ✅ **Load-time OOM step-down** (`llm/engine.ts`) — on device-lost/out-of-memory, retry the next-smaller model.
+- ✅ **Qwen3 `/no_think` + `<think>` strip** (`llm/webllm.ts`); dev-only `thinking` toggle to measure latency.
+- ✅ **PWA** — app-shell service worker (prod-only registration); WebLLM caches weights → offline after first load.
+- ✅ **Honest unsupported screen** when WebGPU/model is unavailable (no faked teaching).
 
-## Phase 4 — Real-product depth ✅ / 🟡
-- ✅ **Persistent progress** (`src/storage/progress.ts`, localStorage) — resumes the student across sessions — flag `persistence`. (Interface swappable to IndexedDB.)
-- 🟡 **Spaced repetition** (`src/student/spacedRepetition.ts`) — minimal: resume at the weakest unmastered concept — flag `spacedRepetition`. Full forgetting-curve scheduler is future.
-- ✅ **Lesson registry** (`src/domain/lessons.ts`) with while-loop + BIZ; 🟡 in-app lesson/course **picker UI** pending.
-- ✅ **Offline authoring scaffold** (`npm run author`) — emits the frontier-model prompt to turn a course outline into lesson JSON. 🟡 a one-click pipeline (API call) is future.
-- ⬜ Model-initiated tool calls (off-script math/code).
+## Next 🟡 / ⬜ — harden the model-driven engine
+From [../05-research/milestone-engine-weak-spots.md](../05-research/milestone-engine-weak-spots.md) and [../05-research/milestone-engine-long-conversation.md](../05-research/milestone-engine-long-conversation.md), highest-value first:
+- ⬜ **Impasse handling** — attempt counter → escalating scaffold (hint → worked example → bottom-out) → dynamic re-split → hard turn cap, so a stuck milestone never loops forever.
+- ⬜ **3-way assessment** — return `achieved | attempted-miss | confused/asking` instead of a bare bool, and branch the teaching move on it.
+- ⬜ **Smart compaction** — replace the sliding window with a consolidation checkpoint (summarise every few turns) to fight context rot.
+- 🟡 **JSON reliability** — re-test WebLLM grammar-constrained decoding on upgrade; re-enable if fixed (biggest reliability unlock). Until then, harden the free-text salvage.
+- ⬜ **Latency** — fold suggestion chips into the teach call / generate them cheaply; skip the assess call on non-answers; stream the teach reply.
+- ⬜ **Persistence** — serialise the `MilestoneQueue` so a reload resumes instead of re-decomposing (nothing is persisted today).
 
-## Phase 5 — Productionization / hardening ✅ / 🟡
-- ✅ **Content validation** (`npm run validate`) — checks every lesson: gradeable keys, no hint leaks the answer, remediations are questions, prerequisites form a DAG.
-- ✅ Honest error/loading/unsupported states.
-- 🟡 Sandbox hardening for the in-browser code-runner; onboarding (Wi-Fi-only download prompt); analytics opt-in.
+## Later ⬜ — depth
+- ⬜ **Scenario hardening + a light eval** — targeted rails for the TutorBench failure modes (answer-leak, don't-validate-wrong-work, empathy-first) and a small on-device check to demonstrate them. (This is the capability the removed verify engine provided — see [product-idea.md](product-idea.md) §5.)
+- ⬜ **Fine-tuning** — distil a frontier model's teaching + reliable JSON into Qwen3-1.7B via Unsloth → MLC → HF → custom WebLLM model. (See the model-strategy research.)
+- ⬜ **WASM/CPU fallback** for no-WebGPU devices; in-app lesson picker.
 
-## How the modularity works (toggle anything)
-`src/config/features.ts` holds all flags (persisted, with safe Node defaults). The orchestrator reads them via `resolveConfig()` (overridable per-call — the benchmark uses this). The Settings page (`/settings`) toggles each on-device. Turning any feature off degrades gracefully to the core engine — nothing else breaks.
+## Modularity
+Only two feature flags remain (`config/features.ts`): `engine` (which tutoring engine) and `thinking` (Qwen3 think mode, dev-only). The old per-feature flags were removed with the code they gated.

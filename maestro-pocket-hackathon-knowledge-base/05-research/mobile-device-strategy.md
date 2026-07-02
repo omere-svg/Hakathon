@@ -2,18 +2,35 @@
 
 > The students we're reaching are mostly **low-income and study on phones** (per the problem background). So "runs in the browser" isn't enough — it has to run on a **cheap Android in a weak-network area**, and degrade gracefully when it can't. This doc is the device-tiering, fallback, model-picker, and offline plan.
 > Builds on [webllm-research.md](webllm-research.md) and [local-models-comparison.md](local-models-comparison.md).
+>
+> **Update — 2026-07-02:** §1 and §3 rewritten after researching what browsers actually expose about device capability, and the device→model policy here is now **implemented** in [`llm/models.ts`](../../maestro-open/src/llm/models.ts) (`probeDevice` / `pickModel`) with a load-time step-down in [`llm/engine.ts`](../../maestro-open/src/llm/engine.ts).
 
 ---
 
 ## 1. How we support weak devices
 
-Principle: **detect capability up front, then commit to the heaviest experience the device can actually sustain — never more.** A crashed tab is far worse than a smaller model.
+Principle: **detect capability up front, then commit to the heaviest experience the device can actually sustain — never more.** A crashed tab is far worse than a smaller model. Because no single signal is trustworthy, we combine coarse signals for the *initial* pick and rely on a **load-time step-down** as the actual guarantee.
 
-**Capability probe on first load (in order):**
-1. `navigator.gpu` present? → WebGPU candidate. If absent → **No-WebGPU path** (§2).
-2. Request an adapter (`navigator.gpu.requestAdapter()`); read its limits (e.g. `maxBufferSize`, `maxStorageBufferBindingSize`). Failure → No-WebGPU path.
-3. Read device signals: `navigator.deviceMemory` (GB hint), `navigator.hardwareConcurrency` (cores), screen size, UA platform (iOS vs Android).
-4. Map signals → **device tier** → default model (table in [local-models-comparison.md](local-models-comparison.md#decision-summary)).
+### 1a. What we can (and can't) read about the device — 2026 reality
+
+| Signal | What it tells us | Reliability caveat (researched) |
+|---|---|---|
+| `navigator.gpu` + `requestAdapter()` | Is WebGPU usable at all | The gate. Present but adapter can still be refused. |
+| `adapter.limits.maxBufferSize` / `maxStorageBufferBindingSize` | GPU buffer ceiling — a **tier proxy** (~128–256 MB mobile → 2–4 GB desktop) | Browsers report **tiered/normalized** values, not exact, to resist fingerprinting. **WebGPU deliberately never exposes total or available VRAM.** MLC shards weights, so these are a *hint*, not a hard per-model gate. |
+| `navigator.deviceMemory` | System RAM in GB (good budget proxy for integrated GPUs) | **Chromium-only** (Chrome/Edge/Opera/Brave). Rounded to {0.25,0.5,1,2,4,8} and **capped at 8**. **`undefined` on Safari/iOS and Firefox.** |
+| `navigator.hardwareConcurrency` | Logical cores | Broad support, but **capped at 2 on iOS**, 8 on macOS Safari → weak tiebreaker only. |
+| UA + `maxTouchPoints` | iOS vs Android vs desktop | iPadOS 13+ reports a **desktop-Mac UA** → disambiguate via `maxTouchPoints > 1`. |
+
+**Takeaway:** you can't ask "how much VRAM is free." You infer a tier from coarse hints, then **attempt to load and catch the out-of-memory / device-lost error** — the only reliable feedback the platform gives.
+
+### 1b. Capability probe on first load (as implemented in `probeDevice`)
+1. `navigator.gpu` present? Request an adapter. No adapter → **No-WebGPU path** (§2).
+2. Read `adapter.limits` (`maxBufferSize`, `maxStorageBufferBindingSize`).
+3. Read `navigator.deviceMemory`, `hardwareConcurrency`, and detect iOS/Safari from UA + `maxTouchPoints`.
+4. Feed all of it to the pure `pickModel(probe)` policy (§3) → a recommended model.
+5. **Attempt load; on OOM/device-lost, step down one tier and retry** (`engine.ts` `loadWithStepDown`).
+
+**Tactics for weak-but-capable devices:** size down by default and let users opt up; cap context length + keep tutor turns short (less KV-cache memory); free the engine between lessons on iOS; Wi-Fi-only resumable download; ship only `q4f16_1`; show lesson text from static JSON while weights download.
 
 **Tactics for weak-but-capable devices:**
 - **Size down by default**, let users opt up. Start a low-tier device on Qwen2.5-0.5B, not 1.5B.
@@ -33,21 +50,31 @@ A real minority of our users (older iOS <26, older Android, Firefox mobile, lock
 
 **Decision:** ship **WASM fallback + Lite mode**. Lite mode is the safety net that guarantees *every* device gets a working lesson, which is itself a strong differentiator vs. competitors who'll show a "WebGPU required" error on half the phones in the developing world.
 
-## 3. Model-picker idea
+## 3. Model-picker — the implemented policy
 
-The brief's research question is literally "ask the user their phone vs. pick one model for everyone." Our answer: **auto-detect + let the user override.** Best of both.
+The brief's research question is literally "ask the user their phone vs. pick one model for everyone." Our answer: **auto-detect + let the user override, with a load-time step-down net.** Best of both, and robust to the fact that the signals lie.
 
-**"Pick my tutor" flow:**
-- On first run, the capability probe (§1) chooses a **recommended model** for the device and explains it in plain language: *"We picked the Fast tutor — it runs smoothly on your phone. Want a smarter, heavier one?"*
-- A simple **3-choice slider**, not model jargon:
-  - 🟢 **Fast & light** (Qwen2.5-0.5B) — "works on most phones"
-  - 🔵 **Balanced** (Qwen2.5-1.5B) — "recommended"
-  - 🟣 **Smart** (Qwen2.5-3B) — "best on laptops / strong phones"
-- Show the **download size + a one-tap test** ("try a sample turn") so the user feels the speed before committing.
-- Persist the choice (IndexedDB). Offer to **re-pick** if we detect repeated slow turns or an OOM recovery.
-- If load fails/OOMs, **auto-step-down** one tier and tell the user.
+### 3a. Tiers (Qwen3 spine — see [local-models-comparison.md](local-models-comparison.md))
+| Tier | Model | ~VRAM | Who gets it |
+|---|---|---|---|
+| `floor` | Qwen2.5-0.5B | ~0.95 GB | Old/very weak devices; bottom rung of the step-down |
+| `low` | **Qwen3-0.6B** | ~1.4 GB | Most phones |
+| `mid` ⭐ | **Qwen3-1.7B** | ~2.0 GB | Modern phone (6 GB+), iPhone iOS 26 — the default |
+| `high` | **Qwen3-4B** | ~3.4 GB | Laptops / strong phones |
 
-This makes the device-adaptivity a *visible product feature* ("it tuned itself to your phone"), which demos well and is a concrete answer to the brief's question.
+### 3b. `pickModel(probe)` — the pure decision (conservative on purpose)
+- **iOS/iPadOS:** never `high` (Metal per-buffer caps + aggressive tab kills). If the buffer ceiling looks like an older iPhone (`maxStorageBufferBindingSize < 512 MB`) → `floor`; a large `maxBufferSize` (≥1500 MB, e.g. iPad Pro / recent iPhone) → `mid`; otherwise `low`.
+- **Everything else:** estimate a budget (GB) — prefer `deviceMemory`; else infer a tier from `maxBufferSize` (≥2000→8, ≥1000→6, else 4); else assume 6 (unknown, e.g. Firefox). Pick the **largest model whose `approxGB × 1.6` (headroom for KV cache + browser/OS) fits the budget.**
+- Memory is the hard wall: a too-big model **crashes the tab**; a too-small one is merely weaker. So we round *down*.
+
+### 3c. The step-down net (`engine.ts` `loadWithStepDown`) — the real guarantee
+Signals only *guess* the tier. On an out-of-memory / device-lost error we **step down to the next-smaller catalog model and retry**, telling the user ("switching to a lighter one…"). Disabled for explicit ids (the benchmark) so comparisons stay honest. This is what turns an over-optimistic guess into a smaller model instead of a dead tab.
+
+### 3d. "Pick my tutor" UX
+- On first run, show the probe-backed recommendation in plain language ("We picked *Balanced* — it runs smoothly on your phone. Want a smarter, heavier one?"). The Settings picker already renders the catalog + live recommendation (`recommendModelAsync`).
+- Show **download size + a one-tap "try a sample turn"** so the user feels the speed before committing; persist the choice; offer to re-pick after repeated slow turns or an OOM recovery.
+
+This makes device-adaptivity a *visible product feature* ("it tuned itself to your phone") and is the concrete answer to the brief's question.
 
 ## 4. Offline / PWA strategy
 
@@ -79,6 +106,12 @@ The mobile strategy *is* part of the product story: **"a tutor that tunes itself
 ### Sources
 - [WebGPU is now supported in major browsers (web.dev)](https://web.dev/blog/webgpu-supported-major-browsers)
 - [Can I use: WebGPU](https://caniuse.com/webgpu)
+- [GPUSupportedLimits — MDN](https://developer.mozilla.org/en-US/docs/Web/API/GPUSupportedLimits) — `maxBufferSize`, `maxStorageBufferBindingSize`
+- [WebGPU limits & features (webgpufundamentals)](https://webgpufundamentals.org/webgpu/lessons/webgpu-limits-and-features.html) — browsers report *tiered* limits, and spec hides total VRAM (fingerprinting)
+- [navigator.deviceMemory & fingerprinting (VeilFlux)](https://veilflux.com/knowledge/how-device-memory-affects-your-privacy-scan) — Chromium-only, rounded, capped at 8, undefined on Safari/Firefox
+- [navigator.hardwareConcurrency (caniuse)](https://caniuse.com/hardwareconcurrency) — capped at 2 on iOS, 8 on macOS Safari
+- [WebLLM device-lost / insufficient-memory (issue #517)](https://github.com/mlc-ai/web-llm/issues/517) · [issue #647](https://github.com/mlc-ai/web-llm/issues/647) — the OOM error we step down on
+- [WebGPU browser AI inference — capability check + fallback from day one (buildmvpfast, 2026)](https://www.buildmvpfast.com/blog/webgpu-browser-ai-inference-cost-savings-2026) — Safari Metal per-buffer caps (256 MB old iPhones)
 - [webgpu-webllm-app: WebLLM with automatic WASM (wllama) fallback (GitHub)](https://github.com/krtarunsingh/webgpu-webllm-app)
 - [Cross-Browser Local LLM Inference Using WebAssembly (Picovoice)](https://picovoice.ai/blog/cross-browser-local-llm-inference-using-webassembly/)
 - [mlc-ai/web-llm (GitHub)](https://github.com/mlc-ai/web-llm)

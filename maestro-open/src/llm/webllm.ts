@@ -1,8 +1,14 @@
 import type { LLMEngine } from './types';
+import { DEFAULT_MODEL_ID } from './models';
+import { quirksFor } from './quirks';
 
 // On-device LLM via WebLLM/WebGPU. Dynamically imported and optional: if WebGPU
-// is missing or load fails, callers fall back to deterministic templates.
-export const DEFAULT_MODEL = 'Qwen2.5-1.5B-Instruct-q4f16_1-MLC';
+// is missing or load fails, callers show an honest "unsupported" screen.
+//
+// This adapter is model-AGNOSTIC: all per-family behavior (thinking soft-switch, output
+// cleaning, token budget) lives behind the ModelQuirks seam (quirks.ts). Adding or switching
+// a model family never touches this file.
+export const DEFAULT_MODEL = DEFAULT_MODEL_ID;
 
 export function webgpuAvailable(): boolean {
   return typeof navigator !== 'undefined' && 'gpu' in navigator;
@@ -31,8 +37,9 @@ export async function createWebLLMEngine(
   const engine = await webllm.CreateMLCEngine(model, {
     initProgressCallback: (r: { text: string }) => onProgress?.(r.text),
   });
+  const quirks = quirksFor(model);
   const messages = (system: string, user: string) => [
-    { role: 'system' as const, content: system },
+    { role: 'system' as const, content: system + quirks.systemSuffix() },
     { role: 'user' as const, content: user },
   ];
 
@@ -44,11 +51,11 @@ export async function createWebLLMEngine(
         engine.chat.completions.create({
           messages: messages(system, user),
           temperature: 0.5,
-          max_tokens: 280,
+          max_tokens: quirks.maxTokens(),
         }),
         'complete',
       );
-      return (res.choices[0]?.message?.content ?? '').trim();
+      return quirks.cleanOutput((res.choices[0]?.message?.content ?? '').trim());
     },
     // JSON-mode (grammar-constrained) generation. The schema is described in the
     // system prompt; response_format pins valid JSON. Returns null on parse failure
@@ -59,12 +66,12 @@ export async function createWebLLMEngine(
           engine.chat.completions.create({
             messages: messages(system, user),
             temperature: 0.4,
-            max_tokens: 300,
+            max_tokens: quirks.maxTokens(),
             response_format: { type: 'json_object' } as { type: 'json_object' },
           }),
           'completeStructured',
         );
-        const raw = (res.choices[0]?.message?.content ?? '').trim();
+        const raw = quirks.cleanOutput((res.choices[0]?.message?.content ?? '').trim());
         return raw ? (JSON.parse(raw) as Record<string, unknown>) : null;
       } catch {
         return null;

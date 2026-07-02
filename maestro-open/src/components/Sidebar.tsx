@@ -4,7 +4,6 @@ import {
   Wordmark,
   CollapseIcon,
   BookIcon,
-  AtomIcon,
   ProjectsIcon,
   DiscussionsIcon,
   LeaderboardsIcon,
@@ -38,14 +37,6 @@ export function Sidebar() {
         <NavLink to="/" end className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
           <span className="nav-ico"><BookIcon /></span>
           <span className="nav-label">Learn</span>
-        </NavLink>
-        <NavLink to="/practice" className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
-          <span className="nav-ico"><AtomIcon /></span>
-          <span className="nav-label">Practice</span>
-        </NavLink>
-        <NavLink to="/benchmark" className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
-          <span className="nav-ico"><LeaderboardsIcon /></span>
-          <span className="nav-label">Benchmark</span>
         </NavLink>
         <NavLink to="/settings" className={({ isActive }) => `nav-item${isActive ? ' active' : ''}`}>
           <span className="nav-ico"><ProjectsIcon /></span>

@@ -1,73 +1,38 @@
 import { useEffect, useRef, useState } from 'react';
-import { whileLoopLesson, MCQ_OPTIONS } from '../domain/lessons';
-import { getCheck, getKc } from '../domain/schema';
-import { initStudentModel, type StudentModel } from '../student/model';
-import { initLessonMemory, type LessonMemory } from '../memory/types';
-import { runTurn } from '../engine/orchestrator';
-import type { ConstraintCheck } from '../engine/constraints';
+import { pickRandomExampleBrief } from '../domain/exampleLessons';
+import { createEngine, type LlmCall, type PlanStep, type Suggestions, type TutorEngine } from '../engine';
 import { getLLM } from '../llm/engine';
 import { webgpuAvailable } from '../llm/webllm';
 import type { LLMEngine } from '../llm/types';
 import { getFlags } from '../config/features';
-import { loadProgress, saveProgress } from '../storage/progress';
-import { startingKc } from '../student/spacedRepetition';
 import { Markdown } from '../components/Markdown';
+import { EngineDebugPanel } from '../components/EngineDebugPanel';
 import { AgentAvatar, BreadcrumbChevron, BoltIcon, CodeIcon, MicIcon } from '../components/icons';
+
+// LessonPage is engine-AGNOSTIC. It holds one TutorEngine instance (chosen by the `engine`
+// flag), calls start()/respond(), and renders whatever the engine returns — reply,
+// suggestion chips, and dev-panel debug. It knows nothing about milestones, KCs, or memory;
+// each engine owns all of that internally. Swap engines in Settings; this file is unchanged.
+
+// A fresh random lesson from the Week-3 course reference each page load, so we exercise the
+// milestone engine across all the week's lessons instead of only the while-loop one.
+const brief = pickRandomExampleBrief();
+console.log(`[Maestro] lesson: ${brief.title} (${brief.goals.length} mastery goals)`);
+let seq = 0;
+const nid = () => `m-${++seq}`;
 
 interface Msg {
   id: string;
   role: 'student' | 'tutor';
   text: string;
-  act?: string;
-  checks?: ConstraintCheck[];
-  repairs?: string[];
-  /** Suggestion chips computed for THIS tutor turn (so chips match the message). */
-  suggest?: { mcqCheckId?: string; quick?: QuickReply[] };
-}
-
-const lesson = whileLoopLesson;
-let seq = 0;
-const nid = () => `m-${++seq}`;
-
-// Non-graded conversational quick-replies. Unlike the authored MCQ options (which are
-// index-graded by the engine), these are just suggestions that steer the conversation.
-// Their text is phrased to match the engine's deterministic cue detection (engine/cues.ts)
-// so a tap reliably triggers the intended tutor behavior. No model call — always sensible.
-interface QuickReply { label: string; text: string }
-
-const TEACHING_REPLIES: QuickReply[] = [
-  { label: 'I understand', text: 'I understand' },
-  { label: 'Explain that again', text: 'Can you explain that again?' },
-  { label: 'Show me an example', text: 'Show me an example' },
-  { label: "I'm confused", text: "I'm confused" },
-];
-const HELP_REPLIES: QuickReply[] = [
-  { label: 'Give me a hint', text: 'Can I get a hint?' },
-  { label: 'Explain it differently', text: "I don't understand — can you explain it differently?" },
-  { label: 'Show me an example', text: 'Show me an example' },
-];
-
-// Pick chips from the tutor's latest act + phase. Struggling/open-check turns get
-// help-oriented chips; plain teaching turns get comprehension chips. None when done.
-function suggestReplies(lastAct: string | undefined, phase: string, hasActiveCheck: boolean): QuickReply[] {
-  if (phase === 'complete') return [];
-  if (hasActiveCheck || lastAct === 'HINT' || lastAct === 'CORRECT' || lastAct === 'COMFORT') return HELP_REPLIES;
-  return TEACHING_REPLIES;
-}
-
-// Decide the chips for a tutor turn from its ACT (not just phase — the engine flips to
-// 'check' right after the intro, so phase alone would show the quiz options forever).
-// Show the graded MCQ answers only on turns where an answer is actually expected
-// (asking/probing/correcting) — while explaining or advancing, offer conversational chips.
-function computeSuggest(mem: LessonMemory, act: string | undefined): Msg['suggest'] {
-  if (mem.phase === 'complete') return undefined;
-  const kc = getKc(lesson, mem.currentKcId);
-  const activeCheck = kc && mem.activeCheckId ? getCheck(kc, mem.activeCheckId) : undefined;
-  const answerExpected = act === 'ASK' || act === 'PROBE' || act === 'HINT' || act === 'CORRECT';
-  if (activeCheck?.type === 'mcq' && MCQ_OPTIONS[activeCheck.id] && answerExpected) {
-    return { mcqCheckId: activeCheck.id };
-  }
-  return { quick: suggestReplies(act, mem.phase, !!activeCheck) };
+  /** dev status line for this turn (engine-specific). */
+  status?: string;
+  /** the engine's ordered plan at this turn (e.g. milestone decomposition) — dev panel. */
+  steps?: PlanStep[];
+  /** every model call made to produce THIS turn (prompt + response) — dev panel. */
+  calls?: LlmCall[];
+  /** suggestion chips the engine computed for THIS tutor turn. */
+  suggest?: Suggestions;
 }
 
 export function LessonPage() {
@@ -75,17 +40,25 @@ export function LessonPage() {
   const [input, setInput] = useState('');
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<'loading' | 'ready' | 'unsupported'>('loading');
-  const [dev, setDev] = useState(false);
+  // Persisted so a reload doesn't silently turn the engine panel back off.
+  const [dev, setDev] = useState<boolean>(() => {
+    try { return localStorage.getItem('maestro.dev') === '1'; } catch { return false; }
+  });
+  const toggleDev = () => setDev((v) => {
+    const next = !v;
+    try { localStorage.setItem('maestro.dev', next ? '1' : '0'); } catch { /* ignore */ }
+    return next;
+  });
   const [loadNote, setLoadNote] = useState('Loading the on-device tutor…');
+  const [engineName, setEngineName] = useState('');
 
-  const studentRef = useRef<StudentModel>(initStudentModel());
-  const memRef = useRef<LessonMemory>(initLessonMemory(lesson.id, lesson.knowledgeComponents[0].id));
+  const engineRef = useRef<TutorEngine | null>(null);
   const llmRef = useRef<LLMEngine | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const taRef = useRef<HTMLTextAreaElement>(null);
   const didInit = useRef(false);
 
-  // Load the on-device model, then let the ENGINE produce the first turn.
+  // Load the on-device model, create the selected engine, then let IT produce the first turn.
   // No WebGPU / no model → honest unsupported screen. We never fake teaching.
   // Guard against React 18 StrictMode double-invoking this effect in dev: loading the
   // WebLLM engine twice instantiates the WASM runtime twice and corrupts its Embind type
@@ -94,16 +67,6 @@ export function LessonPage() {
     if (didInit.current) return;
     didInit.current = true;
     (async () => {
-      const flags = getFlags();
-      // Resume prior progress (modular: only if persistence is on).
-      if (flags.persistence) {
-        const saved = loadProgress(lesson.id);
-        if (saved) {
-          studentRef.current = saved.student;
-          memRef.current = { ...saved.mem, transcript: [] };
-          if (flags.spacedRepetition) memRef.current.currentKcId = startingKc(lesson, saved.student);
-        }
-      }
       const { llm, fellBack, reason } = await getLLM('webllm', (t) => setLoadNote(t));
       // "unsupported" means NO MODEL loaded — never a turn error (see below).
       if (fellBack || !llm) {
@@ -113,19 +76,24 @@ export function LessonPage() {
         return;
       }
       llmRef.current = llm;
-      // The model IS loaded → the device is supported. Show the chat now.
+      const engine = createEngine(getFlags().engine, brief, llm);
+      engineRef.current = engine;
+      setEngineName(engine.name);
+      // The model IS loaded → the device is supported. Show the chat now. The intro turn can
+      // be slow (the milestone engine decomposes the goal first), so mark it busy to render
+      // the typing indicator — otherwise the chat looks frozen until the first reply lands.
       setStatus('ready');
+      setBusy(true);
       try {
-        const res = await runTurn({ lesson, lessonMem: memRef.current, student: studentRef.current, studentMessage: '', mode: 'engine', llm });
-        studentRef.current = res.student;
-        memRef.current = res.lessonMem;
-        if (getFlags().persistence) saveProgress(lesson.id, res.student, res.lessonMem);
-        setMessages([{ id: nid(), role: 'tutor', text: res.output, act: res.act?.type, checks: res.checks, repairs: res.repairs, suggest: computeSuggest(res.lessonMem, res.act?.type) }]);
+        const view = await engine.start();
+        setMessages([{ id: nid(), role: 'tutor', text: view.reply, status: view.status, steps: view.debug?.steps, calls: view.debug?.calls, suggest: view.suggestions }]);
       } catch (err) {
         // A first-turn failure is NOT "unsupported" — the model loaded. Greet and let the
         // student start; surface the error in the console for diagnosis.
         console.error('[Maestro] intro turn failed:', err);
         setMessages([{ id: nid(), role: 'tutor', text: "Hi — I'm your Maestro tutor. Say “ready” to begin, or ask me anything about this lesson." }]);
+      } finally {
+        setBusy(false);
       }
     })();
   }, []);
@@ -134,22 +102,19 @@ export function LessonPage() {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' });
   }, [messages, busy]);
 
-  // `value` is what the engine grades/sees (e.g. an MCQ index "1"); `display` is what the
-  // student sees in the chat (e.g. the option sentence). They differ only for MCQ chips.
+  // `value` is what the engine sees (e.g. an MCQ index "1"); `display` is what the student
+  // sees in the chat (e.g. the option sentence). They differ only for MCQ chips.
   async function send(value: string, display?: string) {
     const t = value.trim();
-    const llm = llmRef.current;
-    if (!t || busy || status !== 'ready' || !llm) return;
+    const engine = engineRef.current;
+    if (!t || busy || status !== 'ready' || !engine) return;
     setInput('');
     if (taRef.current) taRef.current.style.height = 'auto';
     setBusy(true);
     setMessages((m) => [...m, { id: nid(), role: 'student', text: display ?? t }]);
     try {
-      const res = await runTurn({ lesson, lessonMem: memRef.current, student: studentRef.current, studentMessage: t, mode: 'engine', llm });
-      studentRef.current = res.student;
-      memRef.current = res.lessonMem;
-      if (getFlags().persistence) saveProgress(lesson.id, res.student, res.lessonMem);
-      setMessages((m) => [...m, { id: nid(), role: 'tutor', text: res.output, act: res.act?.type, checks: res.checks, repairs: res.repairs, suggest: computeSuggest(res.lessonMem, res.act?.type) }]);
+      const view = await engine.respond(t);
+      setMessages((m) => [...m, { id: nid(), role: 'tutor', text: view.reply, status: view.status, steps: view.debug?.steps, calls: view.debug?.calls, suggest: view.suggestions }]);
     } catch (err) {
       console.error('[Maestro] turn failed:', err);
       setMessages((m) => [...m, { id: nid(), role: 'tutor', text: 'The on-device model hit an error — please try again.' }]);
@@ -158,16 +123,13 @@ export function LessonPage() {
     }
   }
 
-  const mem = memRef.current;
-  const student = studentRef.current;
-  const kc = getKc(lesson, mem.currentKcId);
-
-  // Chips belong to the LATEST tutor message (computed when it was created), so they
-  // always render under the message they relate to — and never before it or while busy.
+  // Chips belong to the LATEST tutor message (computed by the engine when it was created),
+  // so they always render under the message they relate to — and never before it or while busy.
   const lastTutor = [...messages].reverse().find((m) => m.role === 'tutor');
   const suggest = status === 'ready' && !busy ? lastTutor?.suggest : undefined;
-  const mcqOptions = suggest?.mcqCheckId ? MCQ_OPTIONS[suggest.mcqCheckId] : undefined;
   const quickReplies = suggest?.quick ?? [];
+  const devSteps = lastTutor?.steps ?? [];
+  const devCalls = lastTutor?.calls ?? [];
 
   if (status === 'unsupported') {
     const hasGpu = webgpuAvailable();
@@ -195,24 +157,26 @@ export function LessonPage() {
     <div className="lesson">
       <header className="topbar">
         <nav className="breadcrumb" aria-label="breadcrumb">
-          <span className="crumb muted">{lesson.program}</span>
+          <span className="crumb muted">{brief.program}</span>
           <BreadcrumbChevron className="crumb-sep" />
-          <span className="crumb muted">{lesson.course}</span>
+          <span className="crumb muted">{brief.course}</span>
           <BreadcrumbChevron className="crumb-sep" />
-          <span className="crumb current">{lesson.title}</span>
+          <span className="crumb current">{brief.title}</span>
         </nav>
-        <button className={`dev-toggle${dev ? ' on' : ''}`} onClick={() => setDev((v) => !v)} title="Show the deterministic engine internals">
+        <button className={`dev-toggle${dev ? ' on' : ''}`} onClick={toggleDev} title="Show the engine internals">
           {dev ? 'Hide engine' : 'Show engine'}
         </button>
       </header>
 
       {dev && (
-        <div className="engine-bar">
-          <span>Verified on-device tutor · {llmRef.current?.name ?? loadNote}</span>
-          <span className="state">
-            KC: <b>{kc?.label}</b> · phase: {mem.phase} · frustration: {student.affect.frustration.toFixed(1)}
-          </span>
-        </div>
+        <EngineDebugPanel
+          engineName={engineName}
+          llmName={llmRef.current?.name ?? loadNote}
+          status={lastTutor?.status}
+          goals={brief.goals}
+          steps={devSteps}
+          calls={devCalls}
+        />
       )}
 
       <div className="chat" ref={listRef}>
@@ -228,16 +192,9 @@ export function LessonPage() {
                 <div className={`bubble ${m.role}`}>
                   {m.role === 'tutor' ? <Markdown text={m.text} /> : <p>{m.text}</p>}
                 </div>
-                {dev && m.role === 'tutor' && (m.act || m.checks?.length) && (
+                {dev && m.role === 'tutor' && m.status && (
                   <div className="checks">
-                    {m.act && <span className="act-badge">act: {m.act}</span>}
-                    {m.checks?.map((c) => (
-                      <span className="check" key={c.id}>
-                        <span className={`mark ${c.passed ? 'pass' : 'fail'}`}>{c.passed ? '✓' : '✗'}</span>
-                        {c.id} {c.label}
-                      </span>
-                    ))}
-                    {m.repairs && m.repairs.length > 0 && <span className="repairs">↻ {m.repairs.join(' ')}</span>}
+                    <span className="act-badge">{m.status}</span>
                   </div>
                 )}
               </div>
@@ -251,14 +208,6 @@ export function LessonPage() {
       </div>
 
       <div className="composer-wrap">
-        {mcqOptions && (
-          <div className="mcq">
-            {mcqOptions.map((opt, i) => (
-              // Grade by index (String(i)) but show the option sentence in the chat.
-              <button key={i} disabled={busy} onClick={() => send(String(i), opt)}>{opt}</button>
-            ))}
-          </div>
-        )}
         {quickReplies.length > 0 && (
           <div className="mcq quick-replies">
             {quickReplies.map((qr) => (

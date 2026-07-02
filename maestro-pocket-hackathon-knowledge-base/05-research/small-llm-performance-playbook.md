@@ -1,7 +1,9 @@
 # Running GREAT on a Small On-Device LLM — the Performance Playbook
 
-> This is the **core of the pitch**: how Maestro Open makes a **1.5–3B model on a phone** behave like a far larger tutor — for free, offline, privately. Builds on [offline-to-ondevice-pipeline.md](offline-to-ondevice-pipeline.md), [local-models-comparison.md](local-models-comparison.md), [webllm-research.md](webllm-research.md).
+> The **technique catalogue** for making a small phone model teach well. The *principles* (reduce / constrain / verify / ground / speed / reach) are engine-agnostic and still the core pitch.
+> ⚠️ **Implementation-status caveat (2026-07):** many "[DONE]" items below were implemented in the **removed verify engine** (structured turns, best-of-N, verify→re-prompt, exemplars, the `/benchmark` page, guard scrub) and **no longer exist** — the current model-driven **Milestone Engine** ([../06-product-decisions/architecture.md](../06-product-decisions/architecture.md)) implements only the **device picker + PWA + `/no_think`** from this list and applies "reduce/constrain" via bounded decomposition + tiny isolated contexts rather than authored JSON. Treat the marked statuses as the *verify-engine era*; §9 has the corrected current table. The removed levers are exactly the roadmap's "scenario-hardening" backlog.
 > Status legend: **[DONE]** implemented · **[NEXT]** highest-leverage to build · **[LATER]** real-product depth.
+> Builds on [offline-to-ondevice-pipeline.md](offline-to-ondevice-pipeline.md), [local-models-comparison.md](local-models-comparison.md), [webllm-research.md](webllm-research.md).
 
 ---
 
@@ -115,19 +117,22 @@ That single chart **is** the pitch: "Here is a phone-sized model failing. Here i
 
 **Across all five:** big models get to think; we don't trust ours to, so it only *recognizes and rephrases* while offline authoring + deterministic tools supply the thinking. That is how a 1.5B teaches like a professor — and exactly why none of it is needed at 70B.
 
-## 9. Build status (what's now implemented)
+## 9. Build status (current — Milestone Engine)
 
-| # | Technique | Lever | Status |
+Corrected for the current build. Most verify-engine levers were **removed** with that engine; they're the "scenario-hardening" roadmap backlog.
+
+| # | Technique | Lever | Status now |
 |---|---|---|---|
-| 1 | Grammar/JSON-constrained structured turns | Constrain | ✅ (`llm.completeStructured`, flag `structuredOutput`) |
-| 1b | Logit answer-ban in challenge | Constrain | 🟡 (`guard()` scrub gives the C2 guarantee today) |
-| 2 | Benchmark page (pass-rate × model, w/ vs w/o engine, latency) | Measure | ✅ (`/benchmark`) |
-| 3 | Authored few-shot exemplars per act | Reduce | ✅ (`KnowledgeComponent.exemplars`, flag `exemplars`) |
-| 4 | Best-of-N + verifier-pick | Verify | ✅ (flag `bestOfN`) |
-| 5 | Prefix-cache-friendly layout / routing | Speed | ✅ layout (flag `prefixCache`); 🟡 explicit KV reuse |
-| 6 | Device picker · PWA offline · WASM fallback | Reach | ✅ picker + PWA; 🟡 wllama (extension point) |
-| 7 | Persistent progress · spaced repetition | Product | ✅ persistence; 🟡 minimal spaced repetition |
-| 8 | Offline authoring pipeline | Scale | 🟡 scaffold (`npm run author`) + validation (`npm run validate`) |
+| 1 | Grammar/JSON-constrained structured turns | Constrain | ⬜ removed — grammar mode disabled (WebLLM 0.2.84 bug); JSON salvaged from free text (`json.ts`) |
+| 1b | Logit answer-ban / guard scrub | Constrain | ⬜ removed with the verify engine |
+| 2 | Benchmark / eval page | Measure | ⬜ removed (`/benchmark`, `/evals` deleted) — roadmap "Later" |
+| 3 | Authored few-shot exemplars | Reduce | ⬜ removed (authored-KC schema deleted) |
+| 4 | Best-of-N + verifier-pick | Verify | ⬜ removed |
+| 5 | Prefix-cache-friendly layout | Speed | 🟡 prompts still put the constant part first; no flag / explicit KV reuse |
+| 6 | Device picker · PWA offline · OOM step-down | Reach | ✅ Qwen3 tiered picker + PWA + load-time step-down; ⬜ WASM fallback |
+| 6b | Qwen3 `/no_think` + `<think>` strip | Speed/Constrain | ✅ (`webllm.ts`); dev `thinking` toggle |
+| 7 | Bounded recursive decomposition + per-milestone context isolation | Reduce | ✅ the milestone engine's core "reduce what the model decides" |
+| 8 | Persistent progress · spaced repetition · offline authoring | Product/Scale | ⬜ removed — roadmap items |
 
 ## 10. How the modules interact to keep COGS at $0
 

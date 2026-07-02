@@ -1,97 +1,77 @@
-# Architecture — Maestro Open (current / canonical, v2.5)
+# Architecture — Maestro Open (current / canonical)
 
-> This is the **current, implemented** architecture (Engine **v2.5 — "Smart Offline / Lean Online"**). It supersedes the v1 "deterministic engine is the brain" design — see [architecture-spec.md](architecture-spec.md), kept only as historical record.
-> Full reasoning for the offline/on-device split: [../05-research/offline-to-ondevice-pipeline.md](../05-research/offline-to-ondevice-pipeline.md).
-> **Plain-English turn-by-turn flow ("how the small model actually teaches"): [how-tutoring-works.md](how-tutoring-works.md).**
-> Everything runs **in the browser**: a real LLM on the user's device via WebLLM/WebGPU, plus deterministic engine code. No per-user server, no cloud inference. Static hosting only → $0 COGS.
+> The **current, implemented** architecture: a single **model-driven Milestone Engine** running on an on-device LLM (WebLLM/WebGPU). Everything runs in the browser — no per-user server, no cloud inference, static hosting only → **$0 COGS**.
+>
+> **History (2026-07):** an earlier design put a **deterministic verify-and-repair engine** around the model (constraints C1–C10, an orchestrator, tool-graded correctness, an authored knowledge-component content model, `/evals` + `/benchmark` pages). That engine was **removed** in favour of the model-driven milestone flow below. The old design docs (`architecture-spec.md`, the v2.5 `architecture.md`, `how-tutoring-works.md`) were deleted; the dead code (verify engine, authored-KC `domain/` schema, `student/`, `tools/`, `memory/`, `storage/`, authoring scripts) was cleaned out. This doc describes only what exists now.
 
 ---
 
-## Design principle (v2.5)
+## Design principle
 
-> **Pay for intelligence once, offline, with a frontier model → ship static JSON. On-device, a small model only *delivers* that plan in conversation. A deterministic verifier closes the gap.**
+> **The model owns the thinking.** Given a lesson's Mastery Goals, the local model decomposes them into ordered milestones, teaches each one, and judges when it's achieved — with **no deterministic net**. Cheap deterministic *rails* (bounded recursion, context isolation, JSON salvage, `/no_think`) keep a small model from running away, but the pedagogy and the judgment are the model's.
 
-Not "a chatbot" (a bare model slips on the failure modes). Not "a deterministic engine that sidelines the model" (v1 — brittle keyword theater). The winning shape is **LLM-first tutoring** where the heavy pedagogical judgment is **pre-authored offline** and the on-device model does **conversational realization**, wrapped by **tool-verification + verify-and-repair**. There are **no template fallbacks** — what the user sees is the model.
+This is deliberately the opposite of the old verify-engine philosophy. The bet: a well-scoped small model, kept on a short leash (tiny isolated context per milestone, one micro-goal at a time), can teach and self-assess well enough — and the design stays **content-free** (no per-lesson authoring), so it generalises to any lesson immediately.
 
-**Three roles, cleanly separated (separation of concerns):**
-
-| Layer | Who / when | Job | Must NOT do |
-|---|---|---|---|
-| **Authoring** | Big model, offline, once per course | Decide *what* to teach + *how to teach it well* → rich JSON | Run at user-time ($) |
-| **Realization** | Small model, on-device, per turn | *Deliver* the plan conversationally to this student | Pick curriculum, judge correctness, invent facts |
-| **Verification** | Deterministic code, on-device, per turn | Guarantee the delivery broke no pedagogical rule | Write the reply |
-
-The 10 TutorBench failure modes are **acceptance tests, not implementation targets**. We encode universal rules (constraints C1–C10); the scenarios pass as a consequence.
-
-## The per-turn pipeline
+## The runtime path (what actually executes)
 
 ```
- student message
-   │
-   ▼
- readCues (deterministic)        name preference · distress · request type · is-this-an-answer
-   │
-   ▼
- grade active check (TOOLS)      code-runner / calculator / MCQ — the AUTHORITATIVE correctness verdict
-   │
-   ▼
- buildSituation + brief          verified facts + mode (challenge?) + grading verdict + memory (name, mastery, affect)
-   │
-   ▼
- LLM drafts the reply            the on-device model — the real intelligence; handles any input
-   │
-   ▼
- verify (deterministic)          does the draft obey the situation? (no leak / no false-validate / states facts / empathy / …)
-   │   └─ violation → re-prompt the model with a precise correction (≤2)
-   ▼
- guard (structural scrub)        redact a rejected name (C1) or a leaked answer (C2) from the model's OWN text
-   │
-   ▼
- commit + evaluate C1–C10        update student model + lesson memory; produce the scoreboard checks
-   ▼
- tutor reply
+main.tsx → App → Routes
+   /          → LessonPage   ─┐
+   /settings  → SettingsPage  │
+                              ▼
+ LessonPage:
+   pickRandomExampleBrief()          parse Week-3 Maestro course reference (markdown) → LessonBrief (ordered Mastery Goals)
+   getLLM('webllm')                  resolve device model → load WebLLM engine (OOM step-down)
+   createEngine('milestone', …)      the sole TutorEngine
+   engine.start() / engine.respond() render reply + suggestion chips + dev panel
 ```
 
-The LLM appears at exactly two places: drafting and re-drafting. Understanding the student's *content* is the model's job (it reads the message as it drafts); the deterministic `readCues` only flags the few safety-relevant signals, and **tools** — never the model — judge correctness.
+Lesson content is **not** authored JSON — `domain/exampleLessons.ts` parses the shared reference file (`02-maestro-product-reference/example-maestro-lesson-structure.md`) into a `LessonBrief` (title + ordered goal statements) and picks a random lesson per load, so the engine is exercised across the whole week.
+
+## The Milestone Engine algorithm (`src/engine/milestone/`)
+
+**Decomposition (once, at `start()`) — `decompose.ts`.** Recursively split each Mastery Goal: the model decides a goal is *atomic* (teachable + checkable in one ~3–5 min turn) or splits it into 2–3 ordered sub-goals; recurse; flatten the leaves into a `MilestoneQueue`. Bounded on three axes so an erratic small model can't run away: `maxDepth 3`, `maxLeaves 8`, `maxCalls 12` (`DEFAULT_LIMITS`). Any parse/model failure at a node degrades that node to a leaf; if recursion yields nothing usable, it falls back to the brief's own ordered goals.
+
+**Milestone loop (per student turn) — `engine.ts` `respond()`, with strict context isolation** (the model sees only the *current* milestone's transcript, last `CONTEXT_WINDOW = 8` turns):
+1. **Assess** — "is THIS milestone achieved?" → JSON `{achieved, evidence}`. Skipped until the student has actually said something.
+2. **Not achieved** → **Teach** one more turn for this milestone (isolated context).
+3. **Achieved** → **Sync** (cross-check the *remaining* milestones for implicit achievement, each requiring cited student evidence) → advance the queue. On advance, a minimal *bridge* (completed title + student's last message) makes the transition read continuously.
+4. **Suggest** — ask the model for 4 quick-reply chips for the UI (falls back to static chips).
+
+There is **no** deterministic verify/guard/grade step — by design.
+
+## The LLM layer (`src/llm/`)
+
+- **WebLLM/WebGPU**, dynamically imported. Model resolved by the **device-tiered picker** (`models.ts` `probeDevice`/`pickModel`) — Qwen3 family (`floor` Qwen2.5-0.5B → `low` Qwen3-0.6B → `mid` Qwen3-1.7B → `high` Qwen3-4B) — with a **load-time OOM step-down** (`engine.ts` `loadWithStepDown`). See [../05-research/mobile-device-strategy.md](../05-research/mobile-device-strategy.md) and [../05-research/local-models-comparison.md](../05-research/local-models-comparison.md).
+- **Qwen3 runs non-thinking** by default: `webllm.ts` appends `/no_think` to the system prompt and strips any `<think>…</think>` block, so latency stays low and JSON parsing isn't polluted. A **dev-only `thinking` toggle** (Settings) flips this to measure the latency cost.
+- **Grammar/JSON-constrained decoding is OFF** (WebLLM 0.2.84 hangs on it), so every JSON verdict (decompose / assess / sync / suggest) is parsed from **free text** via robust salvage in `json.ts` (`extractJson`, `parseAchieved`, `parseStringList`).
 
 ## Components (all on-device)
 
-- **Domain model** (`domain/`) — a lesson = ordered **knowledge components** (KCs), each with: a **Presentation Guideline** (the authored "how to teach this well": coreIdea, analogy, teaching arc, emphasize, avoid), worked example, deterministically-gradeable checks (MCQ/numeric/code/keyword) + answer keys, misconception→remediation maps, and hint ladders. Authored **offline** by a big model (one-time per course, validated), shipped as static JSON → rich content at $0 per user. Currently: the while-loop lesson (3 KCs); BIZ unit-economics drafted. The **Presentation Guideline is the v2.5 artifact** that lets a small model teach reliably — it renders authored pedagogy instead of inventing it.
-- **Student model** (`student/`) — per-KC mastery + attempts + `explained` + hints used; affect (frustration/confidence); preferences (name). Drives adaptivity. (In-session now; IndexedDB persistence is future work.)
-- **Tools** (`tools/`) — `codeRunner` (JS sandbox), `calculator` (incl. Python `//`/`%`), `grader`. The source of truth for correctness.
-- **The verify/repair layer** (`engine/verify.ts` + `orchestrator.ts`) — **the moat**. `verify()` produces repairable violations; the orchestrator re-prompts the model; `guard()` gives a *structural* guarantee for C1 (name) and C2 (no answer leak) by scrubbing the model's own text; `evaluateChecks()` scores C1–C10 for the board.
-- **LLM layer** (`llm/`) — WebLLM (`Qwen2.5-1.5B` default), `complete(system, user)`. Required; no model → honest unsupported screen.
-- **Eval harness** (`eval/`) — runs the **same on-device model with vs without the engine**. Honest scoreboard.
+- **`engine/api.ts`** — the small shared `TutorEngine` contract (`start`/`respond` → `TurnView`), `LessonBrief`/`MasteryGoal`, and dev-panel types (`PlanStep`, `LlmCall`, `EngineDebug`).
+- **`engine/index.ts`** — engine registry/factory (`createEngine`). Milestone is the sole engine; the registry shape is kept so another engine could slot in behind the same contract.
+- **`engine/milestone/`** — `engine.ts` (loop), `decompose.ts` (recursive split + refine), `prompts.ts` (all prompt builders + persona + context rendering), `json.ts` (free-text JSON salvage), `types.ts` (`MilestoneQueue`, `CONTEXT_WINDOW`).
+- **`domain/exampleLessons.ts`** — the only content source (parses the reference markdown → `LessonBrief`).
+- **`llm/`** — `models.ts` (catalog + device picker), `webllm.ts` (model-agnostic WebLLM adapter), `quirks.ts` (the **ModelQuirks seam** — per-family behavior like Qwen3's `/no_think` soft-switch, `<think>` stripping, and token budget; `quirksFor(modelId)` resolves it so switching model families never touches `webllm.ts`), `engine.ts` (`getLLM` + OOM step-down), `types.ts`.
+- **`config/features.ts`** — the two live flags: `engine` and `thinking`.
+- **`pages/`** — `LessonPage` (the chat loop; engine-agnostic), `SettingsPage` (model picker + dev thinking toggle).
+- **`components/EngineDebugPanel.tsx`** — the "Show engine" dev view (mastery goals, live decomposition, per-turn LLM-calls trace), extracted from `LessonPage` (pure presentation).
+- **PWA** — `main.tsx` registers a service worker in production only (app-shell offline; WebLLM caches weights).
 
-## Constraints C1–C10
+## Feature flags
+Only two, both actually read at runtime (`config/features.ts`): **`engine`** (which tutoring engine — milestone) and **`thinking`** (Qwen3 think mode, dev-only). All other flags from the old engine (structured-output, best-of-N, repair, exemplars, prefix-cache, persistence, spaced-repetition) were removed with the code they gated.
 
-| | Universal rule | Acceptance test | Guarantee |
-|---|---|---|---|
-| C1 | honor stated name | SWE-10/BIZ-10 | structural (scrub) |
-| C2 | no answer leak in challenge | SWE-03/BIZ-03 | structural (scrub) |
-| C3 | never validate incorrect work | SWE-01/BIZ-01 | tools + re-prompt |
-| C4 | facts/math from tools | SWE-02/BIZ-02 | tools + re-prompt |
-| C5 | explain before testing | SWE-05/BIZ-05 | model + verify |
-| C6 | scaffold, not independence | SWE-06/BIZ-06 | model + verify |
-| C7 | stay on target | SWE-04/BIZ-04 | model + verify |
-| C8 | signpost transitions | SWE-08/BIZ-08 | model + verify |
-| C9 | acknowledge distress first | SWE-09/BIZ-09 | model + re-prompt |
-| C10 | concrete runnable artifact | SWE-07/BIZ-07 | model + re-prompt |
+## Honesty stance
+No faked experiences. No WebGPU / model won't load → a clear **"unsupported"** screen, never a templated imitation of teaching. The tutor's replies are the real model output (cleaned of role-play bleed and `<think>` blocks).
 
-## Why this wins
-- **Genuinely intelligent + engaging** — the model teaches and handles arbitrary input; not on-rails.
-- **Reliable on the failure modes** — tools verify, the verifier re-prompts, and C1/C2 are structurally guaranteed.
-- **Honest proof** — `/evals` runs the same model with/without the engine; green means the model truly complied (no template masking).
-- **$0 COGS, on-device, uses Maestro lesson structure.**
+## Known gaps (tracked, not yet built)
+The model-driven design has no rail for a few failure modes — see [../05-research/milestone-engine-weak-spots.md](../05-research/milestone-engine-weak-spots.md) and [../05-research/milestone-engine-long-conversation.md](../05-research/milestone-engine-long-conversation.md):
+- **Impasse handling** — a stuck milestone can loop; needs attempt-counter → escalating scaffold → dynamic re-split → hard cap.
+- **Binary assessment** — `{achieved}` can't distinguish "confused" from "attempted-and-missed".
+- **Fragile JSON parsing** — regex fallback fires often while grammar mode is disabled; revisit on a WebLLM upgrade.
+- **Latency** — 2–3 serial on-device calls per turn.
 
-## Honesty stance (explicit product decision)
-No faked experiences. If a device lacks WebGPU, it sees a clear "unsupported" message — not a templated imitation of teaching. The scoreboard is honest, not guaranteed-green.
-
-## Making it run GREAT on a small phone LLM
-The headline differentiator is performance on a 1.5–3B on-device model. We treat that as a *systems* problem — reduce what the model decides (offline authoring), **constrain how it generates** (grammar-constrained decoding), **verify cheaply** (best-of-N + re-prompt), ground it in tools, and speed it on the phone (prefix-cache, routing). Full playbook + build sequence: **[../05-research/small-llm-performance-playbook.md](../05-research/small-llm-performance-playbook.md)**.
-
-## Modularity — every feature is a toggleable module
-All non-core capabilities are flags in `src/config/features.ts` (persisted; safe Node defaults), read by the orchestrator via `resolveConfig()` (overridable per-call — the benchmark uses this). The **Settings page (`/settings`)** toggles each on-device; turning any off degrades gracefully to the core engine. Modules: structured output, best-of-N, repair, exemplars, prefix-cache layout, persistence, spaced-repetition, model-picker (`llm/models.ts`), PWA service worker (prod-only), WASM fallback (extension point `llm/wasm.ts`).
-
-## Status / scope (see [roadmap.md](roadmap.md))
-Implemented: the pipeline above; **Phase 1** (grammar-constrained structured turns, best-of-N + verifier-pick, few-shot exemplars, verify→re-prompt); **Phase 2** the **Benchmark page** (`/benchmark`: pass-rate/latency/repair, engine vs raw, per model); **Phase 3** device-tiered model picker + PWA; **Phase 4** persistent progress + minimal spaced repetition + BIZ lesson + authoring scaffold; **Phase 5** content-validation + honest states. Verify all: `npm run verify:all`. Scaffolded (honest): logit answer-ban, full wllama WASM runtime, one-click authoring pipeline, lesson-picker UI, BKT.
+## Why this shape
+- **$0 COGS, on-device, offline-capable** — the only thing that scales for the target user (low-income, phone-first). See [../05-research/webllm-research.md](../05-research/webllm-research.md).
+- **Content-free** — works on any lesson's Mastery Goals with no authoring pipeline, so it generalises across the whole course immediately.
+- **Small-model-honest** — the model does only what it's put on a short leash to do (one micro-goal, tiny context); the rails are cheap and deterministic. Full technique catalogue: [../05-research/small-llm-performance-playbook.md](../05-research/small-llm-performance-playbook.md).

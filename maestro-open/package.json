@@ -3,16 +3,12 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Maestro Open — $0-COGS on-device tutor. Vertical slice: chat UI + WebLLM/mock tutor + 2 guardrails + 2 evals.",
+  "description": "Maestro Open — $0-COGS on-device tutor. Model-driven milestone engine on WebLLM/WebGPU.",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit -p tsconfig.json && vite build",
     "preview": "vite preview",
-    "eval:check": "tsx scripts/evalCheck.ts",
-    "smoke": "tsx scripts/smoke.ts",
-    "validate": "tsx scripts/validateLessons.ts",
-    "author": "tsx scripts/author.ts",
-    "verify:all": "npm run build && npm run eval:check && npm run smoke && npm run validate"
+    "verify:all": "npm run build"
   },
   "dependencies": {
     "@mlc-ai/web-llm": "^0.2.79",
@@ -24,7 +20,6 @@
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
-    "tsx": "^4.19.1",
     "typescript": "^5.5.4",
     "vite": "^5.4.6"
   }

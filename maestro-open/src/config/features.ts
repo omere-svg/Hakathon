@@ -2,35 +2,24 @@
 // here so it can be toggled on-device (Settings page) without breaking the rest.
 // Persisted to localStorage; safe defaults in Node (tests) where localStorage is absent.
 
+/** which tutoring engine LessonPage runs (see engine/index.ts). Milestone is the only one. */
+export type EngineId = 'milestone';
+
 export interface FeatureFlags {
-  /** grammar/JSON-constrained structured turns (reliability on small models) */
-  structuredOutput: boolean;
-  /** candidates generated per turn; the verifier picks the first clean one (1 = off) */
-  bestOfN: number;
-  /** verify → re-prompt the model with a correction on a violation */
-  repair: boolean;
-  /** include authored few-shot exemplars in the prompt */
-  exemplars: boolean;
-  /** lay out the prompt with the constant prefix first (KV/prefix-cache friendly) */
-  prefixCache: boolean;
-  /** persist the student model across sessions (IndexedDB) */
-  persistence: boolean;
-  /** revisit weak concepts over time */
-  spacedRepetition: boolean;
+  /** which tutoring engine drives the lesson. */
+  engine: EngineId;
+  /** Qwen3 "thinking" mode. When true, the model emits a <think> reasoning block before
+   *  answering (higher latency); when false we append /no_think. Dev-only toggle — used to
+   *  measure the latency cost of thinking. No effect on non-Qwen3 models. */
+  thinking: boolean;
 }
 
 export const DEFAULT_FLAGS: FeatureFlags = {
-  // OFF by default: WebLLM 0.2.84's grammar/JSON-schema mode (response_format:
-  // json_object) throws an uncatchable "Cannot pass non-string to std::string" in
-  // GrammarCompiler.CompileJSONSchema, which never resolves and hangs the whole turn.
-  // Free-text generation is the reliable path. Re-enable once WebLLM fixes the binding.
-  structuredOutput: false,
-  bestOfN: 2,
-  repair: true,
-  exemplars: true,
-  prefixCache: true,
-  persistence: true,
-  spacedRepetition: false,
+  // The model-driven Goal→Milestone flow (the only engine).
+  engine: 'milestone',
+  // OFF by default: /no_think keeps latency low and the reasoning block out of our
+  // free-text JSON parsing. Toggle on in dev (Settings) to feel the latency cost.
+  thinking: false,
 };
 
 const KEY = 'maestro.flags.v1';

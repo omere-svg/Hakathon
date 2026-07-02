@@ -1,8 +1,8 @@
 # Tutoring & Dialogue Architecture Patterns
 
-> Written after a design critique of the first vertical slice. The slice worked but exposed a structural flaw: **the LLM was the de-facto controller** (it free-generated each turn; we checked and patched afterward). That is backwards for what we want — *a real AI tutor with a deterministic teaching engine underneath, where the LLM mainly generates natural language.*
-> This doc surveys the prior art we should **borrow instead of invent**, so our design sits on 40 years of intelligent-tutoring research and standard dialogue-system engineering rather than ad-hoc guardrails.
-> Conclusions feed the rewritten [architecture.md](../06-product-decisions/architecture.md).
+> ⚠️ **RESEARCH — advocates a design that was NOT kept.** This doc argues for a **deterministic teaching engine with the LLM confined to NLU+NLG** (ITS / CBM / behavior-tree / dialogue-acts). That approach was built (the verify engine) and then **removed** in favour of the model-driven **Milestone Engine** ([../06-product-decisions/architecture.md](../06-product-decisions/architecture.md)), where the model *does* own the control flow. Kept as a survey of the prior art (ITS four-component model, constraint-based modelling, BKT, TOD pipeline) — useful if we ever add deterministic rails back — but its central recommendation is **not** the current architecture.
+>
+> Surveys the prior art in intelligent-tutoring research and dialogue-system engineering.
 
 ---
 
