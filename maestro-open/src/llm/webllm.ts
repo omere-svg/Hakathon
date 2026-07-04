@@ -1,4 +1,4 @@
-import type { LLMEngine } from './types';
+import type { GenOptions, LLMEngine } from './types';
 import { DEFAULT_MODEL_ID } from './models';
 import { quirksFor } from './quirks';
 
@@ -16,11 +16,20 @@ export function webgpuAvailable(): boolean {
 
 // A generation should never hang forever. Some WebLLM failures reject in a detached
 // promise (so an await never settles); this bounds every call so the UI recovers with
-// an honest error instead of a permanent "…" spinner.
+// an honest error instead of a permanent "…" spinner. `onTimeout` must actually STOP
+// the generation — otherwise the orphaned run keeps the GPU busy and every subsequent
+// call queues behind it, wedging the session.
 const GEN_TIMEOUT_MS = 120_000;
-function withTimeout<T>(p: Promise<T>, what: string): Promise<T> {
+function withTimeout<T>(p: Promise<T>, what: string, onTimeout?: () => void): Promise<T> {
   return new Promise<T>((resolve, reject) => {
-    const id = setTimeout(() => reject(new Error(`${what} timed out after ${GEN_TIMEOUT_MS / 1000}s`)), GEN_TIMEOUT_MS);
+    const id = setTimeout(() => {
+      try {
+        onTimeout?.();
+      } catch {
+        /* best-effort interrupt */
+      }
+      reject(new Error(`${what} timed out after ${GEN_TIMEOUT_MS / 1000}s`));
+    }, GEN_TIMEOUT_MS);
     p.then(
       (v) => { clearTimeout(id); resolve(v); },
       (e) => { clearTimeout(id); reject(e); },
@@ -46,36 +55,24 @@ export async function createWebLLMEngine(
   return {
     name: `WebLLM · ${model}`,
     onDevice: true,
-    async complete(system: string, user: string): Promise<string> {
+    async complete(system: string, user: string, opts?: GenOptions): Promise<string> {
+      // Defaults come from the model family's vendor-recommended sampling (quirks);
+      // callers override per scenario — see 05-research/temperature-per-scenario.md.
+      const sampling = quirks.sampling();
       const res = await withTimeout(
         engine.chat.completions.create({
           messages: messages(system, user),
-          temperature: 0.5,
-          max_tokens: quirks.maxTokens(),
+          temperature: opts?.temperature ?? sampling.temperature,
+          top_p: opts?.topP ?? sampling.topP,
+          max_tokens: opts?.maxTokens ?? quirks.maxTokens(),
         }),
         'complete',
+        () => engine.interruptGenerate(),
       );
       return quirks.cleanOutput((res.choices[0]?.message?.content ?? '').trim());
     },
-    // JSON-mode (grammar-constrained) generation. The schema is described in the
-    // system prompt; response_format pins valid JSON. Returns null on parse failure
-    // so the caller can fall back to free-text.
-    async completeStructured(system: string, user: string): Promise<Record<string, unknown> | null> {
-      try {
-        const res = await withTimeout(
-          engine.chat.completions.create({
-            messages: messages(system, user),
-            temperature: 0.4,
-            max_tokens: quirks.maxTokens(),
-            response_format: { type: 'json_object' } as { type: 'json_object' },
-          }),
-          'completeStructured',
-        );
-        const raw = quirks.cleanOutput((res.choices[0]?.message?.content ?? '').trim());
-        return raw ? (JSON.parse(raw) as Record<string, unknown>) : null;
-      } catch {
-        return null;
-      }
+    async unload(): Promise<void> {
+      await engine.unload();
     },
   };
 }
