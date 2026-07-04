@@ -13,3 +13,9 @@ dist-ssr/
 
 # OS
 .DS_Store
+
+# finetune artifacts (large weights, venv)
+finetune/work/
+
+# GGUF weights served to the wllama backend (build artifacts, 1GB+)
+maestro-open/public/models/
