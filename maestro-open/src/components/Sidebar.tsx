@@ -20,15 +20,22 @@ const LOCKED = [
   { label: 'Shop', Icon: ShopIcon },
 ];
 
-export function Sidebar() {
+export function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar${collapsed ? ' collapsed' : ''}`}>
       <div className="sidebar-head">
         <div className="brand">
           <LogoMark className="brand-logo" />
           <Wordmark className="brand-word" />
         </div>
-        <button className="icon-btn collapse" type="button" aria-label="Collapse sidebar">
+        <button
+          className="icon-btn collapse"
+          type="button"
+          aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          aria-expanded={!collapsed}
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
+          onClick={onToggle}
+        >
           <CollapseIcon />
         </button>
       </div>
