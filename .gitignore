@@ -14,8 +14,10 @@ dist-ssr/
 # OS
 .DS_Store
 
-# finetune artifacts (large weights, venv)
-finetune/work/
+# Local-only project files (not part of the deployed app)
+finetune/
+PROJECT_SUMMARY.md
+PROJECT_SUMMARY.html
 
 # GGUF weights served to the wllama backend (build artifacts, 1GB+)
-maestro-open/public/models/
+public/models/
