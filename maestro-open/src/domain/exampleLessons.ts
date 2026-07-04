@@ -3,11 +3,12 @@
 // the whole week's lessons — not just the while-loop one — by picking a random lesson per load.
 //
 // We only need the goal STATEMENTS (the milestone engine's input), so this is a light markdown
-// parse, not the full authored KC schema. Source of truth is the shared reference file:
-//   maestro-pocket-hackathon-knowledge-base/02-maestro-product-reference/example-maestro-lesson-structure.md
+// parse, not the full authored KC schema. The reference file is VENDORED into src/content/ so
+// the repo builds standalone (the original lives in the maestro-pocket-hackathon-knowledge-base
+// sibling repo — re-copy it if the shared reference changes).
 
 import type { LessonBrief, MasteryGoal } from '../engine/api';
-import raw from '../../../maestro-pocket-hackathon-knowledge-base/02-maestro-product-reference/example-maestro-lesson-structure.md?raw';
+import raw from '../content/example-maestro-lesson-structure.md?raw';
 
 const PROGRAM = 'Masterschool Fellowship';
 const COURSE = 'Week 3 — Decisions and Loops';
@@ -34,7 +35,15 @@ function parseLessons(md: string): LessonBrief[] {
     const c = cur;
     if (c && c.outcomes.length) {
       const goals: MasteryGoal[] = c.outcomes.map((o, i) => ({ id: `g${i + 1}`, statement: o }));
-      briefs.push({ id: `w3-l${c.num}`, title: c.title, program: PROGRAM, course: COURSE, topic: c.title, goals });
+      briefs.push({
+        id: `w3-l${c.num}`,
+        title: c.title,
+        program: PROGRAM,
+        course: COURSE,
+        topic: c.title,
+        language: 'Python', // the whole Week 3 course is Python
+        goals,
+      });
     }
     cur = null;
     inOutcomes = false;
@@ -75,6 +84,7 @@ const FALLBACK: LessonBrief = {
   program: PROGRAM,
   course: COURSE,
   topic: 'while loops',
+  language: 'Python',
   goals: [
     { id: 'g1', statement: 'Understand what a while loop is and when it is more suitable than for.' },
     { id: 'g2', statement: 'Understand the risk of infinite loops and explain how to prevent them.' },
@@ -91,4 +101,9 @@ export const exampleLessonBriefs: LessonBrief[] = (() => {
 export function pickRandomExampleBrief(): LessonBrief {
   const list = exampleLessonBriefs;
   return list[Math.floor(Math.random() * list.length)];
+}
+
+/** Look up a specific lesson (the dev-mode lesson picker); undefined if the id is unknown. */
+export function getExampleBriefById(id: string): LessonBrief | undefined {
+  return exampleLessonBriefs.find((b) => b.id === id);
 }
