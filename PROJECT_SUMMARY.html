@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maestro Open — Project Summary</title>
+<style>
+  :root {
+    --ink: #1c2430;
+    --muted: #5b6675;
+    --accent: #1f4e8c;
+    --hairline: #dde3ea;
+    --wash: #f5f7fa;
+    --code-bg: #f0f3f7;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--ink);
+    line-height: 1.6;
+    background: #fff;
+    font-size: 16px;
+  }
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 56px 32px 64px;
+  }
+
+  header { border-bottom: 3px solid var(--accent); padding-bottom: 24px; margin-bottom: 32px; }
+  .kicker {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  h1 { font-size: 30px; line-height: 1.25; font-weight: 700; letter-spacing: -0.01em; }
+  .subtitle { margin-top: 12px; font-size: 17px; color: var(--muted); max-width: 60ch; }
+
+  h2 {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 36px 0 12px;
+  }
+  p { margin-bottom: 12px; max-width: 68ch; }
+  strong { font-weight: 650; }
+
+  .flow {
+    background: var(--wash);
+    border: 1px solid var(--hairline);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin: 16px 0;
+  }
+  .flow ol { list-style: none; counter-reset: step; }
+  .flow li {
+    counter-increment: step;
+    display: flex;
+    gap: 14px;
+    padding: 7px 0;
+    align-items: baseline;
+  }
+  .flow li::before {
+    content: counter(step);
+    flex: none;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateY(3px);
+  }
+  .flow .step-name { font-weight: 650; }
+  .flow .step-desc { color: var(--muted); }
+
+  table { width: 100%; border-collapse: collapse; margin: 14px 0 6px; font-size: 15px; }
+  th {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 12px 8px 0;
+    border-bottom: 2px solid var(--hairline);
+  }
+  td { padding: 9px 12px 9px 0; border-bottom: 1px solid var(--hairline); vertical-align: top; }
+  td:first-child { color: var(--muted); width: 46%; }
+
+  .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+  .card {
+    border: 1px solid var(--hairline);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .card h3 { font-size: 15px; font-weight: 650; margin-bottom: 4px; }
+  .card p { font-size: 14px; color: var(--muted); margin: 0; }
+
+  code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.88em;
+    background: var(--code-bg);
+    border-radius: 4px;
+    padding: 1px 5px;
+  }
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--hairline);
+    border-radius: 8px;
+    padding: 14px 18px;
+    overflow-x: auto;
+    margin: 12px 0;
+  }
+  pre code { background: none; padding: 0; font-size: 13.5px; line-height: 1.7; }
+  pre .comment { color: var(--muted); }
+
+  footer {
+    margin-top: 44px;
+    padding-top: 16px;
+    border-top: 1px solid var(--hairline);
+    font-size: 13.5px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 560px) {
+    .page { padding: 36px 20px 48px; }
+    .cards { grid-template-columns: 1fr; }
+    h1 { font-size: 25px; }
+  }
+  @media print {
+    body { font-size: 12.5px; }
+    .page { max-width: none; padding: 0; }
+    h1 { font-size: 24px; }
+    h2 { margin-top: 22px; }
+    .flow, .card, pre { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div class="kicker">Masterschool Hackathon · Project Summary</div>
+    <h1>Maestro Open — a $0-cost AI tutor that runs entirely on your device</h1>
+    <p class="subtitle">A private, personal AI tutor that runs a real language model inside the browser — no servers, no API keys, no per-user cost — kept reliable by a deterministic engine that guards exactly the places small models fail.</p>
+  </header>
+
+  <h2>The problem</h2>
+  <p>AI tutoring works, but serving it with frontier-model APIs costs real money per student and sends every conversation to a third party. Small on-device models are free and private — but on their own they hallucinate arithmetic, leak answers, validate wrong work, and get students stuck in loops.</p>
+
+  <h2>The solution — the Milestone Engine</h2>
+  <p>Maestro Open pairs a small on-device model (Qwen3, 0.6B–4B, via WebGPU) with a thin deterministic layer that owns structure and correctness while the model owns the teaching:</p>
+  <div class="flow">
+    <ol>
+      <li><span><span class="step-name">Decompose.</span> <span class="step-desc">The model breaks the lesson goal into a strictly ordered milestone queue.</span></span></li>
+      <li><span><span class="step-name">Teach &amp; assess.</span> <span class="step-desc">Each milestone is taught in isolated context — the model sees only this milestone's messages, so small models stay focused. A dedicated call judges "is <em>this</em> milestone achieved?"; if not, the scaffold escalates from hint to worked example.</span></span></li>
+      <li><span><span class="step-name">Sync &amp; advance.</span> <span class="step-desc">On completion, the engine cross-checks which remaining milestones were implicitly achieved, updates the queue, clears context, and moves on.</span></span></li>
+    </ol>
+  </div>
+  <p>Deterministic rails catch what a 1–2B model predictably gets wrong:</p>
+  <table>
+    <tr><th>Failure mode</th><th>Rail</th></tr>
+    <tr><td>Botched live arithmetic (<code>17&nbsp;//&nbsp;5</code>)</td><td>Every numeric claim is re-computed and corrected</td></tr>
+    <tr><td>Student trapped repeating one milestone</td><td>Escalating scaffold + hard force-advance cap</td></tr>
+    <tr><td>Malformed JSON from the model</td><td>Extraction + repair layer</td></tr>
+    <tr><td>Answer leaks, empty praise, ignored distress</td><td>Scrubbers + signal detection on every reply</td></tr>
+  </table>
+
+  <h2>Fine-tuned for the job</h2>
+  <p>We distilled ideal per-call behaviour into the app's Qwen3-1.7B model with a reproducible one-command pipeline: <strong>775 hand-specified scenarios</strong> → LoRA training (mlx-lm) → fused → sharded GGUF → served in-browser by wllama. A byte-exact parity check guarantees the model is trained on the <em>same prompts</em> the engine actually sends.</p>
+
+  <h2>Why it matters</h2>
+  <div class="cards">
+    <div class="card"><h3>$0 COGS</h3><p>Inference happens on the student's device — scaling to a million students costs the same as one.</p></div>
+    <div class="card"><h3>Private by construction</h3><p>No conversation ever leaves the browser.</p></div>
+    <div class="card"><h3>Works on real phones</h3><p>A device-tier picker chooses the largest safe model (0.5B → 4B) and steps down automatically on out-of-memory.</p></div>
+    <div class="card"><h3>Honest</h3><p>No template fallbacks — if the device can't run a model, we say so.</p></div>
+  </div>
+
+  <h2>Tech &amp; rigor</h2>
+  <p>React + TypeScript + Vite &nbsp;·&nbsp; WebLLM (WebGPU) with a wllama (WASM/GGUF) backend for the fine-tuned model &nbsp;·&nbsp; mlx-lm fine-tuning pipeline &nbsp;·&nbsp; <strong>328 unit tests</strong> covering the engine, rails, math verification, JSON repair, and prompts &nbsp;·&nbsp; custom lesson authoring + session persistence.</p>
+
+  <h2>Run it</h2>
+  <pre><code>cd maestro-open
+npm install &amp;&amp; npm run dev    <span class="comment"># lesson at "/", model + feature toggles at "/#/settings"</span>
+npm run verify:all            <span class="comment"># typecheck + build + full test suite</span></code></pre>
+
+  <footer>Maestro Open · Masterschool hackathon · 2026</footer>
+
+</div>
+</body>
+</html>
