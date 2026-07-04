@@ -1,0 +1,2659 @@
+[
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Use a for loop to iterate over a list and act on each item",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Say we have names = ['Ana', 'Bo', 'Cy']. How would you greet each person with a loop?"
+          },
+          {
+            "role": "student",
+            "text": "for name in names: print(f\"Hello, {name}!\")"
+          },
+          {
+            "role": "tutor",
+            "text": "That runs perfectly — one greeting per person. Why did you pick 'name' as the loop variable?"
+          },
+          {
+            "role": "student",
+            "text": "It just holds each item from the list one at a time, so a singular word made sense."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly right, the loop variable takes each value in turn."
+          },
+          {
+            "role": "student",
+            "text": "Yeah, and the f-string fills in whichever name it's holding that round."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Use f-strings to insert variables into output text"
+        },
+        {
+          "id": "m3",
+          "description": "Use a while loop that stops on a condition"
+        },
+        {
+          "id": "m4",
+          "description": "Append items to a list with append()"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[{\"id\":\"m2\",\"evidence\":\"The student wrote print(f\\\"Hello, {name}!\\\") themselves and explained that the f-string fills in whichever name the variable holds.\"}]}",
+    "tags": [
+      "case:one-proven",
+      "subject:python"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Filter rows with a WHERE clause",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "The products table has name and price columns. Pull the ones costing more than 20."
+          },
+          {
+            "role": "student",
+            "text": "SELECT name, price FROM products WHERE price > 20"
+          },
+          {
+            "role": "tutor",
+            "text": "Good — that keeps only the expensive rows. Anything you'd add to make the list easier to scan?"
+          },
+          {
+            "role": "student",
+            "text": "Maybe show the priciest first? SELECT name, price FROM products WHERE price > 20 ORDER BY price DESC"
+          },
+          {
+            "role": "tutor",
+            "text": "That works exactly as you'd hope — descending by price."
+          },
+          {
+            "role": "student",
+            "text": "Nice, DESC was a lucky guess but it makes sense."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Group rows and aggregate with GROUP BY"
+        },
+        {
+          "id": "m3",
+          "description": "Sort query results with ORDER BY"
+        },
+        {
+          "id": "m4",
+          "description": "Combine two tables with a JOIN"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[{\"id\":\"m3\",\"evidence\":\"The student themselves added ORDER BY price DESC to their query, saying 'Maybe show the priciest first?' \\u2014 a working sort they wrote unprompted.\"}]}",
+    "tags": [
+      "case:one-proven",
+      "subject:sql"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Add two fractions that have unlike denominators",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Let's try 3/4 + 5/6. What's your first move?"
+          },
+          {
+            "role": "student",
+            "text": "I need a common bottom number. The LCD of 4 and 6 is 12, since 12 is the smallest number both divide into."
+          },
+          {
+            "role": "tutor",
+            "text": "Perfect start. So what do the fractions become?"
+          },
+          {
+            "role": "student",
+            "text": "3/4 turns into 9/12 and 5/6 turns into 10/12, so together that's 19/12."
+          },
+          {
+            "role": "tutor",
+            "text": "Spot on — 19/12, or 1 and 7/12 as a mixed number."
+          },
+          {
+            "role": "student",
+            "text": "Got it, so I always convert first and only then add the tops."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Find the least common denominator of two fractions"
+        },
+        {
+          "id": "m3",
+          "description": "Multiply two fractions together"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[{\"id\":\"m2\",\"evidence\":\"The student said 'The LCD of 4 and 6 is 12, since 12 is the smallest number both divide into' \\u2014 finding the least common denominator themselves.\"}]}",
+    "tags": [
+      "case:one-proven",
+      "subject:arithmetic"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Conjugate regular -ar verbs in the present tense",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Take hablar. Walk me through the present tense forms."
+          },
+          {
+            "role": "student",
+            "text": "yo hablo, tu hablas, el habla, nosotros hablamos, ellos hablan"
+          },
+          {
+            "role": "tutor",
+            "text": "All five correct. Do you see the pattern in the endings?"
+          },
+          {
+            "role": "student",
+            "text": "Yeah, you chop off -ar and add o, as, a, amos, an. Actually I bet comer works the same way: yo como, tu comes, el come, nosotros comemos, ellos comen."
+          },
+          {
+            "role": "tutor",
+            "text": "You just conjugated an -er verb perfectly on your own!"
+          },
+          {
+            "role": "student",
+            "text": "Ha, the endings just swap the a for an e mostly."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Conjugate regular -er verbs in the present tense"
+        },
+        {
+          "id": "m3",
+          "description": "Choose correctly between ser and estar"
+        },
+        {
+          "id": "m4",
+          "description": "Form negative sentences with no"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[{\"id\":\"m2\",\"evidence\":\"The student volunteered a full correct conjugation of comer: 'yo como, tu comes, el come, nosotros comemos, ellos comen'.\"}]}",
+    "tags": [
+      "case:one-proven",
+      "subject:spanish"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Add items to an array with push",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "You have let nums = [3, 7]. Add the number 11 to the end."
+          },
+          {
+            "role": "student",
+            "text": "nums.push(11)"
+          },
+          {
+            "role": "tutor",
+            "text": "Right — nums is now [3, 7, 11]. What does push return, by the way?"
+          },
+          {
+            "role": "student",
+            "text": "The new length? So 3 here."
+          },
+          {
+            "role": "tutor",
+            "text": "Correct. And if you wanted every number doubled into a new array?"
+          },
+          {
+            "role": "student",
+            "text": "Oh I know a shortcut for that: let doubled = nums.map(n => n * 2) — that gives [6, 14, 22] without touching nums."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly, and completely correct that the original stays unchanged."
+          },
+          {
+            "role": "student",
+            "text": "map is honestly my favorite one."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Transform every element of an array with map"
+        },
+        {
+          "id": "m3",
+          "description": "Keep matching elements with filter"
+        },
+        {
+          "id": "m4",
+          "description": "Combine array elements into one value with reduce"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[{\"id\":\"m2\",\"evidence\":\"The student wrote 'let doubled = nums.map(n => n * 2) \\u2014 that gives [6, 14, 22] without touching nums', a correct map transformation with the right result.\"}]}",
+    "tags": [
+      "case:one-proven",
+      "subject:javascript"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Calculate the mean of a small data set",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Here are quiz scores: 12, 5, 9, 3, 7. What's the mean?"
+          },
+          {
+            "role": "student",
+            "text": "They add to 36, divided by 5 scores is 7.2."
+          },
+          {
+            "role": "tutor",
+            "text": "Correct. Does 7.2 have to be one of the actual scores?"
+          },
+          {
+            "role": "student",
+            "text": "No, it's just the balance point. Funny enough the median IS an actual score here — sorted it's 3, 5, 7, 9, 12, so the middle one is 7."
+          },
+          {
+            "role": "tutor",
+            "text": "You're right on both counts — mean 7.2, and 7 sits dead center."
+          },
+          {
+            "role": "student",
+            "text": "Cool, they're close but not the same thing."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Find the median of a data set"
+        },
+        {
+          "id": "m3",
+          "description": "Compute the range of a data set"
+        },
+        {
+          "id": "m4",
+          "description": "Identify the mode of a data set"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[{\"id\":\"m2\",\"evidence\":\"Unprompted, the student sorted the data '3, 5, 7, 9, 12' and correctly identified 'the middle one is 7' as the median.\"}]}",
+    "tags": [
+      "case:one-proven",
+      "subject:statistics"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Total a range of cells with the SUM function",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Column B holds March sales in B2 through B10. Total them in B12."
+          },
+          {
+            "role": "student",
+            "text": "=SUM(B2:B10)"
+          },
+          {
+            "role": "tutor",
+            "text": "That's it. What would happen if a cell in that range were blank?"
+          },
+          {
+            "role": "student",
+            "text": "SUM just skips it, treats it like zero. And if I wanted the typical sale instead of the total I'd put =AVERAGE(B2:B10) in the next cell."
+          },
+          {
+            "role": "tutor",
+            "text": "Both statements are exactly right."
+          },
+          {
+            "role": "student",
+            "text": "These range functions all seem to share the same shape."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Compute a mean with the AVERAGE function"
+        },
+        {
+          "id": "m3",
+          "description": "Return conditional values with the IF function"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[{\"id\":\"m2\",\"evidence\":\"The student wrote '=AVERAGE(B2:B10)' themselves, correctly explaining it gives the typical sale instead of the total.\"}]}",
+    "tags": [
+      "case:one-proven",
+      "subject:spreadsheets"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Create an unordered list with ul and li tags",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Make a shopping list with milk and bread as items."
+          },
+          {
+            "role": "student",
+            "text": "<ul><li>milk</li><li>bread</li></ul>"
+          },
+          {
+            "role": "tutor",
+            "text": "Well structured. How would a reader jump from your page to another site?"
+          },
+          {
+            "role": "student",
+            "text": "With a link — like <a href=\"https://example.com\">visit my site</a>. The href is where it goes and the text between the tags is what you click."
+          },
+          {
+            "role": "tutor",
+            "text": "That's a complete, correct anchor element."
+          },
+          {
+            "role": "student",
+            "text": "The tag letter 'a' threw me off at first but it stands for anchor."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Create hyperlinks with the anchor tag and href"
+        },
+        {
+          "id": "m3",
+          "description": "Embed images with the img tag and src"
+        },
+        {
+          "id": "m4",
+          "description": "Build an ordered list with ol"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[{\"id\":\"m2\",\"evidence\":\"The student wrote '<a href=\\\"https://example.com\\\">visit my site</a>' and correctly explained that href is the destination and the inner text is clickable.\"}]}",
+    "tags": [
+      "case:one-proven",
+      "subject:html-css"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Balance a simple chemical equation by adjusting coefficients",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Balance H2 + O2 -> H2O."
+          },
+          {
+            "role": "student",
+            "text": "2H2 + O2 -> 2H2O. To check it: in Ca(OH)2 style counting, the left has 4 H and 2 O, and the right has 4 H and 2 O too."
+          },
+          {
+            "role": "tutor",
+            "text": "Balanced perfectly. Why can't we just change H2O to H2O2 instead?"
+          },
+          {
+            "role": "student",
+            "text": "Because that changes the substance itself — hydrogen peroxide isn't water. We're only allowed to change the big numbers in front."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly, coefficients only, never subscripts."
+          },
+          {
+            "role": "student",
+            "text": "Right, subscripts define what the molecule IS."
+          },
+          {
+            "role": "tutor",
+            "text": "Quick side check — how many of each atom are in one unit of Ca(OH)2?"
+          },
+          {
+            "role": "student",
+            "text": "1 calcium, 2 oxygens, and 2 hydrogens — the 2 outside the parentheses multiplies everything inside."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Count atoms of each element in a chemical formula with parentheses"
+        },
+        {
+          "id": "m3",
+          "description": "Classify reactions as synthesis, decomposition, or combustion"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[{\"id\":\"m2\",\"evidence\":\"The student counted Ca(OH)2 correctly: '1 calcium, 2 oxygens, and 2 hydrogens \\u2014 the 2 outside the parentheses multiplies everything inside'.\"}]}",
+    "tags": [
+      "case:one-proven",
+      "subject:chemistry"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Tell whole steps apart from half steps on a keyboard",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "From C to D — whole step or half step?"
+          },
+          {
+            "role": "student",
+            "text": "Whole step, there's a black key between them. E to F is the half step since nothing sits between."
+          },
+          {
+            "role": "tutor",
+            "text": "Both right. So how far is G to A?"
+          },
+          {
+            "role": "student",
+            "text": "Whole step again. Actually that means the whole C major scale goes C D E F G A B C — whole whole half whole whole whole half."
+          },
+          {
+            "role": "tutor",
+            "text": "You just spelled out the entire major scale formula correctly."
+          },
+          {
+            "role": "student",
+            "text": "It clicks once you see where the two half steps hide."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Build a major scale using the whole and half step pattern"
+        },
+        {
+          "id": "m3",
+          "description": "Name intervals like thirds and fifths"
+        },
+        {
+          "id": "m4",
+          "description": "Identify sharps and flats in key signatures"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[{\"id\":\"m2\",\"evidence\":\"The student produced the full scale with its step pattern themselves: 'C D E F G A B C \\u2014 whole whole half whole whole whole half'.\"}]}",
+    "tags": [
+      "case:one-proven",
+      "subject:music-theory"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Rearrange the speed formula v = d/t to solve for time",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "A train covers 300 km at 100 km/h. How long does the trip take?"
+          },
+          {
+            "role": "student",
+            "text": "t = d/v, so 300 divided by 100 is 3 hours."
+          },
+          {
+            "role": "tutor",
+            "text": "Right — you flipped the formula correctly. What did you do algebraically to get t alone?"
+          },
+          {
+            "role": "student",
+            "text": "Multiplied both sides by t, then divided both sides by v. Going the other way is even easier: if a cyclist rides at 15 km/h for 2 hours, d = v times t = 30 km."
+          },
+          {
+            "role": "tutor",
+            "text": "Correct again — 30 km, and the rearrangement was flawless."
+          },
+          {
+            "role": "student",
+            "text": "These three just rotate around each other."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Calculate distance travelled from speed and time"
+        },
+        {
+          "id": "m3",
+          "description": "Convert speeds between km/h and m/s"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[{\"id\":\"m2\",\"evidence\":\"The student computed a distance on their own: 'if a cyclist rides at 15 km/h for 2 hours, d = v times t = 30 km'.\"}]}",
+    "tags": [
+      "case:one-proven",
+      "subject:physics"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Explain what a variable stores and how assignment works",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "If I write age = 12, what just happened?"
+          },
+          {
+            "role": "student",
+            "text": "The name age now points at the value 12, like a labeled box."
+          },
+          {
+            "role": "tutor",
+            "text": "Nice image. And after age = age + 1?"
+          },
+          {
+            "role": "student",
+            "text": "It becomes 13 — the right side is computed first, then stored back."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly. Later we'll feed variables like this into loops, which repeat work for us."
+          },
+          {
+            "role": "student",
+            "text": "Cool, loops sound fun."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Write a for loop over a range of numbers"
+        },
+        {
+          "id": "m3",
+          "description": "Branch with if and else"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:python"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Read a value out of a dictionary using its key",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Given prices = {'tea': 3, 'coffee': 4}, how do you get the price of tea?"
+          },
+          {
+            "role": "student",
+            "text": "prices['tea'] — that gives 3."
+          },
+          {
+            "role": "tutor",
+            "text": "Right. What if the key isn't there?"
+          },
+          {
+            "role": "student",
+            "text": "You get a KeyError. I think I've written functions before at my old job, by the way, so some of this rings a bell."
+          },
+          {
+            "role": "tutor",
+            "text": "Good to hear — we'll get to functions soon. For now, how would you look up coffee?"
+          },
+          {
+            "role": "student",
+            "text": "prices['coffee'], which is 4."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Define a function with def and parameters"
+        },
+        {
+          "id": "m3",
+          "description": "Return a value from a function"
+        },
+        {
+          "id": "m4",
+          "description": "Loop over dictionary keys and values"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:python"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Attach a click event listener to a button",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Here's the setup I'll give you: const btn = document.querySelector('#save'). Now make a click on it log 'saved!'."
+          },
+          {
+            "role": "student",
+            "text": "btn.addEventListener('click', () => console.log('saved!'))"
+          },
+          {
+            "role": "tutor",
+            "text": "Works perfectly. What's the first argument there?"
+          },
+          {
+            "role": "student",
+            "text": "The event type, 'click' as a string."
+          },
+          {
+            "role": "tutor",
+            "text": "Right. And the querySelector line I gave you — that's how we grabbed the element."
+          },
+          {
+            "role": "student",
+            "text": "Yeah, document.querySelector('#save') — the # means it finds it by id, like you showed."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly as I showed, yes."
+          },
+          {
+            "role": "student",
+            "text": "Is this basically the same as onclick in the HTML?"
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Select DOM elements with querySelector"
+        },
+        {
+          "id": "m3",
+          "description": "Prevent default form submission with preventDefault"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:javascript"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Select specific columns from a table",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "The riders table has name, city, and age. Get just names and cities."
+          },
+          {
+            "role": "student",
+            "text": "SELECT name, city FROM riders"
+          },
+          {
+            "role": "tutor",
+            "text": "Clean. Why not SELECT * here?"
+          },
+          {
+            "role": "student",
+            "text": "Star drags along columns we don't need, so it's wasteful."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly. Next up we'll meet WHERE, which lets you keep only certain rows — say, riders from one city."
+          },
+          {
+            "role": "student",
+            "text": "Got it, sounds useful."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Filter rows with a WHERE clause"
+        },
+        {
+          "id": "m3",
+          "description": "Match text patterns with LIKE"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:sql"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Count rows in a table with COUNT",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "How many orders are in the orders table?"
+          },
+          {
+            "role": "student",
+            "text": "SELECT COUNT(*) FROM orders"
+          },
+          {
+            "role": "tutor",
+            "text": "That's the one. What does the star mean inside COUNT?"
+          },
+          {
+            "role": "student",
+            "text": "Count whole rows, don't care about any particular column."
+          },
+          {
+            "role": "tutor",
+            "text": "Right."
+          },
+          {
+            "role": "student",
+            "text": "Could I also count only the orders from Berlin? Like with some kind of filter on the city?"
+          },
+          {
+            "role": "tutor",
+            "text": "Great instinct — that's exactly where we're headed next."
+          },
+          {
+            "role": "student",
+            "text": "Okay, looking forward to it."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Filter rows with a WHERE clause"
+        },
+        {
+          "id": "m3",
+          "description": "Group rows by a column with GROUP BY"
+        },
+        {
+          "id": "m4",
+          "description": "Rename output columns with AS"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:sql"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Structure a page with header, main, and footer elements",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Sketch the skeleton of a blog page using semantic tags."
+          },
+          {
+            "role": "student",
+            "text": "<header>site title</header><main>the posts</main><footer>copyright</footer>"
+          },
+          {
+            "role": "tutor",
+            "text": "Solid skeleton. Why use these instead of three divs?"
+          },
+          {
+            "role": "student",
+            "text": "Screen readers and search engines understand what each region is for."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly."
+          },
+          {
+            "role": "student",
+            "text": "I styled my blog once with colors and fonts, so hopefully the CSS part will feel familiar."
+          },
+          {
+            "role": "tutor",
+            "text": "It probably will! That's coming right up."
+          },
+          {
+            "role": "student",
+            "text": "Great."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Apply colors and fonts with CSS rules"
+        },
+        {
+          "id": "m3",
+          "description": "Target elements with class and id selectors"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:html-css"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Reference other cells inside a formula",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Cell A1 holds hours, B1 holds hourly rate. Compute pay in C1."
+          },
+          {
+            "role": "student",
+            "text": "=A1*B1"
+          },
+          {
+            "role": "tutor",
+            "text": "Correct. If A1 is 8 and B1 is 25, C1 shows?"
+          },
+          {
+            "role": "student",
+            "text": "200."
+          },
+          {
+            "role": "tutor",
+            "text": "Right. A taste of what's next: =IF(C1>150,\"bonus\",\"standard\") would label big paydays automatically."
+          },
+          {
+            "role": "student",
+            "text": "Ooh, that IF thing looks handy."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Return different values based on a condition with IF"
+        },
+        {
+          "id": "m3",
+          "description": "Look up values in a table with VLOOKUP"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:spreadsheets"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Distinguish a population from a sample",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "A researcher surveys 200 students out of a university of 30,000. Which is which?"
+          },
+          {
+            "role": "student",
+            "text": "The 30,000 are the population, the 200 are the sample."
+          },
+          {
+            "role": "tutor",
+            "text": "Correct. Why sample at all?"
+          },
+          {
+            "role": "student",
+            "text": "Asking everyone costs too much time and money."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly."
+          },
+          {
+            "role": "student",
+            "text": "And then the mean is like the average of whatever the sample answered, right?"
+          },
+          {
+            "role": "tutor",
+            "text": "That's the idea — computing it properly is our next stop."
+          },
+          {
+            "role": "student",
+            "text": "Sounds good."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Calculate the mean of a data set"
+        },
+        {
+          "id": "m3",
+          "description": "Calculate the standard deviation of a sample"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:statistics"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Simplify expressions by combining like terms",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Simplify 3x + 2x + 4."
+          },
+          {
+            "role": "student",
+            "text": "5x + 4."
+          },
+          {
+            "role": "tutor",
+            "text": "Good. Why can't the 4 join the 5x?"
+          },
+          {
+            "role": "student",
+            "text": "It has no x — different kind of term, like apples and oranges."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly. Try 7y - 2y + y."
+          },
+          {
+            "role": "student",
+            "text": "6y."
+          },
+          {
+            "role": "tutor",
+            "text": "Right again."
+          },
+          {
+            "role": "student",
+            "text": "So an equation like 5x + 4 = 14 would just be more of the same combining, I guess?"
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Solve one-step equations for the unknown"
+        },
+        {
+          "id": "m3",
+          "description": "Distribute a number across parentheses"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:algebra"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Choose the definite article el or la for a noun",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Is it el libro or la libro?"
+          },
+          {
+            "role": "student",
+            "text": "el libro — libro is masculine."
+          },
+          {
+            "role": "tutor",
+            "text": "Right. And the word for house?"
+          },
+          {
+            "role": "student",
+            "text": "la casa. Hmm, so for 'a house' it would be... un casa?"
+          },
+          {
+            "role": "tutor",
+            "text": "Close, but not quite — casa is feminine, so it takes una: una casa."
+          },
+          {
+            "role": "student",
+            "text": "Ah okay, una casa. The gender carries over."
+          },
+          {
+            "role": "tutor",
+            "text": "It does. But back to definite articles — what about 'the problem', el problema or la problema?"
+          },
+          {
+            "role": "student",
+            "text": "Tricky one... el problema, it's one of those -ma exceptions."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Choose the indefinite article un or una for a noun"
+        },
+        {
+          "id": "m3",
+          "description": "Form plural nouns and articles"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:spanish"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Tell elements apart from compounds",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Oxygen gas, water, iron — which are elements and which are compounds?"
+          },
+          {
+            "role": "student",
+            "text": "Oxygen and iron are elements, water is a compound because it's hydrogen bonded to oxygen."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly right. Where would you look up all the known elements?"
+          },
+          {
+            "role": "student",
+            "text": "The periodic table. I remember the rows are called periods."
+          },
+          {
+            "role": "tutor",
+            "text": "They are! We'll dig into reading it properly next."
+          },
+          {
+            "role": "student",
+            "text": "Nice, I've always wanted to actually understand that chart."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Find an element's atomic number on the periodic table"
+        },
+        {
+          "id": "m3",
+          "description": "Write chemical formulas for simple compounds"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:chemistry"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "State that force equals mass times acceleration",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "A 2 kg cart accelerates at 3 m/s squared. What force acts on it?"
+          },
+          {
+            "role": "student",
+            "text": "F = ma, so 6 newtons."
+          },
+          {
+            "role": "tutor",
+            "text": "Correct. Double the mass, same force — what happens to acceleration?"
+          },
+          {
+            "role": "student",
+            "text": "It halves, 1.5 m/s squared."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly."
+          },
+          {
+            "role": "student",
+            "text": "So when things fall, heavier things fall faster because gravity pulls them with more force, right?"
+          },
+          {
+            "role": "tutor",
+            "text": "Careful — that's one of the most famous traps in physics, and it's where we're going next."
+          },
+          {
+            "role": "student",
+            "text": "Ha, okay, now I'm curious."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Explain why acceleration due to gravity is the same for all masses"
+        },
+        {
+          "id": "m3",
+          "description": "Calculate weight from mass and gravity"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:physics"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Read note names on the treble clef",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "What note sits on the bottom line of the treble clef?"
+          },
+          {
+            "role": "student",
+            "text": "E."
+          },
+          {
+            "role": "tutor",
+            "text": "Yes. And the note in the second space up?"
+          },
+          {
+            "role": "student",
+            "text": "A — the spaces spell FACE."
+          },
+          {
+            "role": "tutor",
+            "text": "Perfect mnemonic. One more: top line?"
+          },
+          {
+            "role": "student",
+            "text": "F. The bass clef is the other one with the two dots, right? I haven't learned its notes."
+          },
+          {
+            "role": "tutor",
+            "text": "That's the one, and it's exactly what we tackle next."
+          },
+          {
+            "role": "student",
+            "text": "Cool."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Read note names on the bass clef"
+        },
+        {
+          "id": "m3",
+          "description": "Identify note durations like quarter and half notes"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:music-theory"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Identify the thesis statement of an essay",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "In the school-uniforms essay you read, which sentence is the thesis?"
+          },
+          {
+            "role": "student",
+            "text": "The last sentence of the intro: 'Uniforms should be required because they reduce distraction, cost, and bullying.'"
+          },
+          {
+            "role": "tutor",
+            "text": "Right — and notice it previews three reasons. What makes it a thesis rather than just a fact?"
+          },
+          {
+            "role": "student",
+            "text": "It takes an arguable position the rest of the essay has to defend."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly."
+          },
+          {
+            "role": "student",
+            "text": "Topic sentences are kind of like mini-theses for each paragraph, I'm guessing?"
+          },
+          {
+            "role": "tutor",
+            "text": "Nice intuition — writing those is our very next step."
+          },
+          {
+            "role": "student",
+            "text": "Looking forward to it."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Write topic sentences for body paragraphs"
+        },
+        {
+          "id": "m3",
+          "description": "Use transitions to connect paragraphs"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:writing"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Branch program flow with if and else",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Write code that prints 'hot' when temp is above 30 and 'fine' otherwise."
+          },
+          {
+            "role": "student",
+            "text": "if temp > 30:\n    print('hot')\nelse:\n    print('fine')"
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly right. For three or more cases you'd slot elif between them, like: if temp > 30 ... elif temp > 15 ... else."
+          },
+          {
+            "role": "student",
+            "text": "So elif goes in the middle, between the if and the else."
+          },
+          {
+            "role": "tutor",
+            "text": "That's where it lives, yes. But first — what prints when temp is 30 exactly, with your code?"
+          },
+          {
+            "role": "student",
+            "text": "'fine', because 30 is not strictly greater than 30."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Handle multiple branches with elif"
+        },
+        {
+          "id": "m3",
+          "description": "Combine conditions with and / or"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:python"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Explain what an array is and how indexes work",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "What is ['red', 'green', 'blue'] and how do I get 'green' out of it?"
+          },
+          {
+            "role": "student",
+            "text": "It's an array — an ordered list of values. 'green' is at index 1 because counting starts at zero."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly. What's at index 3?"
+          },
+          {
+            "role": "student",
+            "text": "Nothing — undefined, the array ends at index 2."
+          },
+          {
+            "role": "tutor",
+            "text": "Right."
+          },
+          {
+            "role": "student",
+            "text": "Objects are the ones with the curly braces, I've seen those around in code before."
+          },
+          {
+            "role": "tutor",
+            "text": "You have good eyes — objects are exactly where we go next."
+          },
+          {
+            "role": "student",
+            "text": "Cool cool."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Create an object with named properties"
+        },
+        {
+          "id": "m3",
+          "description": "Loop over array elements with for...of"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:javascript"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Insert new rows with INSERT INTO",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Add a customer named Mira from Lyon to the customers table (columns: name, city)."
+          },
+          {
+            "role": "student",
+            "text": "INSERT INTO customers (name, city) VALUES ('Mira', 'Lyon')"
+          },
+          {
+            "role": "tutor",
+            "text": "Perfect. Why list the column names explicitly?"
+          },
+          {
+            "role": "student",
+            "text": "So the values land in the right columns even if the table order changes."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly."
+          },
+          {
+            "role": "student",
+            "text": "And to change her city later I'd probably use, like, an EDIT command or something?"
+          },
+          {
+            "role": "tutor",
+            "text": "Close in spirit — the real keyword is our next topic."
+          },
+          {
+            "role": "student",
+            "text": "Ha, okay, I was guessing."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Modify existing rows with UPDATE and SET"
+        },
+        {
+          "id": "m3",
+          "description": "Remove rows with DELETE"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:sql"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Sort spreadsheet data ascending or descending",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "You want the sales sheet ordered from biggest deal to smallest. What do you do?"
+          },
+          {
+            "role": "student",
+            "text": "Select the data, then Data menu, Sort, choose the amount column, descending."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly. And what's the danger of sorting only one column by itself?"
+          },
+          {
+            "role": "student",
+            "text": "The rows get scrambled — amounts stop matching their customer names."
+          },
+          {
+            "role": "tutor",
+            "text": "Right, always sort the whole range."
+          },
+          {
+            "role": "student",
+            "text": "Filtering is under that same Data tab too, I think — I've seen the little funnel icon."
+          },
+          {
+            "role": "tutor",
+            "text": "It is, and that funnel is exactly what we look at next."
+          },
+          {
+            "role": "student",
+            "text": "Neat."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Filter rows with AutoFilter to show matching data"
+        },
+        {
+          "id": "m3",
+          "description": "Freeze header rows while scrolling"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:spreadsheets"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Calculate the probability of a single event",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "What's the probability of rolling a 6 on a fair die?"
+          },
+          {
+            "role": "student",
+            "text": "1/6 — one winning face out of six equally likely ones."
+          },
+          {
+            "role": "tutor",
+            "text": "Correct. And the probability of rolling an even number?"
+          },
+          {
+            "role": "student",
+            "text": "3/6, so 1/2."
+          },
+          {
+            "role": "tutor",
+            "text": "Nice. Sneak preview: what about rolling two 6s in a row?"
+          },
+          {
+            "role": "student",
+            "text": "No idea, that's the next thing I guess — my gut says it's rarer than 1/6 though."
+          },
+          {
+            "role": "tutor",
+            "text": "Your gut is right, and we'll compute it properly soon."
+          },
+          {
+            "role": "student",
+            "text": "Deal."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Multiply probabilities of independent events"
+        },
+        {
+          "id": "m3",
+          "description": "Calculate probability of an event NOT happening"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:statistics"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Form plural nouns in Spanish",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Make gato plural."
+          },
+          {
+            "role": "student",
+            "text": "gatos — just add s after a vowel."
+          },
+          {
+            "role": "tutor",
+            "text": "Right. And flor?"
+          },
+          {
+            "role": "student",
+            "text": "flores, ends in a consonant so it takes es."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly. By the way, adjectives follow along too — watch: el gato negro becomes los gatos negros."
+          },
+          {
+            "role": "student",
+            "text": "los gatos negros — got it, that's the example you just showed."
+          },
+          {
+            "role": "tutor",
+            "text": "Yes — making adjectives agree like that is our next milestone. One more plural first: luz?"
+          },
+          {
+            "role": "student",
+            "text": "luces — the z flips to c."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Make adjectives agree in gender and number with nouns"
+        },
+        {
+          "id": "m3",
+          "description": "Use possessive adjectives like mi and tu"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty-tempting",
+      "subject:spanish"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Print output to the screen with print()",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Make Python say: I am learning."
+          },
+          {
+            "role": "student",
+            "text": "print(\"I am learning\")"
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly. What do the quotes do?"
+          },
+          {
+            "role": "student",
+            "text": "They mark the text as a string, so Python doesn't try to run the words as code."
+          },
+          {
+            "role": "tutor",
+            "text": "Right. And print(7 + 2) shows?"
+          },
+          {
+            "role": "student",
+            "text": "9 — no quotes, so it does the math first."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Read user input with input()"
+        },
+        {
+          "id": "m3",
+          "description": "Join strings together with +"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty",
+      "subject:python"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Write a function with parameters and call it",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Write a function greet that takes a name and logs Hi <name>."
+          },
+          {
+            "role": "student",
+            "text": "function greet(name) { console.log('Hi ' + name); }"
+          },
+          {
+            "role": "tutor",
+            "text": "Good. Now call it for Priya."
+          },
+          {
+            "role": "student",
+            "text": "greet('Priya')"
+          },
+          {
+            "role": "tutor",
+            "text": "What prints?"
+          },
+          {
+            "role": "student",
+            "text": "Hi Priya."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly — the argument flows into the parameter."
+          },
+          {
+            "role": "student",
+            "text": "Makes sense, the parameter is just a placeholder until you call it."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Delay code with setTimeout"
+        },
+        {
+          "id": "m3",
+          "description": "Handle asynchronous results with async/await"
+        },
+        {
+          "id": "m4",
+          "description": "Attach functions as event handlers"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty",
+      "subject:javascript"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Explain what a primary key is and why tables need one",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "The students table has id, name, email. Which should be the primary key and why?"
+          },
+          {
+            "role": "student",
+            "text": "id — it uniquely identifies each row, and two students could share a name."
+          },
+          {
+            "role": "tutor",
+            "text": "Good. Could email work instead?"
+          },
+          {
+            "role": "student",
+            "text": "Technically it's unique, but people change emails, and a key shouldn't change."
+          },
+          {
+            "role": "tutor",
+            "text": "Well reasoned. Can a primary key be NULL?"
+          },
+          {
+            "role": "student",
+            "text": "No, every row has to have one — otherwise you couldn't point at that row."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Create a new table with CREATE TABLE"
+        },
+        {
+          "id": "m3",
+          "description": "Link tables with foreign keys"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty",
+      "subject:sql"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Embed an image on a page with the img tag",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Show a photo saved at cat.png with a description for screen readers."
+          },
+          {
+            "role": "student",
+            "text": "<img src=\"cat.png\" alt=\"a sleeping cat\">"
+          },
+          {
+            "role": "tutor",
+            "text": "Perfect. Why does img not need a closing tag?"
+          },
+          {
+            "role": "student",
+            "text": "It's a void element — it has no content inside, everything lives in the attributes."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly. What happens if the file path is wrong?"
+          },
+          {
+            "role": "student",
+            "text": "A broken image icon shows, and the alt text appears instead."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Build data tables with table, tr, and td"
+        },
+        {
+          "id": "m3",
+          "description": "Create a form with input fields and a submit button"
+        },
+        {
+          "id": "m4",
+          "description": "Group content with div and span"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty",
+      "subject:html-css"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Format cells as currency",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Column D shows 1499.5 but you want it as money. What do you do?"
+          },
+          {
+            "role": "student",
+            "text": "Select the column, then Format Cells, choose Currency — it becomes $1,499.50."
+          },
+          {
+            "role": "tutor",
+            "text": "Right. Does that change the underlying number?"
+          },
+          {
+            "role": "student",
+            "text": "No, it only changes how it's displayed; formulas still see 1499.5."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly the key insight. And the decimal places?"
+          },
+          {
+            "role": "student",
+            "text": "You can set them in the same dialog, usually two for money."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Create a bar chart from a data range"
+        },
+        {
+          "id": "m3",
+          "description": "Highlight cells automatically with conditional formatting"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty",
+      "subject:spreadsheets"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Read frequencies from a histogram",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "This histogram of commute times: the 20-30 minute bar reaches 12. What does that mean?"
+          },
+          {
+            "role": "student",
+            "text": "12 people have commutes between 20 and 30 minutes."
+          },
+          {
+            "role": "tutor",
+            "text": "Right. Which interval is most common if the 10-20 bar hits 15?"
+          },
+          {
+            "role": "student",
+            "text": "10 to 20 minutes — tallest bar wins."
+          },
+          {
+            "role": "tutor",
+            "text": "And roughly how many people total, if the bars read 5, 15, 12, 8?"
+          },
+          {
+            "role": "student",
+            "text": "40, just add the bar heights."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly."
+          },
+          {
+            "role": "student",
+            "text": "Histograms are friendlier than I expected."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Construct a box plot from five-number summary"
+        },
+        {
+          "id": "m3",
+          "description": "Calculate the interquartile range"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty",
+      "subject:statistics"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Evaluate expressions using the order of operations",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "What is 2 + 3 * 4?"
+          },
+          {
+            "role": "student",
+            "text": "14 — multiplication first, so 12 plus 2."
+          },
+          {
+            "role": "tutor",
+            "text": "Good. Now (2 + 3) * 4?"
+          },
+          {
+            "role": "student",
+            "text": "20, the parentheses force the addition first."
+          },
+          {
+            "role": "tutor",
+            "text": "And 18 - 6 / 2?"
+          },
+          {
+            "role": "student",
+            "text": "15. Division beats subtraction, so 18 minus 3."
+          },
+          {
+            "role": "tutor",
+            "text": "Perfect, three for three."
+          },
+          {
+            "role": "student",
+            "text": "PEMDAS finally sticks."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Factor quadratic expressions"
+        },
+        {
+          "id": "m3",
+          "description": "Solve a system of two linear equations"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty",
+      "subject:algebra"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Count beats in 4/4 time",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "In 4/4, how many beats fill one measure?"
+          },
+          {
+            "role": "student",
+            "text": "Four, and the quarter note gets one beat."
+          },
+          {
+            "role": "tutor",
+            "text": "Right. So a half note plus two quarter notes — does that fill a measure?"
+          },
+          {
+            "role": "student",
+            "text": "Yes: 2 + 1 + 1 = 4."
+          },
+          {
+            "role": "tutor",
+            "text": "What about three half notes?"
+          },
+          {
+            "role": "student",
+            "text": "Too much — that's 6 beats, it overflows into the next measure."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly."
+          },
+          {
+            "role": "student",
+            "text": "It's just adding fractions of the measure, really."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Identify key signatures from sharps and flats"
+        },
+        {
+          "id": "m3",
+          "description": "Build a natural minor scale"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty",
+      "subject:music-theory"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Count from 1 to 20 in Spanish",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Count from one to five for me."
+          },
+          {
+            "role": "student",
+            "text": "uno, dos, tres, cuatro, cinco"
+          },
+          {
+            "role": "tutor",
+            "text": "Perfect. Now the tricky teens — 11 to 15?"
+          },
+          {
+            "role": "student",
+            "text": "once, doce, trece, catorce, quince"
+          },
+          {
+            "role": "tutor",
+            "text": "Nailed them. And 16?"
+          },
+          {
+            "role": "student",
+            "text": "dieciseis — literally ten-and-six."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly, and that pattern carries you to 19."
+          },
+          {
+            "role": "student",
+            "text": "So diecisiete, dieciocho, diecinueve, then veinte is 20."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Tell time in Spanish with es la / son las"
+        },
+        {
+          "id": "m3",
+          "description": "Say the days of the week"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty",
+      "subject:spanish"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Convert between grams and moles using molar mass",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Water's molar mass is 18 g/mol. How many moles in 36 grams?"
+          },
+          {
+            "role": "student",
+            "text": "36 / 18 = 2 moles."
+          },
+          {
+            "role": "tutor",
+            "text": "Correct. And going the other way — grams in 0.5 mol of water?"
+          },
+          {
+            "role": "student",
+            "text": "0.5 times 18 is 9 grams."
+          },
+          {
+            "role": "tutor",
+            "text": "Right. What does molar mass even represent?"
+          },
+          {
+            "role": "student",
+            "text": "The mass of one mole — 6.022 x 10^23 particles — of the substance."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly."
+          },
+          {
+            "role": "student",
+            "text": "Divide to get moles, multiply to get grams. Easy to remember."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Calculate the molarity of a solution"
+        },
+        {
+          "id": "m3",
+          "description": "Balance redox equations"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty",
+      "subject:chemistry"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Tell potential energy apart from kinetic energy",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "A book on a high shelf versus a rolling bowling ball — which energy does each have?"
+          },
+          {
+            "role": "student",
+            "text": "The book has potential energy from its height, the ball has kinetic energy from its motion."
+          },
+          {
+            "role": "tutor",
+            "text": "Right. What about a roller coaster car paused at the top of a hill?"
+          },
+          {
+            "role": "student",
+            "text": "Mostly potential — it converts to kinetic on the way down."
+          },
+          {
+            "role": "tutor",
+            "text": "And at the bottom, moving fastest?"
+          },
+          {
+            "role": "student",
+            "text": "Almost all kinetic."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly."
+          },
+          {
+            "role": "student",
+            "text": "Height means stored, motion means active. Got it."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Calculate kinetic energy with KE = 1/2 mv^2"
+        },
+        {
+          "id": "m3",
+          "description": "Apply conservation of energy to solve problems"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty",
+      "subject:physics"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Recognize passive voice sentences",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "'The ball was thrown by Sam.' Active or passive?"
+          },
+          {
+            "role": "student",
+            "text": "Passive — the ball receives the action but sits in the subject spot."
+          },
+          {
+            "role": "tutor",
+            "text": "Right. 'Sam threw the ball'?"
+          },
+          {
+            "role": "student",
+            "text": "Active, the doer leads."
+          },
+          {
+            "role": "tutor",
+            "text": "'Mistakes were made'?"
+          },
+          {
+            "role": "student",
+            "text": "Passive, and sneaky — it hides who made them."
+          },
+          {
+            "role": "tutor",
+            "text": "Excellent catch, that's exactly why writers watch for it."
+          },
+          {
+            "role": "student",
+            "text": "Passive spotting is basically asking: who's doing this, and are they missing?"
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Rewrite passive sentences in active voice"
+        },
+        {
+          "id": "m3",
+          "description": "Vary sentence length to improve rhythm"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty",
+      "subject:writing"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Slice a list with start and end indexes",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "Given letters = ['a','b','c','d','e'], what does letters[1:4] give?"
+          },
+          {
+            "role": "student",
+            "text": "['b', 'c', 'd'] — start is included, end is cut off."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly. How would you grab just the first two?"
+          },
+          {
+            "role": "student",
+            "text": "letters[0:2], or letters[:2] for short."
+          },
+          {
+            "role": "tutor",
+            "text": "And letters[2:]?"
+          },
+          {
+            "role": "student",
+            "text": "['c', 'd', 'e'], from index 2 to the end."
+          },
+          {
+            "role": "tutor",
+            "text": "Perfect."
+          },
+          {
+            "role": "student",
+            "text": "The half-open interval thing finally makes sense."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Access items from the end with negative indexes"
+        },
+        {
+          "id": "m3",
+          "description": "Sort a list with sorted()"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty",
+      "subject:python"
+    ]
+  },
+  {
+    "type": "sync",
+    "input": {
+      "completed": {
+        "description": "Build strings with template literals",
+        "context": [
+          {
+            "role": "tutor",
+            "text": "You have const city = 'Oslo'. Produce 'Welcome to Oslo!' with a template literal."
+          },
+          {
+            "role": "student",
+            "text": "`Welcome to ${city}!`"
+          },
+          {
+            "role": "tutor",
+            "text": "Right. What kind of quotes are those?"
+          },
+          {
+            "role": "student",
+            "text": "Backticks — regular quotes won't do the ${} substitution."
+          },
+          {
+            "role": "tutor",
+            "text": "Can you put an expression inside, not just a variable?"
+          },
+          {
+            "role": "student",
+            "text": "Yes, like `Total: ${3 * 7}` gives Total: 21."
+          },
+          {
+            "role": "tutor",
+            "text": "Exactly."
+          },
+          {
+            "role": "student",
+            "text": "So much nicer than gluing strings with plus signs."
+          }
+        ]
+      },
+      "remaining": [
+        {
+          "id": "m2",
+          "description": "Destructure properties out of an object"
+        },
+        {
+          "id": "m3",
+          "description": "Copy and merge arrays with the spread operator"
+        }
+      ]
+    },
+    "output": "{\"alsoAchieved\":[]}",
+    "tags": [
+      "case:empty",
+      "subject:javascript"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "Python For Loops"
+    },
+    "output": "You did it — every part of this lesson is behind you! You can now write Python for loops that walk through lists and ranges and do real work on every item.",
+    "tags": [
+      "subject:python"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "Intro to SQL Joins"
+    },
+    "output": "Fantastic work today! You can now join two tables together in SQL and pull related data into a single result.",
+    "tags": [
+      "subject:sql"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "CSS Flexbox Basics"
+    },
+    "output": "That's a wrap — and what a strong one. You can now lay out pages with flexbox, lining elements up in rows and columns and spacing them exactly how you want.",
+    "tags": [
+      "subject:html-css"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "Fractions: Adding and Subtracting"
+    },
+    "output": "Bravo! You can now add and subtract fractions confidently, even the tricky ones with different denominators.",
+    "tags": [
+      "subject:arithmetic"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "Spanish Present Tense Verbs"
+    },
+    "output": "Look at that — you made it all the way through! You can now conjugate Spanish verbs in the present tense and build real sentences about what people do.",
+    "tags": [
+      "subject:spanish"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "Excel VLOOKUP Essentials"
+    },
+    "output": "Well done, truly. You can now use VLOOKUP to pull matching values out of big tables in seconds — a skill that saves hours of scrolling.",
+    "tags": [
+      "subject:spreadsheets"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "JavaScript Array Methods"
+    },
+    "output": "Amazing — you finished strong! You can now transform, filter, and reduce arrays in JavaScript like it's second nature.",
+    "tags": [
+      "subject:javascript"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "The Water Cycle"
+    },
+    "output": "You made it! You can now explain the full water cycle — evaporation, condensation, precipitation — and how water keeps moving around our planet.",
+    "tags": [
+      "subject:science"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "Reading Music: Note Values"
+    },
+    "output": "Huge congrats — you saw this one through to the end. You can now read note values and count out rhythms straight from the page.",
+    "tags": [
+      "subject:music-theory"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "Balancing Chemical Equations"
+    },
+    "output": "What a finish! You can now balance chemical equations, keeping every atom accounted for on both sides of the arrow.",
+    "tags": [
+      "subject:chemistry"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "Newton's Laws of Motion"
+    },
+    "output": "Nicely done — that was no small climb. You can now explain and apply all three of Newton's laws to real moving objects.",
+    "tags": [
+      "subject:physics"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "Writing Strong Thesis Statements"
+    },
+    "output": "Take a bow — you've earned it. You can now write a sharp, arguable thesis statement that gives any essay a real backbone.",
+    "tags": [
+      "subject:writing"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "HTML Forms from Scratch"
+    },
+    "output": "Incredible work! You can now build HTML forms from scratch, complete with inputs, labels, and a working submit button.",
+    "tags": [
+      "subject:html-css"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "Standard Deviation Demystified"
+    },
+    "output": "You crushed it! You can now calculate standard deviation and actually explain what it says about how spread out data is.",
+    "tags": [
+      "subject:statistics"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "Git Branching Basics"
+    },
+    "output": "Way to go — that's the whole lesson conquered. You can now create, switch, and merge Git branches to keep your work organized and safe.",
+    "tags": [
+      "subject:programming"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "Photosynthesis Explained"
+    },
+    "output": "Beautifully done. You can now explain photosynthesis from sunlight to sugar, and why the whole living world depends on it.",
+    "tags": [
+      "subject:science"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "Solving Linear Equations"
+    },
+    "output": "That was impressive to watch. You can now solve linear equations step by step, isolating the unknown with total confidence.",
+    "tags": [
+      "subject:algebra"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "Probability with Dice and Coins"
+    },
+    "output": "Cheers to you — every milestone, done! You can now work out probabilities for dice and coins, from single rolls to combined events.",
+    "tags": [
+      "subject:statistics"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "Punctuation: Commas That Matter"
+    },
+    "output": "Outstanding! You can now place commas exactly where they belong, turning muddled sentences into clear ones.",
+    "tags": [
+      "subject:writing"
+    ]
+  },
+  {
+    "type": "completion",
+    "input": {
+      "title": "Budgeting with Spreadsheets"
+    },
+    "output": "You nailed it, start to finish. You can now build a working budget in a spreadsheet, tracking income and spending with live formulas.",
+    "tags": [
+      "subject:spreadsheets"
+    ]
+  }
+]

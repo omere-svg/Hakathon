@@ -1,0 +1,110 @@
+{
+  "classify": [
+    { "lessonTitle": "Python if/elif/else", "goal": "Understand how boolean conditions decide which branch runs", "depth": 0, "maxDepth": 2 },
+    { "lessonTitle": "SQL basics", "goal": "Write a SELECT query with a WHERE filter and ORDER BY", "depth": 1, "maxDepth": 2 }
+  ],
+  "expand": [
+    { "goal": "Write and run a Python program that uses if/elif/else to grade a numeric score" }
+  ],
+  "refine": [
+    {
+      "goals": ["Use a for loop with range() to repeat an action a fixed number of times"],
+      "draftSteps": [
+        "Understand what range(0, 5) produces",
+        "Understand the numbers range(0,5) generates",
+        "Write a for loop that prints each number from range(0, 5)",
+        "Practice loops"
+      ]
+    }
+  ],
+  "coverage": [
+    { "id": "g1", "statement": "List all three logical operators in Python and predict the result of combining them" }
+  ],
+  "teach": [
+    {
+      "name": "lesson-start",
+      "milestone": { "description": "Explain what a boolean condition is and evaluate score >= 90 for a given score", "context": [] },
+      "justAdvanced": false, "attempts": 0
+    },
+    {
+      "name": "transition-mastered",
+      "milestone": { "description": "Trace which branch runs in an if/elif/else chain for a given score", "context": [] },
+      "justAdvanced": true, "attempts": 0,
+      "bridge": { "completedTitle": "Boolean conditions", "lastStudentMessage": "so 90 >= 90 is True", "mastered": true }
+    },
+    {
+      "name": "transition-forced",
+      "milestone": { "description": "Write an if/elif/else chain that prints a letter grade", "context": [] },
+      "justAdvanced": true, "attempts": 0,
+      "bridge": { "completedTitle": "Tracing branches", "lastStudentMessage": "i still dont get it", "mastered": false }
+    },
+    {
+      "name": "mid-rails-full",
+      "milestone": {
+        "description": "Trace which branch runs in an if/elif/else chain for a given score",
+        "context": [
+          { "role": "tutor", "text": "Now, if score is 75, which branch runs in our chain?" },
+          { "role": "student", "text": "the first one? im so stuck honestly" }
+        ]
+      },
+      "justAdvanced": false, "attempts": 1,
+      "rails": {
+        "studentName": "Liz",
+        "distressed": true,
+        "graderEvidence": "Student picked the if branch although 75 fails score >= 90",
+        "lessonTopic": "Python if/elif/else",
+        "language": "Python"
+      }
+    },
+    {
+      "name": "mid-production-attempts2",
+      "milestone": {
+        "description": "Write a Python program that uses a for loop to print the numbers 0 to 4",
+        "context": [
+          { "role": "tutor", "text": "Try writing the loop yourself now." },
+          { "role": "student", "text": "for i in range(5) print(i)" },
+          { "role": "tutor", "text": "Close! You are missing one small symbol after the parentheses. Which one?" },
+          { "role": "student", "text": "a semicolon?" }
+        ]
+      },
+      "justAdvanced": false, "attempts": 2,
+      "rails": { "lessonTopic": "Python for loops", "language": "Python" }
+    }
+  ],
+  "suggestions": [
+    {
+      "tutorReply": "Great question! A boolean condition is an expression that is either True or False — like score >= 90. If score is exactly 90, what does score >= 90 evaluate to?",
+      "milestoneTitle": "Boolean conditions"
+    }
+  ],
+  "assess": [
+    {
+      "milestone": {
+        "description": "Evaluate boolean comparisons like score >= 90 for concrete scores",
+        "context": [
+          { "role": "tutor", "text": "If score is 90, what does score >= 90 evaluate to?" },
+          { "role": "student", "text": "True, because 90 is equal to 90 and >= includes equal" }
+        ]
+      }
+    }
+  ],
+  "sync": [
+    {
+      "completed": {
+        "description": "Evaluate boolean comparisons like score >= 90 for concrete scores",
+        "context": [
+          { "role": "tutor", "text": "If score is 90, what does score >= 90 evaluate to?" },
+          { "role": "student", "text": "True. and 89 >= 90 would be False" },
+          { "role": "tutor", "text": "Exactly right on both." }
+        ]
+      },
+      "remaining": [
+        { "id": "m2", "description": "Trace which branch runs in an if/elif/else chain for a given score" },
+        { "id": "m3", "description": "Write an if/elif/else chain that prints a letter grade" }
+      ]
+    }
+  ],
+  "completion": [
+    { "title": "Python if/elif/else" }
+  ]
+}

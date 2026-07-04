@@ -1,0 +1,3424 @@
+[
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Predict the numbers produced by range() with one argument",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "A for loop with range(5) runs its block once for each number from 0 up to 4 — the end number itself is left out. What numbers does range(3) give you?"
+     },
+     {
+      "role": "student",
+      "text": "0, 1, 2"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Python for loops",
+    "language": "Python"
+   }
+  },
+  "output": "Exactly right — range(3) gives 0, 1, and 2, always stopping just before the number you pass in. You can also pick where counting starts: range(2, 5) begins at 2 instead of 0. What numbers does range(4, 7) produce?",
+  "tags": [
+   "case:attempts0-correct",
+   "attempts:0",
+   "subject:python"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Read a character out of a string using its index",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Python numbers the characters in a string starting from 0, not 1. So in word = \"cake\", word[0] is \"c\". What is word[1]?"
+     },
+     {
+      "role": "student",
+      "text": "a"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Python strings",
+    "language": "Python"
+   }
+  },
+  "output": "Yep, word[1] is \"a\" because counting starts at 0. That also means the final letter of a 4-letter word sits at index 3, not 4. What is word[3]?",
+  "tags": [
+   "case:attempts0-correct",
+   "attempts:0",
+   "subject:python"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Use push to add an item to the end of an array",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Arrays keep their items in order, and you'll often need to grow them."
+     },
+     {
+      "role": "student",
+      "text": "ok makes sense"
+     },
+     {
+      "role": "tutor",
+      "text": "The push method adds an item to the end. If pets is ['cat', 'dog'], what does pets.push('fish') leave in the array?"
+     },
+     {
+      "role": "student",
+      "text": "['cat', 'dog', 'fish']"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "JavaScript arrays",
+    "language": "JavaScript"
+   }
+  },
+  "output": "Right — push always tacks the new item onto the end. There's a matching method, pop, that removes the last item instead. After pets.pop() runs on that array, what does it look like?",
+  "tags": [
+   "case:attempts0-correct",
+   "attempts:0",
+   "subject:javascript"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Explain which rows a WHERE clause keeps in a query result",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "SELECT pulls columns out of a table — SELECT name FROM users grabs every name."
+     },
+     {
+      "role": "student",
+      "text": "got it, every row comes back"
+     },
+     {
+      "role": "tutor",
+      "text": "Exactly, all of them. Now WHERE trims that down by testing each row. Which rows does SELECT * FROM users WHERE age > 30 return?"
+     },
+     {
+      "role": "student",
+      "text": "only the users older than 30"
+     },
+     {
+      "role": "tutor",
+      "text": "Right. And a row where age is exactly 30 — does it pass age > 30?"
+     },
+     {
+      "role": "student",
+      "text": "no cause 30 isnt bigger than 30"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "SQL filtering with WHERE",
+    "language": "SQL"
+   }
+  },
+  "output": "Correct — the comparison is strict, so exactly 30 gets filtered out. If you wanted to include them you'd write age >= 30 instead. What WHERE clause would find users younger than 18?",
+  "tags": [
+   "case:attempts0-correct",
+   "attempts:0",
+   "subject:sql"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Write matching opening and closing tags for an HTML element",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Most HTML elements come in pairs: an opening tag and a closing tag with a slash. The paragraph element opens with <p>. How do you close it?"
+     },
+     {
+      "role": "student",
+      "text": "</p>"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "HTML basics",
+    "language": "HTML"
+   }
+  },
+  "output": "That's it — the slash marks the closing tag. Headings follow the same pattern, from <h1> for the biggest down to <h6> for the smallest. How would you write a complete h1 element containing the word Welcome?",
+  "tags": [
+   "case:attempts0-correct",
+   "attempts:0",
+   "subject:html-css"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Use a cell range inside the SUM function",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "In a spreadsheet, =SUM(A1:A4) adds every cell from A1 through A4 in one go. What does the colon do in that formula?"
+     },
+     {
+      "role": "student",
+      "text": "it means everything between A1 and A4"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Spreadsheet formulas: SUM and ranges"
+   }
+  },
+  "output": "Correct — the colon stretches the range across every cell between the two ends. The same trick works sideways, like B2:E2 for part of a row. What formula would add the cells from C1 through C10?",
+  "tags": [
+   "case:attempts0-correct",
+   "attempts:0",
+   "subject:excel"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Compute the mean of a small set of numbers",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "The mean is the total shared out evenly: add everything up, divide by how many numbers there are. What's the mean of 4, 8, and 6?"
+     },
+     {
+      "role": "student",
+      "text": "6"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Statistics: measures of center"
+   }
+  },
+  "output": "Right — 4 + 8 + 6 is 18, and 18 ÷ 3 lands on 6. Notice the mean doesn't have to be one of the numbers in the list, even though it happened to be here. What's the mean of 5, 9, and 10?",
+  "tags": [
+   "case:attempts0-correct",
+   "attempts:0",
+   "subject:statistics"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Solve a two-step linear equation like 2x + 3 = 11",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "To solve 2x + 3 = 11, peel things off x one layer at a time: first undo the + 3, then undo the times 2. What do you get for x?"
+     },
+     {
+      "role": "student",
+      "text": "x = 4"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Algebra: solving linear equations"
+   }
+  },
+  "output": "Correct — subtracting 3 leaves 2x = 8, and dividing by 2 gives x = 4. Those same two moves solve any equation of this shape, whatever the numbers. What is x in 3x + 5 = 20?",
+  "tags": [
+   "case:attempts0-correct",
+   "attempts:0",
+   "subject:algebra"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Build the first notes of a major scale using whole and half steps",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "A major scale follows the step pattern whole-whole-half-whole-whole-whole-half. Starting on C: up a whole step is D. What note comes next, another whole step up?"
+     },
+     {
+      "role": "student",
+      "text": "E"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Music theory: building major scales"
+   }
+  },
+  "output": "Yes — D up a whole step lands on E, giving us C, D, E so far. That opening pair of whole steps is a big part of the bright major-scale sound. Starting from G instead, what note is one whole step up?",
+  "tags": [
+   "case:attempts0-correct",
+   "attempts:0",
+   "subject:music"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Choose between ser and estar for states and traits",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Spanish has two verbs for \"to be\": ser for lasting traits, estar for temporary states and feelings. Which one would you use to say you're tired right now?"
+     },
+     {
+      "role": "student",
+      "text": "estar"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Spanish grammar: ser vs estar"
+   }
+  },
+  "output": "Exactly — feelings and passing states take estar, so it's estoy cansado. Ser stays with permanent things like professions or where you're from. Which verb belongs in the sentence \"ella ___ doctora\"?",
+  "tags": [
+   "case:attempts0-correct",
+   "attempts:0",
+   "subject:spanish"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Count atoms on each side of a chemical equation to check balance",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "An equation is balanced when each element has the same atom count on both sides. Look at H2 + O2 -> H2O: how many oxygen atoms are on each side?"
+     },
+     {
+      "role": "student",
+      "text": "2 on the left and 1 on the right"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Chemistry: balancing equations"
+   }
+  },
+  "output": "Right — two oxygens go in but only one comes out, so it isn't balanced yet. Putting a 2 in front of the water fixes oxygen: H2 + O2 -> 2H2O. How many hydrogen atoms does the right side have now?",
+  "tags": [
+   "case:attempts0-correct",
+   "attempts:0",
+   "subject:chemistry"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Calculate force from mass and acceleration with F = ma",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Newton's second law says force equals mass times acceleration, F = ma. What force moves a 2 kg cart accelerating at 5 m/s²?"
+     },
+     {
+      "role": "student",
+      "text": "10 newtons"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Physics: Newton's second law"
+   }
+  },
+  "output": "Correct — 2 kg times 5 m/s² gives 10 newtons. The formula runs backwards too: knowing the force and the mass lets you solve for acceleration. What force does a 3 kg cart need to accelerate at 4 m/s²?",
+  "tags": [
+   "case:attempts0-correct",
+   "attempts:0",
+   "subject:physics"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Distinguish an arguable thesis statement from a plain fact",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "A thesis is a claim someone could reasonably disagree with — not a fact. Which is a thesis: \"The school library opens at 8am\" or \"The school library should stay open on weekends\"?"
+     },
+     {
+      "role": "student",
+      "text": "the second one, because you could argue against it"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Essay writing: thesis statements"
+   }
+  },
+  "output": "Exactly — a thesis stakes out a position that needs defending, while an opening time is just checkable fact. The bolder the claim, the more your essay has to prove. How would you turn the fact \"many cities have bike lanes\" into an arguable claim?",
+  "tags": [
+   "case:attempts0-correct",
+   "attempts:0",
+   "subject:writing"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Look up a value in a dictionary using its key",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "A dictionary stores pairs: ages = {'Ana': 30} maps the key 'Ana' to the value 30. How would you look up Ana's age from that dictionary?"
+     },
+     {
+      "role": "student",
+      "text": "ages['Ana']"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Python dictionaries",
+    "language": "Python"
+   }
+  },
+  "output": "Right — square brackets with the key pull out its value. Adding a brand-new pair uses the same syntax: ages['Ben'] = 25 creates it on the spot. What line would add a person named Zoe who is 41?",
+  "tags": [
+   "case:attempts0-correct",
+   "attempts:0",
+   "subject:python"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Predict the result of strict equality comparisons with ===",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "The === operator compares both value and type, no sneaky conversions. What does 5 === '5' evaluate to?"
+     },
+     {
+      "role": "student",
+      "text": "false because one is a string"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "JavaScript comparisons",
+    "language": "JavaScript"
+   }
+  },
+  "output": "Exactly — === refuses to call a number and a string equal, whatever they look like. That strictness is why most style guides prefer it over the looser ==. What does 'cat' === 'cat' evaluate to?",
+  "tags": [
+   "case:attempts0-correct",
+   "attempts:0",
+   "subject:javascript"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Control sort direction with ORDER BY",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "ORDER BY sorts your results by a column — ORDER BY price, for example. If you don't say anything else, which direction does it sort?"
+     },
+     {
+      "role": "student",
+      "text": "smallest to biggest"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "SQL sorting with ORDER BY",
+    "language": "SQL"
+   }
+  },
+  "output": "Right — ascending is the default. Adding DESC after the column flips it to largest first, like ORDER BY score DESC. What clause would sort a price column from most expensive to cheapest?",
+  "tags": [
+   "case:attempts0-correct",
+   "attempts:0",
+   "subject:sql"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Add fractions that share a denominator",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "When fractions share a bottom number, the pieces are the same size, so you just add the tops. What is 1/4 + 2/4?"
+     },
+     {
+      "role": "student",
+      "text": "3/4"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Fractions: adding with like denominators"
+   }
+  },
+  "output": "Correct — one quarter plus two quarters makes three quarters. The denominator stays put because the size of each piece never changed. What is 2/8 + 5/8?",
+  "tags": [
+   "case:attempts0-correct",
+   "attempts:0",
+   "subject:arithmetic"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Write a CSS class selector",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "CSS selectors decide which elements a rule styles. To target every element with class=\"warning\", what selector do you write?"
+     },
+     {
+      "role": "student",
+      "text": ".warning"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "CSS selectors",
+    "language": "CSS"
+   }
+  },
+  "output": "That's right — the leading dot means class. An id works the same way but with a hash, and an id should only ever appear on one element. How would you select the element with id=\"header\"?",
+  "tags": [
+   "case:attempts0-correct",
+   "attempts:0",
+   "subject:html-css"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Compute the remainder of a division using the % operator",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "The % operator gives the remainder after division — 7 % 2 asks how much is left after dividing 7 by 2, which is 1. What is 10 % 3?"
+     },
+     {
+      "role": "student",
+      "text": "3"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Python arithmetic operators",
+    "language": "Python",
+    "graderEvidence": "Student answered 3 for 10 % 3 — they gave the quotient instead of the remainder."
+   }
+  },
+  "output": "Not quite — 3 is how many times 3 fits into 10, but % wants what's left over afterward. Picture sharing 10 cookies among 3 friends: each friend gets 3 cookies and 1 cookie remains, so 10 % 3 is 1. What is 11 % 4?",
+  "tags": [
+   "case:attempts1-evidence",
+   "attempts:1",
+   "subject:python"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Predict what append does when given a list as its argument",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "The append method adds its argument to the list as ONE single item, even when that argument is itself a list. If nums = [1, 2], what does nums.append([3, 4]) leave in nums?"
+     },
+     {
+      "role": "student",
+      "text": "[1, 2, 3, 4]"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Python lists: append vs extend",
+    "language": "Python",
+    "graderEvidence": "Student said [1, 2, 3, 4], treating append like extend — they missed that append inserts the whole list as a single element."
+   }
+  },
+  "output": "Almost — that flattened result is what extend gives; append instead tucks the whole [3, 4] in as one element, so nums becomes [1, 2, [3, 4]]. Think of dropping a sealed bag into a box: the box gains one bag, not each thing inside it. After nums = [5] and nums.append([6, 7]), how many elements does nums have?",
+  "tags": [
+   "case:attempts1-evidence",
+   "attempts:1",
+   "subject:python"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Choose between let and const for a variable",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "In modern JavaScript, const declares a name whose value never gets reassigned, while let allows reassignment. Which keyword fits a counter you increase every loop?"
+     },
+     {
+      "role": "student",
+      "text": "const"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "JavaScript variables: let and const",
+    "language": "JavaScript",
+    "graderEvidence": "Student chose const for a counter that gets reassigned, showing they have let and const backwards."
+   }
+  },
+  "output": "Not quite — const locks the name to its very first value, so the moment you try counter = counter + 1 it throws an error. A memory hook: const for constants that never move, let for values you let change. Which keyword fits a variable holding a high score that updates after every game?",
+  "tags": [
+   "case:attempts1-evidence",
+   "attempts:1",
+   "subject:javascript"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "State what a COUNT(*) query returns",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "COUNT(*) is an aggregate — it collapses rows into a count. What does SELECT COUNT(*) FROM orders return?"
+     },
+     {
+      "role": "student",
+      "text": "all the orders"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "SQL aggregate functions",
+    "language": "SQL",
+    "graderEvidence": "Student said it returns 'all the orders' — they think COUNT returns the rows themselves rather than a single number."
+   }
+  },
+  "output": "Not exactly — COUNT doesn't hand back the orders themselves, it hands back one single number saying how many rows exist. If the table holds 250 rows, the entire result of that query is just 250. If a customers table has 12 rows, what exactly does SELECT COUNT(*) FROM customers return?",
+  "tags": [
+   "case:attempts1-evidence",
+   "attempts:1",
+   "subject:sql"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Tell padding and margin apart in the CSS box model",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "In the box model, every element has content, then padding, then a border, then margin. Which property adds space between the content and the border?"
+     },
+     {
+      "role": "student",
+      "text": "margin"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "CSS box model",
+    "language": "CSS",
+    "graderEvidence": "Student answered margin for the space inside the border; they have padding and margin reversed."
+   }
+  },
+  "output": "Not quite — margin lives outside the border, pushing neighboring elements away. Picture a framed photo: padding is the matting between the picture and its frame, margin is the gap between the frame and the wall. Which property would you increase to widen the matting inside the frame?",
+  "tags": [
+   "case:attempts1-evidence",
+   "attempts:1",
+   "subject:html-css"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Predict how cell references change when a formula is copied down",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "When you copy a formula to another cell, plain references shift along with it. If =A1*2 sits in B1 and you copy it down to B2, what happens to the A1 part?"
+     },
+     {
+      "role": "student",
+      "text": "it stays A1"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Spreadsheets: relative and absolute references",
+    "graderEvidence": "Student said the plain A1 reference stays fixed when copied down — they missed that only $ makes a reference absolute."
+   }
+  },
+  "output": "Actually the opposite — a plain A1 slides to A2, A3 and so on as the formula travels down. Only dollar signs pin a reference in place: $A$1 refuses to budge no matter where you paste it. If you copy =$B$2+C1 down one row, what does the formula become?",
+  "tags": [
+   "case:attempts1-evidence",
+   "attempts:1",
+   "subject:excel"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Find the median of a list with an even count of values",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "The median is the middle value once the numbers are sorted. What's the median of 3, 7, 9, 15?"
+     },
+     {
+      "role": "student",
+      "text": "9"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Statistics: the median",
+    "graderEvidence": "Student picked 9 as the median of four numbers instead of averaging the two middle values 7 and 9."
+   }
+  },
+  "output": "Not quite — with four numbers there is no single middle one to point at. Instead the median sits halfway between the two central values: here those are 7 and 9, and halfway between them is 8. What's the median of 2, 4, 10, 20?",
+  "tags": [
+   "case:attempts1-evidence",
+   "attempts:1",
+   "subject:statistics"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Distribute a negative sign across parentheses",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "A minus in front of parentheses flips the sign of what's inside. Expand -(x + 5) for me?"
+     },
+     {
+      "role": "student",
+      "text": "-x + 5"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Algebra: distributing negatives",
+    "graderEvidence": "Student wrote -x + 5, only negating the first term — the minus must distribute to both terms."
+   }
+  },
+  "output": "Close, but the minus has to visit every term inside, not just the first one. Treat it as multiplying the whole bracket by -1: both x and 5 get flipped, so -(x + 5) becomes -x - 5. What does -(y - 3) expand to?",
+  "tags": [
+   "case:attempts1-evidence",
+   "attempts:1",
+   "subject:algebra"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Count the half steps in a minor third",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "We measured a major third as 4 half steps — like C up to E. How many half steps make a minor third?"
+     },
+     {
+      "role": "student",
+      "text": "4"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Music theory: intervals",
+    "graderEvidence": "Student answered 4 half steps for a minor third, which is the major third they were just shown."
+   }
+  },
+  "output": "Not quite — 4 half steps is the major third we just measured. The minor third squeezes one out, leaving 3 half steps, and that one missing half step is exactly what gives minor chords their darker color. Starting from A, what note sits 3 half steps up?",
+  "tags": [
+   "case:attempts1-evidence",
+   "attempts:1",
+   "subject:music"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Pick the correct definite article for Spanish nouns ending in -a",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Most nouns ending in -a are feminine and take la, like la casa. Which article goes with problema?"
+     },
+     {
+      "role": "student",
+      "text": "la problema"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Spanish grammar: noun gender",
+    "graderEvidence": "Student said la problema — they applied the -a ending rule without knowing problema is a masculine exception."
+   }
+  },
+  "output": "Tricky one, but no — problema is a famous exception: it comes from Greek, so despite the -a it's masculine, el problema. Its cousins follow suit: el sistema, el programa, el idioma. Which article goes with sistema?",
+  "tags": [
+   "case:attempts1-evidence",
+   "attempts:1",
+   "subject:spanish"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Convert grams of a substance to moles using molar mass",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Molar mass links grams to moles — water is 18 g/mol, meaning one mole of water weighs 18 grams. How many moles are in 36 g of water?"
+     },
+     {
+      "role": "student",
+      "text": "36 moles"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Chemistry: the mole concept",
+    "graderEvidence": "Student answered 36 moles, repeating the gram value instead of dividing mass by molar mass."
+   }
+  },
+  "output": "Not quite — grams and moles aren't interchangeable; the gram number has to be converted. Ask how many 18-gram scoops fit into your 36 grams: 36 ÷ 18 = 2, so 2 moles. How many moles are in 54 g of water?",
+  "tags": [
+   "case:attempts1-evidence",
+   "attempts:1",
+   "subject:chemistry"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Explain how velocity differs from speed",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Speed and velocity get mixed up a lot, but physics treats them differently. What does velocity have that plain speed doesn't?"
+     },
+     {
+      "role": "student",
+      "text": "velocity is just faster"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Physics: describing motion",
+    "graderEvidence": "Student said velocity means faster; they missed that velocity includes direction while speed does not."
+   }
+  },
+  "output": "Not quite — velocity isn't about being faster; it's speed with a direction attached. Two trains both doing 80 km/h, one heading north and one south, share the same speed yet have different velocities. If a runner moves at 5 m/s toward the east, how would you state their velocity?",
+  "tags": [
+   "case:attempts1-evidence",
+   "attempts:1",
+   "subject:physics"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Identify the topic sentence that states a paragraph's main idea",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "A topic sentence announces the one idea the whole paragraph will develop. For a paragraph on the benefits of school gardens, which opener works: \"School gardens help students in several ways\" or \"Tomatoes need six hours of sun\"?"
+     },
+     {
+      "role": "student",
+      "text": "the tomato one, its more specific"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Paragraph structure: topic sentences",
+    "graderEvidence": "Student chose the tomato detail as the topic sentence, confusing a supporting detail with the paragraph's main idea."
+   }
+  },
+  "output": "Specific is a virtue in supporting sentences, but the topic sentence has the opposite job — it names the big idea the details will serve. The tomato fact could support the garden sentence, never replace it. What topic sentence would you write for a paragraph arguing your school should start later?",
+  "tags": [
+   "case:attempts1-evidence",
+   "attempts:1",
+   "subject:writing"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "State when a while loop stops running",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "A while loop keeps repeating as long as its condition stays True. When does while n < 5: stop?"
+     },
+     {
+      "role": "student",
+      "text": "when n is less than 5"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Python while loops",
+    "language": "Python",
+    "graderEvidence": "Student said the loop stops when n is less than 5 — that is when it keeps running; they inverted the condition."
+   }
+  },
+  "output": "Actually that's when it keeps going — the loop runs while the condition holds and quits the instant it fails. Read it as a promise: \"repeat as long as n < 5 is still true\", so it stops once n climbs to 5 or beyond. At what value of n does while n < 10: stop looping?",
+  "tags": [
+   "case:attempts1-evidence",
+   "attempts:1",
+   "subject:python"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Explain what a function call evaluates to without a return statement",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "A function hands a value back with return — without it, nothing comes back. Suppose double(x) computes x * 2 but has no return line. What does console.log(double(4)) print?"
+     },
+     {
+      "role": "student",
+      "text": "8"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "JavaScript functions and return values",
+    "language": "JavaScript",
+    "graderEvidence": "Student said 8, assuming the function returns the doubled value even though it has no return statement."
+   }
+  },
+  "output": "Not quite — without a return, the 8 gets computed inside and then thrown away, so the call evaluates to undefined and that's what prints. A function only ever gives you what it explicitly returns. If we add return x * 2; inside, what does console.log(double(4)) print then?",
+  "tags": [
+   "case:attempts1-evidence",
+   "attempts:1",
+   "subject:javascript"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Explain how the ON condition pairs rows in a JOIN",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "A JOIN combines two tables: orders JOIN customers ON orders.customer_id = customers.id. What decides which order row pairs with which customer row?"
+     },
+     {
+      "role": "student",
+      "text": "they match by position, first row with first row"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "SQL joins",
+    "language": "SQL",
+    "graderEvidence": "Student thinks rows pair up by position; they have not understood that the ON condition matches rows by key values."
+   }
+  },
+  "output": "Not quite — position plays no part at all; the ON condition does every bit of the matchmaking. A row pairs up only when its customer_id equals a customer's id, like matching luggage tags to ticket numbers, wherever the rows happen to sit. Which customer row would pair with an order whose customer_id is 7?",
+  "tags": [
+   "case:attempts1-evidence",
+   "attempts:1",
+   "subject:sql"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Calculate a percentage of a number",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Percent means \"out of one hundred\", so 20% is the fraction 20/100. What is 20% of 50?"
+     },
+     {
+      "role": "student",
+      "text": "30"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Percentages",
+    "graderEvidence": "Student answered 30 for 20% of 50, subtracting 20 from 50 rather than taking a fraction of it."
+   }
+  },
+  "output": "Not quite — 30 looks like 50 minus 20, but \"percent of\" means take a slice, not subtract. Turn the percent into a decimal first: 20% is 0.20, and 0.20 × 50 = 10. What is 30% of 60?",
+  "tags": [
+   "case:attempts1-evidence",
+   "attempts:1",
+   "subject:arithmetic"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Trace which branch of an IF formula a cell shows",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "The IF function has three slots: =IF(test, value_if_true, value_if_false). If A1 holds 4, what does =IF(A1>10, \"big\", \"small\") display?"
+     },
+     {
+      "role": "student",
+      "text": "big"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Spreadsheets: the IF function",
+    "graderEvidence": "Student answered big for A1=4; they picked the value-if-true branch even though 4 > 10 is false."
+   }
+  },
+  "output": "Not quite — with A1 at 4, the test 4>10 comes out false, and a false test always sends you to the third slot, so the cell shows small. Read every IF out loud as: test, answer-if-yes, answer-if-no. What would that same formula display if A1 held 25?",
+  "tags": [
+   "case:attempts1-evidence",
+   "attempts:1",
+   "subject:excel"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Predict the characters a slice like [0:2] extracts from a string",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "A slice grabs a piece of a string: word[start:stop] takes from start up to but not including stop. In \"python\", what is word[1:3]?"
+     },
+     {
+      "role": "student",
+      "text": "yth"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — the stop index is left out, so [1:3] takes only indexes 1 and 2, giving \"yt\". Let's try a fresh one: what is \"plant\"[0:2]?"
+     },
+     {
+      "role": "student",
+      "text": "pla"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 2,
+   "rails": {
+    "lessonTopic": "Python string slicing",
+    "language": "Python"
+   }
+  },
+  "output": "Let's line the indexes up on paper: in \"plant\", p is 0, l is 1, a is 2. The slice [0:2] collects indexes 0 and 1 and then stops — so it starts with p, and just one more letter joins it. What is the full result of \"plant\"[0:2]?",
+  "tags": [
+   "case:attempts2-hint",
+   "attempts:2",
+   "subject:python"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Predict the array produced by map",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "The map method builds a brand-new array by passing every element through a function. What does [2, 5].map(n => n + 1) give?"
+     },
+     {
+      "role": "student",
+      "text": "[2, 5, 3, 6]"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — map replaces each element with the function's result, it never keeps the originals alongside. Each value goes in, comes out transformed, same length array. So what does [2, 5].map(n => n + 1) give?"
+     },
+     {
+      "role": "student",
+      "text": "6?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 2,
+   "rails": {
+    "lessonTopic": "JavaScript array methods: map",
+    "language": "JavaScript"
+   }
+  },
+  "output": "Here's one mostly done for you: [1, 2, 3].map(n => n * 10) pushes each number through the arrow function — 1 becomes 10, 2 becomes 20, and only the last is left to transform. The result has exactly three values. What is the third value in that new array?",
+  "tags": [
+   "case:attempts2-hint",
+   "attempts:2",
+   "subject:javascript"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Describe what GROUP BY does to rows before counting",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "GROUP BY collects rows that share a value so aggregates can work per group. What does SELECT city, COUNT(*) FROM users GROUP BY city produce?"
+     },
+     {
+      "role": "student",
+      "text": "it counts all the users"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — one total would need no GROUP BY; grouping gives a separate count per city. Think one result row per distinct city. So what does that query produce?"
+     },
+     {
+      "role": "student",
+      "text": "umm all the cities?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 2,
+   "rails": {
+    "lessonTopic": "SQL grouping and aggregates",
+    "language": "SQL"
+   }
+  },
+  "output": "Picture the rows physically sorted into piles on a desk: GROUP BY city makes one pile per city, and COUNT(*) then counts each pile separately. With rows for Lima, Lima, and Cusco you get two piles, and the Lima pile counts 2. What count does the Cusco pile get?",
+  "tags": [
+   "case:attempts2-hint",
+   "attempts:2",
+   "subject:sql"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Solve a two-step equation of the form 3x - 4 = 11",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "For 3x - 4 = 11, undo things in reverse order: clear the -4 first, then the times 3. What is x?"
+     },
+     {
+      "role": "student",
+      "text": "x = 7"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — 7 looks like 11 minus 4, but that's only the first move: adding 4 to both sides gives 3x = 15, and then you still divide by 3. Try the whole journey: what is x?"
+     },
+     {
+      "role": "student",
+      "text": "3?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 2,
+   "rails": {
+    "lessonTopic": "Algebra: two-step equations"
+   }
+  },
+  "output": "Let me start it for you and leave the last step: adding 4 to both sides turns 3x - 4 = 11 into 3x = 15. All that remains is undoing the multiplication — divide both sides by 3. What is x?",
+  "tags": [
+   "case:attempts2-hint",
+   "attempts:2",
+   "subject:algebra"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Find the range of a data set",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "The range measures how spread out data is. What's the range of 3, 14, 9?"
+     },
+     {
+      "role": "student",
+      "text": "9"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — 9 is just the middle value; the range compares the two extremes of the set. Have another look at 3, 14, 9: what's the range?"
+     },
+     {
+      "role": "student",
+      "text": "26?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 2,
+   "rails": {
+    "lessonTopic": "Statistics: range and spread"
+   }
+  },
+  "output": "Here's the shortcut to hold onto: the range is one single subtraction, biggest minus smallest, nothing else added. In 3, 14, 9 the biggest is 14 and the smallest is 3 — I've found both numbers for you. What does that subtraction give?",
+  "tags": [
+   "case:attempts2-hint",
+   "attempts:2",
+   "subject:statistics"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Conjugate a regular -ar verb in the yo form of the preterite",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "The preterite is the simple past. For -ar verbs, the yo ending is -é: hablar becomes hablé. What's the yo preterite of cantar?"
+     },
+     {
+      "role": "student",
+      "text": "canto"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — canto is present tense, \"I sing\". The preterite swaps that -o for -é to mean \"I sang\". So what's the yo preterite of cantar?"
+     },
+     {
+      "role": "student",
+      "text": "cantaré?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 2,
+   "rails": {
+    "lessonTopic": "Spanish grammar: preterite tense"
+   }
+  },
+  "output": "Careful — cantaré with the -ré is future tense; let's assemble the past together. Chop -ar off cantar to get the stem cant-, and the yo preterite ending is just -é with the accent. Put the stem and that ending together — what full word do you get?",
+  "tags": [
+   "case:attempts2-hint",
+   "attempts:2",
+   "subject:spanish"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Classify a compound as ionic or covalent",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Ionic bonds transfer electrons; covalent bonds share them. Is NaCl ionic or covalent?"
+     },
+     {
+      "role": "student",
+      "text": "covalent"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — sodium hands its electron over to chlorine completely, no sharing involved, so NaCl is ionic. What about CO2, carbon bonded to oxygen?"
+     },
+     {
+      "role": "student",
+      "text": "ionic?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 2,
+   "rails": {
+    "lessonTopic": "Chemistry: ionic and covalent bonds"
+   }
+  },
+  "output": "Here's a rule of thumb that settles most cases: metal plus nonmetal means ionic, nonmetal plus nonmetal means covalent. Carbon and oxygen are both nonmetals — I've done that classification step for you. So which bond type is CO2?",
+  "tags": [
+   "case:attempts2-hint",
+   "attempts:2",
+   "subject:chemistry"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Calculate voltage with Ohm's law",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Ohm's law ties the three together: V = I × R. What voltage pushes 2 A through a 5 Ω resistor?"
+     },
+     {
+      "role": "student",
+      "text": "2.5 volts"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — 2.5 comes from dividing, but voltage is the product: current times resistance. Try again with V = I × R: 2 A through 5 Ω gives what?"
+     },
+     {
+      "role": "student",
+      "text": "7?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 2,
+   "rails": {
+    "lessonTopic": "Physics: Ohm's law"
+   }
+  },
+  "output": "Let me set the whole thing up: V = I × R, so with 2 A and 5 Ω the calculation on the page is 2 × 5 — no adding, no dividing. Just finish that one multiplication. How many volts is it?",
+  "tags": [
+   "case:attempts2-hint",
+   "attempts:2",
+   "subject:physics"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Read what a time signature says about beats per measure",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "A time signature like 3/4 sits at the start of the staff and sets the meter. What does 3/4 tell you?"
+     },
+     {
+      "role": "student",
+      "text": "play 3 notes then 4 notes?"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — it's not about how many notes you play. The two numbers describe the measure itself, not the melody. What do you think the top 3 refers to?"
+     },
+     {
+      "role": "student",
+      "text": "how fast it goes?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 2,
+   "rails": {
+    "lessonTopic": "Music theory: time signatures"
+   }
+  },
+  "output": "Try reading it like a label with two lines: the top number says how many beats each measure holds, the bottom says which note gets one beat. So 3/4 means three beats per measure, quarter note gets the beat — you'd count 1-2-3, 1-2-3. In 2/4 time, how many beats would you count per measure?",
+  "tags": [
+   "case:attempts2-hint",
+   "attempts:2",
+   "subject:music"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Choose the column index argument in a VLOOKUP formula",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "VLOOKUP's third argument picks which column of your range to bring back. In =VLOOKUP(\"Ana\", A1:C10, ?, FALSE), what goes in that slot to fetch her email from column C?"
+     },
+     {
+      "role": "student",
+      "text": "C"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — that argument wants a number, not a letter: it counts columns within the range you gave. Which number would reach column C?"
+     },
+     {
+      "role": "student",
+      "text": "10?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 2,
+   "rails": {
+    "lessonTopic": "Spreadsheets: VLOOKUP"
+   }
+  },
+  "output": "Here's the formula with just one blank left: =VLOOKUP(\"Ana\", A1:C10, __, FALSE), and the counting starts at the range's left edge — A is 1, B is 2, C is 3. Ana's email lives in column C. What number fills the blank?",
+  "tags": [
+   "case:attempts2-hint",
+   "attempts:2",
+   "subject:excel"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Read the last character of a string with a negative index",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Python can count from the end of a string using negative numbers — word[-1] is the last character. In word = \"star\", what is word[-1]?"
+     },
+     {
+      "role": "student",
+      "text": "s?"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — negative counting starts from the end, so word[-1] is \"r\", the final letter. Flip it around: in \"star\", what is word[-2]?"
+     },
+     {
+      "role": "student",
+      "text": "t"
+     },
+     {
+      "role": "tutor",
+      "text": "Still not it — -2 means second from the end, which here is \"a\". One more: what is \"lamp\"[-1]?"
+     },
+     {
+      "role": "student",
+      "text": "l"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 3,
+   "rails": {
+    "lessonTopic": "Python strings: negative indexing",
+    "language": "Python"
+   }
+  },
+  "output": "No worries, let's slow right down and do one together completely. Take word = \"sun\": word[-1] is \"n\", because -1 always means the very last character, no matter how long the string is. Now keep everything the same but use word = \"moon\" — what is word[-1]?",
+  "tags": [
+   "case:attempts3-worked",
+   "attempts:3",
+   "subject:python"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Predict the string an f-string produces",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "An f-string swaps each {variable} for its value: with points = 7, f\"score: {points}\" gives \"score: 7\". With name = \"Kai\", what does f\"hello {name}\" produce?"
+     },
+     {
+      "role": "student",
+      "text": "hello {name}"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — the braces get replaced by the variable's value, so it produces \"hello Kai\". Same variable: what does f\"{name} wins\" give?"
+     },
+     {
+      "role": "student",
+      "text": "name wins"
+     },
+     {
+      "role": "tutor",
+      "text": "Almost — the value Kai goes in, not the word name, so it's \"Kai wins\". Try with animal = \"fox\": what is f\"a {animal} ran\"?"
+     },
+     {
+      "role": "student",
+      "text": "a animal ran"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 3,
+   "rails": {
+    "lessonTopic": "Python f-strings",
+    "language": "Python"
+   }
+  },
+  "output": "Let's walk one through completely instead. With color = \"red\", the f-string f\"my {color} car\" becomes \"my red car\" — Python spots {color}, looks up its value, and pastes red into that exact spot. Now change only the value: with color = \"blue\", what does f\"my {color} car\" become?",
+  "tags": [
+   "case:attempts3-worked",
+   "attempts:3",
+   "subject:python"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Predict the array filter returns for a given test",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "The filter method keeps only the elements that pass a test. What does [1, 8, 3].filter(n => n > 2) give?"
+     },
+     {
+      "role": "student",
+      "text": "[1, 8, 3]"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — 1 fails the test n > 2, so it gets dropped, leaving [8, 3]. Try this one: [5, 1, 6].filter(n => n > 4)?"
+     },
+     {
+      "role": "student",
+      "text": "true?"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — filter returns an array of the surviving numbers, not a boolean: here [5, 6]. Once more: what does [2, 9].filter(n => n > 3) give?"
+     },
+     {
+      "role": "student",
+      "text": "idk honestly"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 3,
+   "rails": {
+    "lessonTopic": "JavaScript array methods: filter",
+    "language": "JavaScript"
+   }
+  },
+  "output": "Totally fine — let me do one start to finish. [4, 9, 2].filter(n => n > 3) tests each value in turn: 4 passes, 9 passes, 2 fails, so the new array is [4, 9] and the failure simply vanishes. Same numbers, stricter test: what does [4, 9, 2].filter(n => n > 8) give?",
+  "tags": [
+   "case:attempts3-worked",
+   "attempts:3",
+   "subject:javascript"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Predict which values a LIKE pattern with % matches",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "LIKE matches text patterns, and % stands for any run of characters. Which of Amy, Ben, Alan does WHERE name LIKE 'A%' match?"
+     },
+     {
+      "role": "student",
+      "text": "all of them?"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — the pattern 'A%' anchors the A at the start, so only names beginning with A match: Amy and Alan. Which of Ben, Bea, Cal does LIKE 'B%' match?"
+     },
+     {
+      "role": "student",
+      "text": "Cal"
+     },
+     {
+      "role": "tutor",
+      "text": "Not this time — Cal starts with C, so 'B%' skips it and takes Ben and Bea instead. Which of Dan, Eve does LIKE 'D%' match?"
+     },
+     {
+      "role": "student",
+      "text": "i really dont know"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 3,
+   "rails": {
+    "lessonTopic": "SQL pattern matching with LIKE",
+    "language": "SQL"
+   }
+  },
+  "output": "Let's lay one out fully. WHERE name LIKE 'J%' reads as \"J, then anything\": Jo matches, James matches, Ana doesn't, because only the starting letter is pinned down. New letter, same idea: which of the names Sam, Ana, and Sol does LIKE 'S%' match?",
+  "tags": [
+   "case:attempts3-worked",
+   "attempts:3",
+   "subject:sql"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Solve an equation where x is divided by a number",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "To solve x/3 = 6, undo the division by multiplying both sides by 3. What is x?"
+     },
+     {
+      "role": "student",
+      "text": "2"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — 2 would come from dividing again, but we multiply: x = 6 × 3. What does that give?"
+     },
+     {
+      "role": "student",
+      "text": "9"
+     },
+     {
+      "role": "tutor",
+      "text": "Careful — 9 is 6 + 3, and we need 6 × 3. What is x?"
+     },
+     {
+      "role": "student",
+      "text": "im lost tbh"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 3,
+   "rails": {
+    "lessonTopic": "Algebra: one-step equations with division"
+   }
+  },
+  "output": "That's okay, let's do a whole one together from scratch. For x/4 = 3: x is being divided by 4, so multiply both sides by 4 and get x = 3 × 4 = 12 — and the check works, since 12 ÷ 4 really is 3. Same puzzle with one number changed: what is x if x/4 = 5?",
+  "tags": [
+   "case:attempts3-worked",
+   "attempts:3",
+   "subject:algebra"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Apply order of operations to a mixed sum and product",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Order of operations says multiplication happens before addition. What is 5 + 2 × 3?"
+     },
+     {
+      "role": "student",
+      "text": "21"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — 21 comes from adding first; multiplication goes first, so it's 5 + 6. What does that make it?"
+     },
+     {
+      "role": "student",
+      "text": "16?"
+     },
+     {
+      "role": "tutor",
+      "text": "Close but not quite — 5 + 6 is 11. Let's try another: what is 4 + 2 × 5?"
+     },
+     {
+      "role": "student",
+      "text": "30"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 3,
+   "rails": {
+    "lessonTopic": "Order of operations"
+   }
+  },
+  "output": "Let me walk one through start to finish. For 2 + 3 × 4, the multiplication happens first, 3 × 4 = 12, and then the addition, 2 + 12 = 14 — adding first would wrongly give 20. Now change just the final number: what is 2 + 3 × 5?",
+  "tags": [
+   "case:attempts3-worked",
+   "attempts:3",
+   "subject:arithmetic"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Express the probability of drawing a given color from a bag",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Probability is favorable outcomes over total outcomes. A bag holds 4 red and 6 blue marbles: what's the probability of drawing red?"
+     },
+     {
+      "role": "student",
+      "text": "4/6"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — the bottom of the fraction is ALL the marbles: 4 + 6 = 10, so it's 4/10. Same bag: what's the probability of blue?"
+     },
+     {
+      "role": "student",
+      "text": "10/6"
+     },
+     {
+      "role": "tutor",
+      "text": "Careful — the total 10 goes on the bottom, favorable on top, so blue is 6/10. New bag with 1 red and 4 green: probability of red?"
+     },
+     {
+      "role": "student",
+      "text": "4/1?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 3,
+   "rails": {
+    "lessonTopic": "Probability basics"
+   }
+  },
+  "output": "No stress — here's one worked out completely. A bag with 3 red and 1 blue holds 4 marbles in total, so the chance of red is 3/4: three ways to succeed out of four possible draws. New bag, same recipe: with 2 red and 3 blue, what's the chance of drawing red?",
+  "tags": [
+   "case:attempts3-worked",
+   "attempts:3",
+   "subject:statistics"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Conjugate a reflexive verb in the yo form",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Reflexive verbs carry a pronoun that points back at the subject: lavarse means to wash oneself. What's the yo form?"
+     },
+     {
+      "role": "student",
+      "text": "yo lavarse"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — the -se comes off and changes to match yo: it becomes me, and lavar conjugates normally, giving me lavo. What's the yo form of peinarse?"
+     },
+     {
+      "role": "student",
+      "text": "se peino"
+     },
+     {
+      "role": "tutor",
+      "text": "Almost — the verb part peino is right, but with yo the pronoun must be me: me peino. Try despertarse: the yo form?"
+     },
+     {
+      "role": "student",
+      "text": "yo despierto me?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 3,
+   "rails": {
+    "lessonTopic": "Spanish grammar: reflexive verbs"
+   }
+  },
+  "output": "Let's build one from scratch together. Lavarse in the yo form is me lavo: the reflexive pronoun me steps out in front, then lavar takes its ordinary yo ending to become lavo. Different verb, exact same recipe: what is the yo form of levantarse?",
+  "tags": [
+   "case:attempts3-worked",
+   "attempts:3",
+   "subject:spanish"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Calculate kinetic energy with KE = ½mv²",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Kinetic energy is KE = ½mv² — half the mass times the speed squared. What's the KE of a 4 kg ball moving at 1 m/s?"
+     },
+     {
+      "role": "student",
+      "text": "4"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — plug in: ½ × 4 × 1² = 2 joules; don't forget the half. What's the KE of a 2 kg ball at 4 m/s?"
+     },
+     {
+      "role": "student",
+      "text": "8"
+     },
+     {
+      "role": "tutor",
+      "text": "Careful — the speed gets squared first: 4² = 16, then ½ × 2 × 16 = 16 J. Try 6 kg at 2 m/s?"
+     },
+     {
+      "role": "student",
+      "text": "24??"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 3,
+   "rails": {
+    "lessonTopic": "Physics: kinetic energy"
+   }
+  },
+  "output": "Let me lay one out completely. For a 2 kg ball at 3 m/s: square the speed first, 3² = 9, then KE = ½ × 2 × 9 = 9 joules — squaring before multiplying is the whole trick. Keep the mass at 2 kg but slow the ball to 2 m/s: what's the kinetic energy now?",
+  "tags": [
+   "case:attempts3-worked",
+   "attempts:3",
+   "subject:physics"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Add atomic masses to find a molecule's molar mass",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Molar mass is the sum of the atomic masses in the formula. With H at 1 and O at 16, what's the molar mass of H2O?"
+     },
+     {
+      "role": "student",
+      "text": "17"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — H2 means TWO hydrogens: 1 + 1 + 16 = 18 g/mol. Now try NH3, with N at 14: what's its molar mass?"
+     },
+     {
+      "role": "student",
+      "text": "15"
+     },
+     {
+      "role": "tutor",
+      "text": "Careful — the 3 means three hydrogens: 14 + 1 + 1 + 1 = 17 g/mol. What about CH4, with C at 12?"
+     },
+     {
+      "role": "student",
+      "text": "13?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 3,
+   "rails": {
+    "lessonTopic": "Chemistry: molar mass"
+   }
+  },
+  "output": "Let's do one entirely, subscript by subscript. CO2 has one carbon at 12 and two oxygens at 16 each, so its molar mass is 12 + 16 + 16 = 44 g/mol — every subscript means that many copies of the atom's mass. Now try its simpler cousin CO, with just one oxygen: what's its molar mass?",
+  "tags": [
+   "case:attempts3-worked",
+   "attempts:3",
+   "subject:chemistry"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Evaluate boolean expressions using the and operator",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "The and operator needs BOTH sides to be True to give True. What is True and False?"
+     },
+     {
+      "role": "student",
+      "text": "True"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Python boolean logic",
+    "language": "Python"
+   }
+  },
+  "output": "That's not right, actually — and only produces True when both sides are True, and here one side is False, which sinks the whole expression to False. Think of it as needing two yes votes. What is True and True?",
+  "tags": [
+   "case:no-praise",
+   "attempts:0",
+   "subject:python"
+  ],
+  "userNotes": [
+   "NO_PRAISE"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Predict the string typeof returns for a number",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "The typeof operator tells you a value's type, as a string. What does typeof 42 give?"
+     },
+     {
+      "role": "student",
+      "text": "int"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "JavaScript types",
+    "language": "JavaScript"
+   }
+  },
+  "output": "Not quite — JavaScript has no separate int type; every number, whole or decimal, shares the single type 'number', so typeof 42 gives 'number'. What does typeof 3.14 give?",
+  "tags": [
+   "case:no-praise",
+   "attempts:0",
+   "subject:javascript"
+  ],
+  "userNotes": [
+   "NO_PRAISE"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Distinguish DELETE from DROP in SQL",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "DELETE and DROP both remove things, but very different things. Which command removes an entire table from the database?"
+     },
+     {
+      "role": "student",
+      "text": "DELETE"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "SQL data removal commands",
+    "language": "SQL"
+   }
+  },
+  "output": "Careful — DELETE removes rows but always leaves the table itself standing, even if you empty it out completely. DROP TABLE is the demolition command that removes the table, structure and all. Which command would you reach for to remove only the rows where status = 'old'?",
+  "tags": [
+   "case:no-praise",
+   "attempts:0",
+   "subject:sql"
+  ],
+  "userNotes": [
+   "NO_PRAISE"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Rank HTML heading tags by size and importance",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "HTML gives you six heading levels, h1 through h6. Which one renders the biggest?"
+     },
+     {
+      "role": "student",
+      "text": "h6"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "HTML headings",
+    "language": "HTML"
+   }
+  },
+  "output": "It's actually the other way around — the number marks rank, so h1 is the top-level, biggest heading and h6 is the smallest footnote of a heading. Which tag would you pick for a page's main title?",
+  "tags": [
+   "case:no-praise",
+   "attempts:0",
+   "subject:html-css"
+  ],
+  "userNotes": [
+   "NO_PRAISE"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Compute what the AVERAGE function returns",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "AVERAGE adds up its numbers and divides by how many there are. What does =AVERAGE(2, 4, 9) give?"
+     },
+     {
+      "role": "student",
+      "text": "15"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Spreadsheet functions: AVERAGE"
+   }
+  },
+  "output": "Not quite — 15 is only the sum; AVERAGE takes one more step and divides by the count of numbers, so 15 ÷ 3 = 5. What does =AVERAGE(3, 5, 10) give?",
+  "tags": [
+   "case:no-praise",
+   "attempts:0",
+   "subject:excel"
+  ],
+  "userNotes": [
+   "NO_PRAISE"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Evaluate small powers like 2 cubed",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "An exponent counts how many copies of the base get multiplied together. What is 2³?"
+     },
+     {
+      "role": "student",
+      "text": "6"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Exponents"
+   }
+  },
+  "output": "Not right, I'm afraid — 6 comes from 2 × 3, but the exponent means multiply 2 by itself three times: 2 × 2 × 2 = 8. What is 3²?",
+  "tags": [
+   "case:no-praise",
+   "attempts:0",
+   "subject:arithmetic"
+  ],
+  "userNotes": [
+   "NO_PRAISE"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Name the notes on the lines of the treble clef",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "The five lines of the treble clef each carry a fixed note, bottom to top. Which note lives on the bottom line?"
+     },
+     {
+      "role": "student",
+      "text": "C"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Music theory: reading the treble clef"
+   }
+  },
+  "output": "Not quite — the bottom line is E, and going up the lines spell E-G-B-D-F, remembered as Every Good Boy Does Fine. Middle C actually hangs below the staff on its own little ledger line. Using that phrase, what note sits on the second line from the bottom?",
+  "tags": [
+   "case:no-praise",
+   "attempts:0",
+   "subject:music"
+  ],
+  "userNotes": [
+   "NO_PRAISE"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Recall chemical symbols that come from Latin names",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Element symbols are one or two letters, but they don't always match the English name. What's the symbol for sodium?"
+     },
+     {
+      "role": "student",
+      "text": "So"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Chemistry: element symbols"
+   }
+  },
+  "output": "Not quite — sodium's symbol is Na, from its Latin name natrium; a handful of old elements carry Latin symbols like that. Potassium is another, from the Latin kalium. What one-letter symbol does potassium get?",
+  "tags": [
+   "case:no-praise",
+   "attempts:0",
+   "subject:chemistry"
+  ],
+  "userNotes": [
+   "NO_PRAISE"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Identify the mode of a data set",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "The mode is the value that shows up most often in a data set. What's the mode of 2, 5, 5, 8?"
+     },
+     {
+      "role": "student",
+      "text": "8"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Statistics: the mode"
+   }
+  },
+  "output": "Not quite — 8 is the largest value, but the mode cares about frequency, and 5 appears twice while every other value appears once, so the mode is 5. What's the mode of 1, 4, 4, 4, 9?",
+  "tags": [
+   "case:no-praise",
+   "attempts:0",
+   "subject:statistics"
+  ],
+  "userNotes": [
+   "NO_PRAISE"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Give a force in newtons with the correct unit",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Let's use F = ma with units. A 5 kg mass accelerates at 2 m/s² — what's the force, with its unit?"
+     },
+     {
+      "role": "student",
+      "text": "10 joules"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Physics: forces and units"
+   }
+  },
+  "output": "Careful — 10 is the right multiplication, but joules is the wrong unit: joules measure energy, while force always comes in newtons, so it's 10 N. What's the force, with its unit, on a 4 kg mass accelerating at 3 m/s²?",
+  "tags": [
+   "case:no-praise",
+   "attempts:0",
+   "subject:physics"
+  ],
+  "userNotes": [
+   "NO_PRAISE"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Trace how a loop accumulates a total across a list",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Watch the total grow: total = 0, then for n in [2, 4]: total = total + n. After the loop, total is 6. What would total end up as for [1, 2, 3]?"
+     },
+     {
+      "role": "student",
+      "text": "im not sure i get it"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Python loops: accumulating a total",
+    "language": "Python"
+   }
+  },
+  "output": "Let's try it as a running tally on paper instead. With [5, 10]: total starts at 0, the first pass makes it 0 + 5 = 5, and the second makes it 5 + 10 = 15. Following that same tally, what does total end up as for [3, 7]?",
+  "tags": [
+   "case:repetition",
+   "attempts:1",
+   "subject:python"
+  ],
+  "userNotes": [
+   "REPETITION"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Predict the output of a template literal with an embedded variable",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Backticks let you embed variables right inside text: with name = 'Ana', the template `hi ${name}` gives 'hi Ana'. What does `bye ${name}` give?"
+     },
+     {
+      "role": "student",
+      "text": "bye ${name}?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "JavaScript template literals",
+    "language": "JavaScript"
+   }
+  },
+  "output": "Not quite — the ${} part always gets swapped for the variable's current value, never printed as-is. Fresh example: with city = 'Rome', the template `I love ${city}` produces 'I love Rome'. With food = 'tacos', what does `more ${food} please` produce?",
+  "tags": [
+   "case:repetition",
+   "attempts:1",
+   "subject:javascript"
+  ],
+  "userNotes": [
+   "REPETITION"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Multiply two decimals by counting decimal places",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "To multiply 0.3 × 0.2: do 3 × 2 = 6, then count two decimal places total, giving 0.06. So what is 0.4 × 0.2?"
+     },
+     {
+      "role": "student",
+      "text": "0.8"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Multiplying decimals"
+   }
+  },
+  "output": "Let's look at it through money instead. 0.5 × 0.5 is half of half a dollar — a quarter, 0.25 — and notice how 5 × 5 = 25 got two decimal places slid in. Using that same move, what is 0.6 × 0.3?",
+  "tags": [
+   "case:repetition",
+   "attempts:1",
+   "subject:arithmetic"
+  ],
+  "userNotes": [
+   "REPETITION"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Form plurals of Spanish nouns based on their ending",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Nouns ending in a vowel take just -s in the plural: libro becomes libros. What's the plural of casa?"
+     },
+     {
+      "role": "student",
+      "text": "casaes"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Spanish grammar: plural nouns"
+   }
+  },
+  "output": "Not quite — casa ends in a vowel, and vowels only ever take -s, giving casas. Here's the contrast in one new pair: flor ends in a consonant so it grows to flores, while perro ends in a vowel and simply becomes perros. What's the plural of ciudad?",
+  "tags": [
+   "case:repetition",
+   "attempts:1",
+   "subject:spanish"
+  ],
+  "userNotes": [
+   "REPETITION"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Explain how many rows a LIMIT clause returns",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "LIMIT caps how many rows come back — LIMIT 5 stops after five. What does SELECT * FROM songs LIMIT 3 return?"
+     },
+     {
+      "role": "student",
+      "text": "idk the 3rd row?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "SQL result limits",
+    "language": "SQL"
+   }
+  },
+  "output": "Not quite — it returns rows, plural: the first 3 the query produces, then it simply stops. Picture a different scene: a players table with 100 rows, where SELECT * FROM players ORDER BY score DESC LIMIT 10 hands you exactly the top 10. How many rows does LIMIT 7 give from a 50-row table?",
+  "tags": [
+   "case:repetition",
+   "attempts:1",
+   "subject:sql"
+  ],
+  "userNotes": [
+   "REPETITION"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Compute a mean as an equal share",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "The mean of 2, 4, 6: add them to get 12, divide by 3, and you get 4. So what's the mean of 2, 4, 6, 8?"
+     },
+     {
+      "role": "student",
+      "text": "i dont really follow"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Statistics: the mean as a fair share"
+   }
+  },
+  "output": "Think of it as evening out stacks of coins. Stacks of 1, 5, and 6 coins hold 12 coins altogether, and shared fairly across the 3 stacks that's 4 coins each — the mean is just the fair share. If stacks of 3, 9, and 6 get evened out the same way, how many coins does each stack hold?",
+  "tags": [
+   "case:repetition",
+   "attempts:1",
+   "subject:statistics"
+  ],
+  "userNotes": [
+   "REPETITION"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Use len() to count the characters in a string",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "What do you think len('hello') gives you?"
+     },
+     {
+      "role": "student",
+      "text": "no idea, you havent told me what len does"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Python built-in functions: len",
+    "language": "Python"
+   }
+  },
+  "output": "Fair point — len counts how many characters a string holds, so len('cat') is 3 because c-a-t is three letters. Spaces count too: len('a b') is also 3. What does len('piano') give?",
+  "tags": [
+   "case:explain-first",
+   "attempts:0",
+   "subject:python"
+  ],
+  "userNotes": [
+   "EXPLAIN_FIRST"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Read the two-value margin shorthand in CSS",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "If a box has margin: 10px 20px, what's its top margin?"
+     },
+     {
+      "role": "student",
+      "text": "wait what do the two numbers even mean??"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "CSS margin shorthand",
+    "language": "CSS"
+   }
+  },
+  "output": "Let me actually explain it first: with two values, the first sets top and bottom while the second sets left and right — so margin: 10px 20px gives 10px above and below and 20px on each side. For a box with margin: 5px 15px, what's the left margin?",
+  "tags": [
+   "case:explain-first",
+   "attempts:0",
+   "subject:html-css"
+  ],
+  "userNotes": [
+   "EXPLAIN_FIRST"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Compute the slope of a line as rise over run",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "What's the slope of a line that rises 6 while running 2?"
+     },
+     {
+      "role": "student",
+      "text": "u keep asking but i dont know what slope is"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Algebra: slope of a line"
+   }
+  },
+  "output": "You're right, let's define it properly: slope measures steepness as rise over run, so a line climbing 6 while moving 2 to the right has slope 6/2 = 3. A perfectly flat line rises 0, so its slope is 0. What's the slope of a line that rises 8 while running 4?",
+  "tags": [
+   "case:explain-first",
+   "attempts:0",
+   "subject:algebra"
+  ],
+  "userNotes": [
+   "EXPLAIN_FIRST"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Classify a substance as acidic or basic from its pH",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Where does lemon juice sit on the pH scale, roughly?"
+     },
+     {
+      "role": "student",
+      "text": "is 7 acid?? i dont get the scale at all"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Chemistry: the pH scale"
+   }
+  },
+  "output": "Let me lay the scale out first: pH runs from 0 to 14, where 7 is neutral like pure water, anything below 7 is acidic, and anything above is basic — lemon juice at pH 2 is firmly an acid, while bleach near 13 is a base. Where does milk at pH 6.5 fall, acid or base?",
+  "tags": [
+   "case:explain-first",
+   "attempts:0",
+   "subject:chemistry"
+  ],
+  "userNotes": [
+   "EXPLAIN_FIRST"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Build a major chord from scale degrees 1, 3, and 5",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Which notes make up the C major chord?"
+     },
+     {
+      "role": "student",
+      "text": "how am i supposed to know whats in a chord"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Music theory: building major chords"
+   }
+  },
+  "output": "Good point, here's the recipe first: a major chord stacks the 1st, 3rd, and 5th notes of its major scale, so C major takes C, E, and G straight out of the C scale. The same recipe works from any root. Using the G major scale — G, A, B, C, D, E, F# — which three notes make the G major chord?",
+  "tags": [
+   "case:explain-first",
+   "attempts:0",
+   "subject:music"
+  ],
+  "userNotes": [
+   "EXPLAIN_FIRST"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Write a COUNTIF formula that counts matching cells",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "How would you count the yes votes in column A?"
+     },
+     {
+      "role": "student",
+      "text": "you never explained countif tho"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Spreadsheets: COUNTIF"
+   }
+  },
+  "output": "True, let me fix that: =COUNTIF(A1:A10, \"yes\") scans A1 through A10 and counts the cells that say exactly yes — if four cells match, it returns 4. First argument is where to look, second is what to match. What formula would count the cells in B1:B20 that say done?",
+  "tags": [
+   "case:explain-first",
+   "attempts:0",
+   "subject:excel"
+  ],
+  "userNotes": [
+   "EXPLAIN_FIRST"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Predict what round() returns for a decimal",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "The round function snaps a decimal to the nearest whole number."
+     },
+     {
+      "role": "student",
+      "text": "so it just picks whichever whole number is closest?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Python built-in functions: round",
+    "language": "Python"
+   }
+  },
+  "output": "Exactly — round(3.7) gives 4 because 3.7 sits nearer to 4 than to 3, and round(3.2) drops down to 3 for the same reason. What does round(6.2) give?",
+  "tags": [
+   "case:vacuous-question",
+   "attempts:0",
+   "subject:python"
+  ],
+  "userNotes": [
+   "VACUOUS_QUESTION"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Use indexOf to find an element's position in an array",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "The indexOf method searches an array for a value and reports where it found it."
+     },
+     {
+      "role": "student",
+      "text": "ok so it finds the position?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "JavaScript arrays: indexOf",
+    "language": "JavaScript"
+   }
+  },
+  "output": "Right — it returns the position of the first match counting from 0, so ['a', 'b', 'c'].indexOf('b') is 1, and a value that isn't there gives -1. What does ['x', 'y', 'z'].indexOf('z') return?",
+  "tags": [
+   "case:vacuous-question",
+   "attempts:0",
+   "subject:javascript"
+  ],
+  "userNotes": [
+   "VACUOUS_QUESTION"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Calculate density as mass divided by volume",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Density tells you how much mass is packed into a given space."
+     },
+     {
+      "role": "student",
+      "text": "so density is like how packed it is?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Physics: density"
+   }
+  },
+  "output": "That's the idea — density is mass divided by volume, so a 10 kg block occupying 2 liters has density 10 ÷ 2 = 5 kg per liter. What's the density of a 12 kg block with a volume of 3 liters?",
+  "tags": [
+   "case:vacuous-question",
+   "attempts:0",
+   "subject:physics"
+  ],
+  "userNotes": [
+   "VACUOUS_QUESTION"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Find 10% of a number by shifting the decimal",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "There's a shortcut for 10% that skips all the long multiplication."
+     },
+     {
+      "role": "student",
+      "text": "kind of makes sense i guess"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Percentages: the 10% shortcut"
+   }
+  },
+  "output": "Let's make it concrete: 10% means one tenth, so 10% of 80 is 8 — you just slide the decimal point one place to the left. The trick works on any number, big or small. What is 10% of 250?",
+  "tags": [
+   "case:vacuous-question",
+   "attempts:0",
+   "subject:arithmetic"
+  ],
+  "userNotes": [
+   "VACUOUS_QUESTION"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Assign a boolean value to a variable in Python",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Python has a built-in type for yes/no values: booleans."
+     },
+     {
+      "role": "student",
+      "text": "so i write is_ready = true?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Python booleans",
+    "language": "Python"
+   }
+  },
+  "output": "Almost — Python capitalizes its booleans, so it must be True with a capital T: is_ready = True. A lowercase true is a NameError, not a boolean. How would you write a variable done set to the boolean meaning no, correctly capitalized?",
+  "tags": [
+   "case:syntax-python",
+   "attempts:1",
+   "subject:python"
+  ],
+  "userNotes": [
+   "SYNTAX:Python"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Create a variable with a plain Python assignment",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Let's create your first variable to hold a number."
+     },
+     {
+      "role": "student",
+      "text": "ok so like var score = 0 right?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Python variables",
+    "language": "Python"
+   }
+  },
+  "output": "Not quite — Python doesn't use var at all; you just write the name and the value: score = 0. That plain assignment is the entire statement, no keyword, no semicolon. How would you create a variable lives holding 3?",
+  "tags": [
+   "case:syntax-python",
+   "attempts:1",
+   "subject:python"
+  ],
+  "userNotes": [
+   "SYNTAX:Python"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Write a Python if statement with a colon and indentation",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "An if statement runs its body only when the condition is true. Try writing one that prints 'big' when x > 5?"
+     },
+     {
+      "role": "student",
+      "text": "if x > 5 { print('big') }"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Python conditionals",
+    "language": "Python"
+   }
+  },
+  "output": "Close, but Python trades braces for a colon and indentation: you write if x > 5: and then put print('big') indented on the next line — no curly braces anywhere. How would you write an if statement that prints 'huge' when x > 10?",
+  "tags": [
+   "case:syntax-python",
+   "attempts:1",
+   "subject:python"
+  ],
+  "userNotes": [
+   "SYNTAX:Python"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Write a counting for loop in Python",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Let's write a loop that counts. How would you loop a variable i through 0, 1, 2?"
+     },
+     {
+      "role": "student",
+      "text": "for (i = 0; i < 3; i++)?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Python for loops",
+    "language": "Python"
+   }
+  },
+  "output": "That's the C-style loop — Python's version is far shorter: for i in range(3): with a colon at the end, no parentheses around the whole thing, no semicolons, no i++. It walks i through 0, 1, 2 by itself. How would you write the loop that runs i through 0 up to 4?",
+  "tags": [
+   "case:syntax-python",
+   "attempts:1",
+   "subject:python"
+  ],
+  "userNotes": [
+   "SYNTAX:Python"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Trace the chain of calls in a simple recursive countdown",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Recursion is a function calling itself, each time with a smaller input, until a base case stops it. In countdown(n), what should the base case check?"
+     },
+     {
+      "role": "student",
+      "text": "if n is like 0?"
+     },
+     {
+      "role": "tutor",
+      "text": "Exactly — if n == 0: return stops the chain. Now the recursive part: after printing n, what does countdown(n) call?"
+     },
+     {
+      "role": "student",
+      "text": "im so stuck, ive read this three times and it just wont click"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 2,
+   "rails": {
+    "lessonTopic": "Python recursion",
+    "language": "Python",
+    "distressed": true,
+    "studentName": "Maya"
+   }
+  },
+  "output": "It's completely okay to feel stuck, Maya — recursion trips up almost everyone at first, and rereading rarely fixes it on its own. Let's shrink it to the tiniest case: countdown(1) prints 1 and then calls countdown with one less. What value does that very next call receive?",
+  "tags": [
+   "case:distressed",
+   "attempts:2",
+   "subject:python"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Translate a comparison phrase in a word problem into an equation",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Word problems are just sentences hiding equations. \"Sam has 3 more apples than Lea\" — how would you write that with s and l?"
+     },
+     {
+      "role": "student",
+      "text": "s = 3?"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — the 3 rides on top of Lea's amount, so it's s = l + 3. Try this one: \"Ben is 2 years older than Ana\", using b and a?"
+     },
+     {
+      "role": "student",
+      "text": "i feel dumb, everyone else gets this stuff way faster than me"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Algebra: translating word problems",
+    "distressed": true
+   }
+  },
+  "output": "You're not dumb — translating words into symbols is genuinely one of the hardest steps in algebra, and speed says nothing about how well you'll understand it. Let's bank one small win with the apples: we know s = l + 3. If Lea has 5 apples, how many does Sam have?",
+  "tags": [
+   "case:distressed",
+   "attempts:1",
+   "subject:algebra"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Conjugate regular -ar verbs in the yo form of the present tense",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Present-tense -ar verbs swap the ending by person: hablar with yo becomes hablo. What's the yo form of trabajar?"
+     },
+     {
+      "role": "student",
+      "text": "honestly i want to give up, i keep mixing all the endings up"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Spanish grammar: present tense -ar verbs",
+    "distressed": true,
+    "studentName": "Leo"
+   }
+  },
+  "output": "That frustration is so understandable, Leo — the endings blur together for every learner at the start, and wanting to quit usually just means you've been working hard at it. Here's the one rule for today: with yo, -ar verbs always end in -o, like hablo. What's the yo form of bailar?",
+  "tags": [
+   "case:distressed",
+   "attempts:0",
+   "subject:spanish"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Read a fraction as equal parts of a whole",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "A fraction just names parts of a whole: the bottom says how many equal parts, the top says how many you have. What does 2/3 mean in those terms?"
+     },
+     {
+      "role": "student",
+      "text": "2 wholes and 3 parts?"
+     },
+     {
+      "role": "tutor",
+      "text": "Not quite — it's 3 equal parts with 2 of them taken. What about 1/5?"
+     },
+     {
+      "role": "student",
+      "text": "im so stuck. fractions have never made sense to me my whole life"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 1,
+   "rails": {
+    "lessonTopic": "Understanding fractions",
+    "distressed": true
+   }
+  },
+  "output": "That's a really common feeling — plenty of people carry fraction confusion for years, and it says nothing about your ability now. Forget the rules for one second: 1/2 of a pizza just means the pizza is cut into 2 equal slices and you take 1. If a pizza is cut into 4 equal slices and you take 3, what fraction of the pizza is that?",
+  "tags": [
+   "case:distressed",
+   "attempts:1",
+   "subject:arithmetic"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Use a console error message to locate a bug",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "When code breaks, the console error is your friend — it names the problem and where it happened."
+     },
+     {
+      "role": "student",
+      "text": "i give up, my code never works and i dont even know why"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "JavaScript debugging basics",
+    "language": "JavaScript",
+    "distressed": true
+   }
+  },
+  "output": "It's really frustrating when code keeps breaking — every developer you admire feels that same wall, regularly. Here's the comforting secret: the error message usually names the exact problem for you. If the console says 'scor is not defined' but you created a variable called score, what mistake is hiding in your code?",
+  "tags": [
+   "case:distressed",
+   "attempts:0",
+   "subject:javascript"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Count beats for quarter and half notes in 4/4 time",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "In 4/4 time a quarter note lasts one beat and a half note lasts two. Try clapping four quarter notes evenly — how many beats did you fill?"
+     },
+     {
+      "role": "student",
+      "text": "4"
+     },
+     {
+      "role": "tutor",
+      "text": "Right, a full measure. Now half notes: how many half notes fill one 4/4 measure?"
+     },
+     {
+      "role": "student",
+      "text": "i feel dumb, i cant even clap this right"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 2,
+   "rails": {
+    "lessonTopic": "Music theory: note durations",
+    "distressed": true,
+    "studentName": "Sam"
+   }
+  },
+  "output": "You're not dumb at all, Sam — rhythm is a physical skill, and everyone's hands lag behind their ears when they start. Skip the clapping and just count with me: each half note lasts 2 beats, and I'll tell you the first one covers beats 1 and 2. Which beats does the second half note cover?",
+  "tags": [
+   "case:distressed",
+   "attempts:2",
+   "subject:music"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Read an element out of a list by index",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Lists keep things in order: colors = ['red', 'blue', 'green']. Indexes start at 0, so colors[0] is 'red'. What is colors[1]?"
+     },
+     {
+      "role": "student",
+      "text": "blue"
+     },
+     {
+      "role": "tutor",
+      "text": "Exactly. And the last one — which index reaches 'green'?"
+     },
+     {
+      "role": "student",
+      "text": "whats the weather today"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Python lists",
+    "language": "Python"
+   }
+  },
+  "output": "I can't help with the weather here, but I'd hate to lose our momentum. Back to colors = ['red', 'blue', 'green'] — what does colors[2] give?",
+  "tags": [
+   "case:off-topic",
+   "attempts:0",
+   "subject:python"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Filter table rows with a numeric WHERE condition",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Imagine a pizzas table with columns name and price. WHERE tests each row: SELECT name FROM pizzas WHERE price < 12 keeps the cheaper ones. Which rows survive that filter?"
+     },
+     {
+      "role": "student",
+      "text": "the ones under 12"
+     },
+     {
+      "role": "tutor",
+      "text": "Right. Now let's write one ourselves."
+     },
+     {
+      "role": "student",
+      "text": "do u know any good pizza places near me"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "SQL filtering with WHERE",
+    "language": "SQL"
+   }
+  },
+  "output": "Restaurant tips are outside what I can help with here, sadly — but our pizzas table can tide you over. What WHERE clause would keep only the pizzas cheaper than 8?",
+  "tags": [
+   "case:off-topic",
+   "attempts:0",
+   "subject:sql"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Solve one-step equations by undoing addition or subtraction",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "To solve x + 4 = 9, undo the +4 by subtracting 4 from both sides. What is x?"
+     },
+     {
+      "role": "student",
+      "text": "5"
+     },
+     {
+      "role": "tutor",
+      "text": "Nice. Subtraction works the same way in reverse."
+     },
+     {
+      "role": "student",
+      "text": "who won the champions league game last night?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Algebra: one-step equations"
+   }
+  },
+  "output": "I can't help with match results here, but let's keep your solving streak alive. What is x in x - 7 = 12?",
+  "tags": [
+   "case:off-topic",
+   "attempts:0",
+   "subject:algebra"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Place descriptive adjectives after the noun in Spanish",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "In Spanish, descriptive adjectives usually follow the noun: el gato negro, not el negro gato. How would you say \"the blue book\", with libro and azul?"
+     },
+     {
+      "role": "student",
+      "text": "el libro azul"
+     },
+     {
+      "role": "tutor",
+      "text": "Exactly right. Let's do a few more to lock the pattern in."
+     },
+     {
+      "role": "student",
+      "text": "can you write me a caption for my instagram post"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Spanish grammar: adjective placement"
+   }
+  },
+  "output": "Captions are a bit outside what I can do here — let's stay with our word order instead. How would you say \"the red house\", using casa and roja?",
+  "tags": [
+   "case:off-topic",
+   "attempts:0",
+   "subject:spanish"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Use atomic number to find the proton count of an element",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "Every element's atomic number tells you exactly how many protons its atoms carry. Hydrogen's atomic number is 1 — how many protons does it have?"
+     },
+     {
+      "role": "student",
+      "text": "1"
+     },
+     {
+      "role": "tutor",
+      "text": "Exactly. The atomic number IS the proton count, always."
+     },
+     {
+      "role": "student",
+      "text": "what movie should i watch tonight lol"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Chemistry: atomic structure"
+   }
+  },
+  "output": "Movie picks aren't something I can help with here, tempting as that is. Back to our atoms: carbon's atomic number is 6, so how many protons does a carbon atom have?",
+  "tags": [
+   "case:off-topic",
+   "attempts:0",
+   "subject:chemistry"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Predict the numbers produced by range() with a step argument",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "range can take a step: range(0, 10, 2) counts 0, 2, 4, 6, 8, jumping by 2 each time. What does range(0, 6, 2) give?"
+     },
+     {
+      "role": "student",
+      "text": "0, 2, 4"
+     },
+     {
+      "role": "tutor",
+      "text": "Exactly — it stops before reaching 6. The step can be any size you like."
+     },
+     {
+      "role": "student",
+      "text": "wait can range count backwards? like with negative numbers"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Python range with steps",
+    "language": "Python"
+   }
+  },
+  "output": "Great question — yes: a negative step counts down, so range(5, 0, -1) gives 5, 4, 3, 2, 1, stopping before the end value just like always. What numbers does range(3, 0, -1) give?",
+  "tags": [
+   "case:side-question",
+   "attempts:0",
+   "subject:python"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Group page content with container elements",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "To style or move several elements together, you wrap them in a container element. The go-to wrapper is <div>. What would you wrap around a heading and a paragraph to group them?"
+     },
+     {
+      "role": "student",
+      "text": "a div around both of them"
+     },
+     {
+      "role": "tutor",
+      "text": "Exactly — one div holding both."
+     },
+     {
+      "role": "student",
+      "text": "quick q, whats the difference between div and span?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "HTML structure: div and span",
+    "language": "HTML"
+   }
+  },
+  "output": "Happy to clarify — div is a block container that starts on its own new line, while span is inline and nestles inside a line of text, so you'd reach for span to style a single word mid-sentence. Which of the two would you wrap around one word in a paragraph to color it?",
+  "tags": [
+   "case:side-question",
+   "attempts:0",
+   "subject:html-css"
+  ]
+ },
+ {
+  "type": "teach",
+  "input": {
+   "milestone": {
+    "description": "Find the median by sorting and taking the middle value",
+    "context": [
+     {
+      "role": "tutor",
+      "text": "The median is the middle value after sorting. Sort 9, 1, 5 and tell me the median?"
+     },
+     {
+      "role": "student",
+      "text": "5"
+     },
+     {
+      "role": "tutor",
+      "text": "Exactly — sorted it's 1, 5, 9 and the middle is 5."
+     },
+     {
+      "role": "student",
+      "text": "hold on is the median the same thing as the average?"
+     }
+    ]
+   },
+   "justAdvanced": false,
+   "attempts": 0,
+   "rails": {
+    "lessonTopic": "Statistics: median vs mean"
+   }
+  },
+  "output": "Good question — not quite: the average adds everything and divides, while the median only takes the middle of the sorted list, so one extreme value drags the average around but barely moves the median. For 1, 2, 9 the median is 2 — what's the average of those same three numbers?",
+  "tags": [
+   "case:side-question",
+   "attempts:0",
+   "subject:statistics"
+  ]
+ }
+]
