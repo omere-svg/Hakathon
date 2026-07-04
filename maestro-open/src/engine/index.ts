@@ -27,7 +27,8 @@ export const ENGINES: Record<EngineId, EngineInfo> = {
   },
 };
 
-/** Create the selected engine for a lesson brief. */
-export function createEngine(id: EngineId, brief: LessonBrief, llm: LLMEngine): TutorEngine {
-  return (ENGINES[id] ?? ENGINES.milestone).create(brief, llm);
+/** Create the selected engine for a lesson brief. `snapshot` (from engine.serialize())
+ *  resumes a persisted session instead of starting fresh. */
+export function createEngine(id: EngineId, brief: LessonBrief, llm: LLMEngine, snapshot?: unknown): TutorEngine {
+  return (ENGINES[id] ?? ENGINES.milestone).create(brief, llm, snapshot);
 }

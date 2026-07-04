@@ -24,6 +24,9 @@ export interface LessonBrief {
   program?: string;
   course?: string;
   topic?: string;
+  /** the lesson's programming language (e.g. 'Python') — pins the tutor's code syntax.
+   *  Without it a small model drifts into JS-flavored pseudo-code (`var result = True;`). */
+  language?: string;
   /** ordered — the intended learning sequence. */
   goals: MasteryGoal[];
 }
@@ -55,11 +58,9 @@ export interface EngineDebug {
   calls?: LlmCall[];
 }
 
-/** Conversational quick-reply / MCQ suggestions the UI renders under a tutor turn. The
+/** Conversational quick-reply suggestions the UI renders under a tutor turn. The
  *  engine decides them so the chips always match its state; the UI just renders. */
 export interface Suggestions {
-  /** id of an MCQ check whose option text the UI should resolve and render as buttons. */
-  mcqCheckId?: string;
   /** plain quick-reply chips (label shown, text sent). */
   quick?: { label: string; text: string }[];
 }
@@ -72,7 +73,10 @@ export interface TurnView {
   done: boolean;
   /** short human status line for the dev bar (e.g. "Milestone 2/4 · active"). */
   status: string;
-  suggestions?: Suggestions;
+  /** quick-reply chips, resolved AFTER the reply — they cost an extra model call, and the
+   *  reply must never wait on them. The UI renders the turn, then fills chips in when this
+   *  settles (undefined = no chips for this turn). Never rejects. */
+  suggestions?: Promise<Suggestions | undefined>;
   debug?: EngineDebug;
 }
 
@@ -86,8 +90,14 @@ export interface TutorEngine {
   start(): Promise<TurnView>;
   /** process one student message and return the next tutor turn. */
   respond(message: string): Promise<TurnView>;
+  /** plain-data snapshot of internal state for session persistence (null = nothing yet).
+   *  Pass the value back through the factory's `snapshot` param to resume. */
+  serialize?(): unknown;
+  /** current dev-panel view of internal state (plan steps etc.) WITHOUT running a turn —
+   *  lets the UI repopulate the engine panel after restoring a saved session. Read-only. */
+  debugView?(): EngineDebug;
 }
 
 export type EngineId = 'milestone';
 
-export type EngineFactory = (brief: LessonBrief, llm: LLMEngine) => TutorEngine;
+export type EngineFactory = (brief: LessonBrief, llm: LLMEngine, snapshot?: unknown) => TutorEngine;

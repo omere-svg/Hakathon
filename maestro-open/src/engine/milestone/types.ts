@@ -19,10 +19,19 @@ export interface Milestone {
   status: MilestoneStatus;
   /** ISOLATED context: only the messages exchanged while teaching THIS milestone. */
   context: MilestoneTurn[];
+  /** failed assessments on this milestone — drives the escalating scaffold and the
+   *  force-advance cap so a student can never be trapped in an impasse loop. */
+  attempts?: number;
 }
 
 /** Bounded window of a milestone's isolated context handed to the model each call. */
 export const CONTEXT_WINDOW = 8;
+
+/** Serializable snapshot of a queue (for localStorage session persistence). */
+export interface QueueSnapshot {
+  items: Milestone[];
+  index: number;
+}
 
 export class MilestoneQueue {
   private items: Milestone[];
@@ -32,6 +41,20 @@ export class MilestoneQueue {
     if (!items.length) throw new Error('MilestoneQueue requires at least one milestone.');
     this.items = items;
     this.items[0].status = 'active';
+  }
+
+  /** Snapshot for persistence — plain data, safe to JSON.stringify. */
+  snapshot(): QueueSnapshot {
+    return { items: this.items.map((m) => ({ ...m, context: [...m.context] })), index: this.index };
+  }
+
+  /** Rebuild a queue exactly as it was saved (statuses and position preserved). */
+  static restore(snap: QueueSnapshot): MilestoneQueue {
+    const q = new MilestoneQueue(snap.items.map((m) => ({ ...m, context: [...m.context] })));
+    // The constructor activates item 0; put the SAVED statuses and position back.
+    snap.items.forEach((m, i) => { q.items[i].status = m.status; });
+    q.index = Math.min(Math.max(0, snap.index), snap.items.length);
+    return q;
   }
 
   /** The milestone currently being taught (undefined once the queue is complete). */
