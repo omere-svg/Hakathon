@@ -1,0 +1,9 @@
+node_modules
+dist
+finetune
+public/models
+PROJECT_SUMMARY.md
+PROJECT_SUMMARY.html
+PROMPTS.md
+PROMPTS.html
+.DS_Store

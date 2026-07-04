@@ -21,3 +21,4 @@ PROJECT_SUMMARY.html
 
 # GGUF weights served to the wllama backend (build artifacts, 1GB+)
 public/models/
+.vercel
