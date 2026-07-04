@@ -238,6 +238,35 @@ export function simpleLoopTerminates(code: string): boolean | null {
   return !test(v);
 }
 
+// ── Unreachable elif branches — iter6: a wrong-order chain (`>= 80` before `>= 90`)
+// was validated by the tutor AND accepted by the grader. Numeric threshold chains on one
+// variable in one direction are mechanically checkable. ─────────────────────────────
+
+/** Returns a human-readable description of the first unreachable branch in a numeric
+ *  if/elif threshold chain, or null when the chain is fine / not the checkable shape. */
+export function findUnreachableBranch(code: string): string | null {
+  const conds = [...code.matchAll(/\b(?:if|elif)\s+(\w+)\s*(>=|<=|>|<)\s*(-?\d+(?:\.\d+)?)\s*:/g)].map((m) => ({
+    v: m[1],
+    op: m[2],
+    n: Number(m[3]),
+  }));
+  for (let i = 1; i < conds.length; i++) {
+    const prev = conds[i - 1];
+    const cur = conds[i];
+    if (prev.v !== cur.v) continue;
+    const dirPrev = prev.op[0] === '>' ? 1 : -1;
+    const dirCur = cur.op[0] === '>' ? 1 : -1;
+    if (dirPrev !== dirCur) continue;
+    // Same variable, same direction: a later threshold the earlier check already covers
+    // (higher for >/>=, lower for </<=) means that branch can never run.
+    const swallowed = dirPrev === 1 ? cur.n >= prev.n : cur.n <= prev.n;
+    if (swallowed) {
+      return `\`${cur.v} ${cur.op} ${cur.n}\` can never run — \`${prev.v} ${prev.op} ${prev.n}\` is checked first`;
+    }
+  }
+  return null;
+}
+
 /** Verify every string-membership claim in a tutor reply and fix any that are wrong. */
 export function correctMembership(text: string): { text: string; corrections: MathCorrection[] } {
   const corrections: MathCorrection[] = [];

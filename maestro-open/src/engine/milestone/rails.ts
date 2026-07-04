@@ -14,7 +14,8 @@
 
 /** Correctness-AFFIRMING praise only — "good try" acknowledges effort, not correctness,
  *  and is fine on a wrong answer. These are the tokens the scenario graders flag. */
-const PRAISE = /\b(correct|exactly|perfect(?:ly)?|well done|great job|good job|nicely done|excellent|spot on|you got it|that'?s it|nailed it)\b|\b(that'?s|you'?re|you are)\s+right\b/i;
+const PRAISE =
+  /\b(correct|exactly|perfect(?:ly)?|well done|great job|good job|nicely done|excellent|spot on|you got it|that'?s it|nailed it)\b|\b(that'?s|you'?re|you are)\s+right\b|\b(?:that|this|your|the)\s+(?:code|answer|chain|loop|solution)\s+is\s+right\b/i;
 
 /** A negation or qualifier in the same sentence defuses the praise ("that's not correct",
  *  "close, but not quite right"). */
@@ -109,6 +110,10 @@ export function looksLikeNonPythonCode(text: string): boolean {
   // Teaching ANOTHER language by name (harness iter1: "JavaScript uses the equals sign
   // for equality" — in a Python lesson) is drift the code checks can't see.
   if (/\b(?:javascript|typescript|java\b|c\+\+|c#)/i.test(text)) return true;
+  // Placeholder pseudo-syntax (TutorBench SWE/BIZ-07): `print(<your text here>)` is not
+  // runnable code. Angle-bracket word placeholders are never valid Python; comparisons
+  // like "x < 10" don't match (the pattern needs letters right after `<`).
+  if (/<[a-z][a-z_ -]{2,}>/i.test(text)) return true;
   return false;
 }
 

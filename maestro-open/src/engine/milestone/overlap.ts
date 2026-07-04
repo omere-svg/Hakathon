@@ -115,8 +115,9 @@ const SETUP_VERBS = new Set([
 ]);
 
 /** Backticked code tokens only — two steps whose code tokens differ are NEVER duplicates
- *  (`and` vs `or` is sometimes the only distinguishing token). */
-function codeTokens(text: string): Set<string> {
+ *  (`and` vs `or` is sometimes the only distinguishing token). Also used by the transition
+ *  on-topic rail: a `break` milestone's intro must actually mention break. */
+export function codeTokens(text: string): Set<string> {
   const out = new Set<string>();
   for (const m of text.matchAll(/`([^`]+)`/g)) {
     for (const tok of m[1].toLowerCase().split(/\s+/)) {

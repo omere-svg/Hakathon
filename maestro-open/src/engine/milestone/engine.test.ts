@@ -186,7 +186,10 @@ describe('MilestoneEngine.respond — teaching loop', () => {
 describe('MilestoneEngine.respond — advancing', () => {
   it('achieve → sync → advance, with the bridge carrying only the minimal handoff', async () => {
     const { llm, calls } = makeStub({
-      assess: () => '{"achieved": true, "evidence": "student explained the condition"}',
+      assess: (_s, u) =>
+        u.includes('Understand what a while loop is')
+          ? '{"achieved": true, "evidence": "student explained the condition"}'
+          : '{"achieved": false, "evidence": "not shown"}',
     });
     const engine = createMilestoneEngine(brief, llm);
     await engine.start();
@@ -195,8 +198,6 @@ describe('MilestoneEngine.respond — advancing', () => {
     // advanced to milestone 2
     expect(view.status).toContain('Milestone 2/3');
     expect(view.debug?.steps?.map((s) => s.state)).toEqual(['done', 'active', 'pending']);
-    // sync ran exactly once
-    expect(calls.filter((c) => c.kind === 'sync')).toHaveLength(1);
 
     // the transition teach prompt carries the bridge…
     const teachCalls = calls.filter((c) => c.kind === 'teach');
@@ -231,44 +232,55 @@ describe('MilestoneEngine.respond — advancing', () => {
   });
 });
 
-describe('MilestoneEngine — sync evidence gate', () => {
-  it('rejects sync ids without concrete evidence (no silent skipping)', async () => {
+describe('MilestoneEngine — sync v2 (candidate-gated implicit credit)', () => {
+  // The old one-call multi-goal audit NEVER fired (always [] — even on a controlled probe
+  // with undeniable evidence). Sync now gates candidates deterministically and re-uses the
+  // single-milestone grader per candidate.
+
+  it('credits a remaining milestone the student already demonstrated in the completed transcript', async () => {
     const { llm } = makeStub({
-      assess: () => '{"achieved": true, "evidence": "demonstrated"}',
-      sync: () => '{"alsoAchieved": [{"id": "m3"}, "m3", {"id": "m3", "evidence": "ok"}]}',
+      assess: (_s, u) => {
+        if (u.includes('Understand what a while loop is')) return '{"achieved": true, "evidence": "explained it"}';
+        if (u.includes('Explain when a while loop ends') && u.includes('condition becomes false'))
+          return '{"achieved": true, "evidence": "said it ends when the condition becomes false"}';
+        if (u.includes('Prevent infinite loops') && u.includes('changing the loop variable'))
+          return '{"achieved": true, "evidence": "explained prevention"}';
+        return '{"achieved": false, "evidence": "not shown"}';
+      },
     });
     const engine = createMilestoneEngine(brief, llm);
     await engine.start();
-    const view = await engine.respond('answer one');
-    // bare id, string id, and too-short evidence are ALL rejected → m3 still pending
-    expect(view.debug?.steps?.map((s) => s.state)).toEqual(['done', 'active', 'pending']);
+    const view = await engine.respond('a while loop repeats and it ends when its condition becomes false');
+    // m1 achieved; m3 shares content with the student text → candidate → assess credits it
+    expect(view.status).toContain('Milestone 2/3');
+    expect(view.debug?.steps?.map((s) => s.state)).toEqual(['done', 'active', 'done']);
+    const v2 = await engine.respond('you prevent them by changing the loop variable');
+    expect(v2.done).toBe(true); // m2 done → m3 already credited → complete
   });
 
-  it('accepts sync ids WITH evidence and advance skips them', async () => {
-    const { llm } = makeStub({
-      assess: () => '{"achieved": true, "evidence": "demonstrated"}',
-      sync: () => '{"alsoAchieved": [{"id": "m3", "evidence": "the student already wrote a full while loop"}]}',
+  it('no shared content → no candidates → no extra grader calls', async () => {
+    const { llm, calls } = makeStub({
+      assess: (_s, u) =>
+        u.includes('Understand what a while loop is')
+          ? '{"achieved": true, "evidence": "demonstrated"}'
+          : '{"achieved": false, "evidence": "not shown"}',
     });
     const engine = createMilestoneEngine(brief, llm);
     await engine.start();
-    const v1 = await engine.respond('answer one'); // m1 done, m3 sync-achieved → now on m2
-    expect(v1.status).toContain('Milestone 2/3');
-    expect(v1.debug?.steps?.map((s) => s.state)).toEqual(['done', 'active', 'done']);
-
-    const v2 = await engine.respond('answer two'); // m2 done → m3 already done → lesson complete
-    expect(v2.done).toBe(true);
-    expect(v2.reply).toContain('Congratulations');
-    expect(v2.suggestions).toBeUndefined();
+    await engine.respond('answer one'); // shares nothing with m2/m3 descriptions
+    expect(calls.filter((c) => c.kind === 'assess')).toHaveLength(1); // only the current milestone
   });
 
-  it('a sync failure marks nothing (conservative)', async () => {
+  it('a candidate the grader rejects stays pending (conservative)', async () => {
     const { llm } = makeStub({
-      assess: () => '{"achieved": true, "evidence": "demonstrated"}',
-      sync: () => 'the remaining milestones look pretty much done to me!',
+      assess: (_s, u) =>
+        u.includes('Understand what a while loop is')
+          ? '{"achieved": true, "evidence": "demonstrated the loop idea"}'
+          : '{"achieved": false, "evidence": "mentioned loops but never explained ending"}',
     });
     const engine = createMilestoneEngine(brief, llm);
     await engine.start();
-    const view = await engine.respond('answer');
+    const view = await engine.respond('a while loop repeats things in a loop');
     expect(view.debug?.steps?.map((s) => s.state)).toEqual(['done', 'active', 'pending']);
   });
 });
@@ -462,7 +474,10 @@ describe('MilestoneEngine — small-model rails', () => {
 
   it('NAME STORE: a preference survives milestone advance AND serialization', async () => {
     const { llm, calls } = makeStub({
-      assess: (_s, u) => (u.includes('call me Liz') ? '{"achieved": true, "evidence": "clear answer, and asked to be called Liz"}' : '{"achieved": false, "evidence": "not yet"}'),
+      assess: (_s, u) =>
+        u.includes('call me Liz') && u.includes('Understand what a while loop is')
+          ? '{"achieved": true, "evidence": "clear answer, and asked to be called Liz"}'
+          : '{"achieved": false, "evidence": "not yet"}',
     });
     const engine = new MilestoneEngine(brief, llm);
     await engine.start();
@@ -513,8 +528,7 @@ describe('MilestoneEngine — trust-ack rail (product ruling 2026-07-04)', () =>
     await engine.start();
     const view = await engine.respond('ok, understood!');
     expect(view.status).toContain('Milestone 2/3'); // advanced
-    expect(calls.filter((c) => c.kind === 'assess')).toHaveLength(0); // the grader never ran
-    expect(calls.filter((c) => c.kind === 'sync')).toHaveLength(1); // a trusted advance still syncs
+    expect(calls.filter((c) => c.kind === 'assess')).toHaveLength(0); // no grader, no sync candidates
     expect(view.debug?.fields.find((f) => f.label === 'rails fired')?.value).toContain('trust-ack');
     expect(view.debug?.fields.find((f) => f.label === 'last assessment')?.value).toContain('trusted');
   });
@@ -781,6 +795,24 @@ describe('MilestoneEngine — membership rail + clarifying framing (strings trac
   });
 });
 
+describe('MilestoneEngine — unreachable-branch floor (iter6)', () => {
+  it('a wrong-order chain the grader accepted is overturned with a grounded reason', async () => {
+    const { llm, calls } = makeStub({
+      assess: () => '{"achieved": true, "evidence": "all three branches, correct"}',
+    });
+    const engine = createMilestoneEngine(brief, llm);
+    await engine.start();
+    const view = await engine.respond(
+      "if x >= 80:\n    print('B')\nelif x >= 90:\n    print('A')\nelse:\n    print('C')",
+    );
+    expect(view.status).toContain('Milestone 1/3'); // not advanced, nothing sync-credited
+    expect(view.debug?.fields.find((f) => f.label === 'rails fired')?.value).toContain('unreachable-branch');
+    expect(view.debug?.fields.find((f) => f.label === 'last assessment')?.value).toContain('can never run');
+    const teach = calls.filter((c) => c.kind === 'teach').pop()!;
+    expect(teach.user).toContain('can never run'); // the precise reason drives the re-teach
+  });
+});
+
 describe('MilestoneEngine — assess contradiction guard (fine-tune trace)', () => {
   it('a false verdict with affirming evidence is retried once; unresolved → neutral turn, no wrong-answer framing', async () => {
     let assessN = 0;
@@ -889,9 +921,41 @@ describe('MilestoneEngine — informed re-teach', () => {
 });
 
 describe('MilestoneEngine — transition on-topic rail', () => {
+  it('CODE-TOKEN check: a `break` milestone introduced as generic loops is regenerated (reported live)', async () => {
+    const breakBrief: LessonBrief = {
+      id: 'lc',
+      title: 'Loop control',
+      goals: [
+        { id: 'g1', statement: 'Understand what a while loop is.' },
+        { id: 'g2', statement: 'Use `break` to exit a loop early.' },
+      ],
+    };
+    const drifted = 'Now, a while loop keeps going while its condition is true. What does a while loop check each pass?';
+    const onBreak = 'Now, break jumps out of a loop immediately. Where would you put break to stop at the number 3?';
+    const { llm } = makeStub({
+      assess: (_s, u) =>
+        u.includes('Understand what a while loop is')
+          ? '{"achieved": true, "evidence": "explained"}'
+          : '{"achieved": false, "evidence": "not shown"}',
+      teach: (_s, u) => {
+        if (u.includes('DIFFERENT topic')) return onBreak;
+        if (u.includes('Handoff from the previous part')) return drifted; // shares "loop" but never says break
+        return 'A while loop repeats. What does it check?';
+      },
+    });
+    const engine = createMilestoneEngine(breakBrief, llm);
+    await engine.start();
+    const view = await engine.respond('it repeats while the condition is true');
+    expect(view.reply).toBe(onBreak); // drift caught even though "loop" was shared
+    expect(view.debug?.fields.find((f) => f.label === 'rails fired')?.value).toContain('on-topic');
+  });
+
   it('an off-milestone transition question is regenerated ONCE with the focus note', async () => {
     const { llm, calls } = makeStub({
-      assess: () => '{"achieved": true, "evidence": "demonstrated"}',
+      assess: (_s, u) =>
+        u.includes('Understand what a while loop is')
+          ? '{"achieved": true, "evidence": "demonstrated"}'
+          : '{"achieved": false, "evidence": "not shown"}',
       teach: (_s, u) => {
         if (u.includes('DIFFERENT topic')) return 'Right — so what condition stops an infinite loop?';
         if (u.includes('Handoff from the previous part')) return 'What is the difference between cats and dogs?';
@@ -912,7 +976,10 @@ describe('MilestoneEngine — transition on-topic rail', () => {
     const onTopic = 'Now — an infinite loop never stops. What do you think prevents that?';
     let transitionTeaches = 0;
     const { llm } = makeStub({
-      assess: () => '{"achieved": true, "evidence": "demonstrated"}',
+      assess: (_s, u) =>
+        u.includes('Understand what a while loop is')
+          ? '{"achieved": true, "evidence": "demonstrated"}'
+          : '{"achieved": false, "evidence": "not shown"}',
       teach: (_s, u) => {
         if (u.includes('Handoff from the previous part')) {
           transitionTeaches++;
@@ -930,7 +997,10 @@ describe('MilestoneEngine — transition on-topic rail', () => {
 
   it('the transition prompt itself states the focus imperatively', async () => {
     const { llm, calls } = makeStub({
-      assess: () => '{"achieved": true, "evidence": "demonstrated"}',
+      assess: (_s, u) =>
+        u.includes('Understand what a while loop is')
+          ? '{"achieved": true, "evidence": "demonstrated"}'
+          : '{"achieved": false, "evidence": "not shown"}',
       teach: () => 'Now, about preventing infinite loops — what stops one?',
     });
     const engine = createMilestoneEngine(brief, llm);

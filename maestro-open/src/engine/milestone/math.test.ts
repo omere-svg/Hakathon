@@ -4,7 +4,14 @@
 // and the claim matcher must NEVER touch code (assignments) or non-numeric prose.
 
 import { describe, expect, it } from 'vitest';
-import { correctArithmetic, correctListClaims, correctMembership, evalArithmetic, simpleLoopTerminates } from './math';
+import {
+  correctArithmetic,
+  correctListClaims,
+  correctMembership,
+  evalArithmetic,
+  findUnreachableBranch,
+  simpleLoopTerminates,
+} from './math';
 
 describe('evalArithmetic', () => {
   it('handles the four basic operators and precedence', () => {
@@ -142,6 +149,28 @@ describe('correctListClaims', () => {
   it('leaves correct claims untouched', () => {
     const ok = 'len([1, 2, 3, 4, 5]) is 5, and [1, 2, 3][0:2] gives [1, 2].';
     expect(correctListClaims(ok)).toEqual({ text: ok, corrections: [] });
+  });
+});
+
+// ── Unreachable elif branches (iter6: wrong-order chain validated + credited) ─────
+
+describe('findUnreachableBranch', () => {
+  it('flags the live wrong-order chain', () => {
+    const bad = "if score >= 80:\n    print('B')\nelif score >= 90:\n    print('A')\nelse:\n    print('C')";
+    expect(findUnreachableBranch(bad)).toContain('`score >= 90` can never run');
+  });
+
+  it('passes correctly ordered chains and non-chain code', () => {
+    const good = "if score >= 90:\n    print('A')\nelif score >= 80:\n    print('B')\nelse:\n    print('C')";
+    expect(findUnreachableBranch(good)).toBe(null);
+    expect(findUnreachableBranch('n = 5\nwhile n > 0:\n    n = n - 1')).toBe(null);
+    expect(findUnreachableBranch("if a >= 80:\n    pass\nelif b >= 90:\n    pass")).toBe(null); // different vars
+    expect(findUnreachableBranch("if x < 5:\n    pass\nelif x > 10:\n    pass")).toBe(null); // mixed directions
+  });
+
+  it('handles the mirrored (< / <=) direction', () => {
+    expect(findUnreachableBranch('if x <= 10:\n    pass\nelif x <= 5:\n    pass')).toContain('`x <= 5` can never run');
+    expect(findUnreachableBranch('if x <= 5:\n    pass\nelif x <= 10:\n    pass')).toBe(null);
   });
 });
 

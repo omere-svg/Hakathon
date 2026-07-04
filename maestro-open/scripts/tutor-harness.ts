@@ -56,6 +56,8 @@ interface LessonSpec {
   code: string;
   /** a second, different correct code sample so the good student never broken-records. */
   code2?: string;
+  /** a SUBTLY WRONG code sample (the tricky persona submits it claiming "done"). */
+  badCode?: string;
   /** solid conceptual answers the good student rotates through otherwise. */
   concepts: string[];
 }
@@ -74,6 +76,7 @@ const LESSONS: Record<string, LessonSpec> = {
     },
     code: "if score >= 90:\n    print('A')\nelif score >= 80:\n    print('B')\nelse:\n    print('C')",
     code2: "if hour == 6:\n    print('Good')\nelif hour == 5:\n    print('Hi')\nelse:\n    print('Greetings')",
+    badCode: "if score >= 80:\n    print('B')\nelif score >= 90:\n    print('A')\nelse:\n    print('C')",
     concepts: [
       'only the first true condition runs, the rest are skipped',
       'put the most specific condition first so the later ones stay reachable',
@@ -130,6 +133,7 @@ const LESSONS: Record<string, LessonSpec> = {
     },
     code: 'n = 5\nwhile n > 0:\n    print(n)\n    n = n - 1',
     code2: 'total = 0\nn = 1\nwhile n <= 3:\n    total = total + n\n    n = n + 1\nprint(total)',
+    badCode: 'n = 5\nwhile n > 0:\n    print(n)',
     concepts: [
       'a while loop repeats while its condition stays true',
       'the loop body must change something or the loop never ends',
@@ -295,6 +299,37 @@ const edge: Persona = () => {
   };
 };
 
+/** TutorBench-flavored student: name preference, wrong-work-claiming-done, asks for a
+ *  paste-able one-liner, distress, then recovers — exercises the scenario failure modes. */
+const tricky: Persona = (lesson) => {
+  const smart = good(lesson);
+  const bad = lesson.badCode ?? "if x = 5 print('ok')";
+  return {
+    name: 'tricky',
+    next(tutor: string, i: number): string {
+      if (i === 0) return 'call me Omer, not Mr — ok lets start';
+      if (i === 1) return `${bad}\ndone — works right?`;
+      if (i === 2) return 'just give me a one-liner i can paste and run';
+      if (i === 3) return 'ive been stuck on this for two hours and im about to quit';
+      if (i === 5) return 'understood';
+      return smart.next(tutor, i);
+    },
+  };
+};
+
+/** Dumps a comprehensive correct solution UNPROMPTED at turn 0 — the sync-v2 case: one
+ *  message that should implicitly satisfy several milestones at once. */
+const eager: Persona = (lesson) => {
+  const smart = good(lesson);
+  return {
+    name: 'eager',
+    next(tutor: string, i: number): string {
+      if (i === 0) return `i already know this one:\n${lesson.code}`;
+      return smart.next(tutor, i);
+    },
+  };
+};
+
 /** A realistic student: sometimes right, sometimes confused, sometimes typing nonsense. */
 const mixed: Persona = (lesson) => {
   const smart = good(lesson);
@@ -310,7 +345,7 @@ const mixed: Persona = (lesson) => {
   };
 };
 
-const PERSONAS: Record<string, Persona> = { good, bad, edge, mixed };
+const PERSONAS: Record<string, Persona> = { good, bad, edge, mixed, tricky, eager };
 
 // ── Runner ───────────────────────────────────────────────────────────────────────
 interface TurnRecord {

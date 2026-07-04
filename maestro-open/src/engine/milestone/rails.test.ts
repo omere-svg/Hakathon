@@ -54,6 +54,7 @@ describe('containsUnqualifiedPraise (SWE/BIZ-01)', () => {
     expect(containsUnqualifiedPraise("That's right, well done.")).toBe(true);
     expect(containsUnqualifiedPraise('Exactly — nicely done. What next?')).toBe(true);
     expect(containsUnqualifiedPraise('You got it!')).toBe(true);
+    expect(containsUnqualifiedPraise('That code is right — the first condition is checked.')).toBe(true); // tuned3b slip
   });
 
   it('does NOT flag negated or qualified praise', () => {
@@ -152,6 +153,12 @@ describe('looksLikeNonPythonCode', () => {
     ).toBe(true);
     expect(looksLikeNonPythonCode('you could write else if num == 2 there')).toBe(true); // Python spells it elif
     expect(looksLikeNonPythonCode('call print(x); then continue')).toBe(true); // statement semicolon
+  });
+
+  it('flags PLACEHOLDER pseudo-syntax (TutorBench SWE-07: code must be runnable)', () => {
+    expect(looksLikeNonPythonCode('Try print(<your text here>) to see it work')).toBe(true);
+    expect(looksLikeNonPythonCode('Write <insert condition> and run it')).toBe(true);
+    expect(looksLikeNonPythonCode('The loop runs while x < 10 and stops after')).toBe(false); // comparison, not placeholder
   });
 
   it('passes valid Python and ordinary prose ("Let me explain" is not `let`)', () => {

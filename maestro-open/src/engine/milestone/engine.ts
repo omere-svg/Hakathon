@@ -26,6 +26,7 @@ import {
   correctArithmetic,
   correctListClaims,
   correctMembership,
+  findUnreachableBranch,
   simpleLoopTerminates,
   type MathCorrection,
 } from './math';
@@ -48,7 +49,15 @@ import {
   scrubPraise,
   talksAboutStudent,
 } from './rails';
-import { NEAR_DUPLICATE, sharesContent, STALE_REPLY, stemmedJaccard } from './overlap';
+import {
+  codeTokens,
+  contentWords,
+  NEAR_DUPLICATE,
+  sharesContent,
+  STALE_REPLY,
+  stemmedJaccard,
+  stemmedOverlapRatio,
+} from './overlap';
 import {
   assessPrompt,
   completionPrompt,
@@ -60,7 +69,6 @@ import {
   REPETITION_NOTE,
   SECOND_PERSON_NOTE,
   suggestionsPrompt,
-  syncPrompt,
   syntaxNote,
   teachPrompt,
   VACUOUS_QUESTION_NOTE,
@@ -79,8 +87,6 @@ export const MAX_ATTEMPTS = 4;
  *  maxTokens bounds fine-tune degeneration loops (a repeated-line loop ran ~10s live);
  *  a correct assess verdict is well under 100 tokens, so healthy output never clips. */
 const GRADER_OPTS: GenOptions = { temperature: 0.3, topP: 0.8, maxTokens: 200 };
-/** Sync must quote per-goal evidence — it needs more output room than a chat turn. */
-const SYNC_OPTS: GenOptions = { temperature: 0.3, topP: 0.8, maxTokens: 512 };
 /** Compliance retries (the model ignored a format/content instruction): sharpen toward
  *  the instruction without going greedy. */
 const RETRY_OPTS: GenOptions = { temperature: 0.3, topP: 0.8 };
@@ -411,9 +417,19 @@ export class MilestoneEngine implements TutorEngine {
     // ON-TOPIC rail for transition turns: a fresh milestone's opening question drifting to
     // another topic makes the NEXT assessment grade the student against the wrong idea
     // (observed live: "components of a while loop" opened with a while-vs-for question).
-    // Zero shared content words with the milestone = total drift → regenerate once with an
-    // explicit note, then accept — same regen-once-then-accept shape as the praise guard.
-    if (justAdvanced && !sharesContent(reply, `${milestone.title} ${milestone.description}`)) {
+    // Two checks, regenerate once with an explicit note, then accept:
+    //  - zero shared content words with the milestone = total drift;
+    //  - the milestone names a CODE TOKEN (`break`) and the intro never mentions it —
+    //    a `break` milestone taught as generic while-loops shares the word "loop" and
+    //    slipped the first check (reported live). Short/stopword-ish tokens (`in`) are
+    //    exempt: prose naturally drops them.
+    const focusWords = new Set<string>();
+    for (const t of codeTokens(milestone.description)) {
+      for (const w of t.toLowerCase().split(/[^a-z0-9_]+/)) if (w.length >= 3) focusWords.add(w);
+    }
+    const replyWords = contentWords(reply);
+    const mentionsFocus = !focusWords.size || [...focusWords].some((w) => replyWords.has(w));
+    if (justAdvanced && (!sharesContent(reply, `${milestone.title} ${milestone.description}`) || !mentionsFocus)) {
       const regen = cleanReply(
         await this.call('teach:on-topic', p.system, p.user + offTopicNote(milestone.description), RETRY_OPTS),
       );
@@ -576,39 +592,54 @@ export class MilestoneEngine implements TutorEngine {
         if (retried && !(!retried.achieved && contradictsVerdict(retried.evidence))) return retried;
         return { ...result, contradictory: true };
       }
+      // UNREACHABLE-BRANCH floor (iter6): a wrong-order threshold chain (`>= 80` before
+      // `>= 90`) was accepted by the grader AND sync-credited. The shape is computable —
+      // an achieved verdict over code with a provably dead branch is overturned with a
+      // precise, grounded reason (which then drives the honest re-teach).
+      if (result.achieved) {
+        const lastStudent = [...milestone.context].reverse().find((m) => m.role === 'student')?.text ?? '';
+        const dead = findUnreachableBranch(lastStudent);
+        if (dead) {
+          this.lastRails.push('unreachable-branch');
+          return { achieved: false, evidence: `the condition order hides a bug: ${dead}` };
+        }
+      }
       return result;
     } catch {
       return { achieved: false, evidence: 'assessment failed; continuing to teach' };
     }
   }
 
-  /** Milestone Sync: cross-check remaining milestones for implicit achievement. */
+  /** Milestone Sync v2: cross-check remaining milestones for implicit achievement.
+   *  The old design — ONE multi-goal audit call — never fired: across every recorded
+   *  trace and a controlled probe with undeniable evidence, the model answered
+   *  {"alsoAchieved":[]} (its conservatism prompt worked too well). The single-milestone
+   *  grader, meanwhile, is the best-performing judgment call we have. So: deterministic
+   *  candidate gating (skip the model entirely on the common no-candidate case), then the
+   *  PROVEN assess prompt per candidate, capped at 2, with the code floor re-applied. */
   private async sync(completed: Milestone): Promise<void> {
     const remaining = this.queue!.remaining();
     if (!remaining.length) return;
-    try {
-      const p = syncPrompt(completed, remaining);
-      let raw = await this.call('sync', p.system, p.user, SYNC_OPTS);
-      if (extractJson(raw) === null) {
-        raw = await this.call('sync:retry', p.system, p.user + JSON_NUDGE, SYNC_OPTS);
+    const studentText = completed.context
+      .filter((m) => m.role === 'student')
+      .map((m) => m.text)
+      .join('\n');
+    if (!studentText) return;
+    const candidates = remaining
+      .map((m) => ({ m, score: stemmedOverlapRatio(m.description, studentText) }))
+      .filter((c) => c.score > 0 && sharesContent(c.m.description, studentText))
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 2);
+    for (const { m } of candidates) {
+      try {
+        const verdict = await this.assess({ ...m, context: completed.context });
+        if (!verdict.achieved || verdict.contradictory) continue;
+        // Same floor as the main loop: a code-production milestone needs actual code.
+        if (requiresCodeProduction(m.description) && !containsCodeSignal(studentText)) continue;
+        this.queue!.markAchieved([m.id]);
+      } catch {
+        /* conservative: on failure, mark nothing extra achieved */
       }
-      const parsed = extractJson<{ alsoAchieved?: unknown }>(raw);
-      const list = Array.isArray(parsed?.alsoAchieved) ? (parsed!.alsoAchieved as unknown[]) : [];
-      // Only accept an implicit completion that cites a concrete piece of STUDENT evidence.
-      // A bare id (or too-short evidence) is rejected — this is what kept unrelated milestones
-      // from being marked "done" on topic overlap alone.
-      const ids = list
-        .map((e) => {
-          if (!e || typeof e !== 'object') return null;
-          const o = e as { id?: unknown; evidence?: unknown };
-          const id = typeof o.id === 'string' ? o.id : '';
-          const evidence = typeof o.evidence === 'string' ? o.evidence.trim() : '';
-          return id && evidence.length >= 8 ? id : null;
-        })
-        .filter((x): x is string => x !== null);
-      this.queue!.markAchieved(ids);
-    } catch {
-      /* conservative: on failure, mark nothing extra achieved */
     }
   }
 
