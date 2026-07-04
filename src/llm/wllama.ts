@@ -14,14 +14,20 @@ import wllamaWasmUrl from '@wllama/wllama/esm/wasm/wllama.wasm?url';
 // single-threaded, which is several times slower; benchmark numbers are only meaningful
 // with the headers on.
 
-/** GGUF models this adapter knows how to serve. Files live in public/models/ (gitignored —
- *  they are 1GB+ build artifacts produced by finetune/scripts/, not source). Models are
+/** GGUF models this adapter knows how to serve. In dev the shards are read from
+ *  public/models/ (gitignored — they are 1GB+ build artifacts produced by
+ *  finetune/scripts/, not source); production builds fetch the same shards from the
+ *  Hugging Face CDN, because Vercel caps static files at 100MB. Models are
  *  SHARDED with llama-gguf-split (≤400MB per shard): wllama's WASM aborts loading a
  *  single 1.2GB file (observed live) and its docs cap recommended shards at 512MB.
  *  The URL points at shard 1; wllama auto-fetches the rest from the -0000N-of-0000M names. */
+const MODELS_BASE = import.meta.env.DEV
+  ? '/models/'
+  : 'https://huggingface.co/omerere/qwen3-1.7b-maestro-gguf/resolve/main/';
+
 export const WLLAMA_MODELS: Record<string, { url: string; label: string }> = {
-  'Qwen3-1.7B-q4_k_m-GGUF': { url: '/models/qwen3-1.7b-q4_k_m-00001-of-00004.gguf', label: 'Qwen3 1.7B (GGUF, stock)' },
-  'Qwen3-1.7B-maestro-q4_k_m-GGUF': { url: '/models/qwen3-1.7b-maestro-q4_k_m-00001-of-00003.gguf', label: 'Qwen3 1.7B (GGUF, fine-tuned)' },
+  'Qwen3-1.7B-q4_k_m-GGUF': { url: `${MODELS_BASE}qwen3-1.7b-q4_k_m-00001-of-00004.gguf`, label: 'Qwen3 1.7B (GGUF, stock)' },
+  'Qwen3-1.7B-maestro-q4_k_m-GGUF': { url: `${MODELS_BASE}qwen3-1.7b-maestro-q4_k_m-00001-of-00003.gguf`, label: 'Qwen3 1.7B (GGUF, fine-tuned)' },
 };
 
 export const DEFAULT_WLLAMA_MODEL_ID = 'Qwen3-1.7B-maestro-q4_k_m-GGUF';
