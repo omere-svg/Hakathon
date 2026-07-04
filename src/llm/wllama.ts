@@ -45,12 +45,25 @@ export async function createWllamaEngine(
   const { Wllama, LoggerWithoutDebug } = await import('@wllama/wllama');
   const wllama = new Wllama({ default: wllamaWasmUrl }, { logger: LoggerWithoutDebug });
   onProgress?.('Loading the on-device model (CPU/WASM)…');
-  await wllama.loadModelFromUrl(entry.url, {
+  const loadOptions = {
     n_ctx: 4096,
     progressCallback: ({ loaded, total }: { loaded: number; total: number }) => {
       if (total > 0) onProgress?.(`Downloading model: ${Math.round((loaded / total) * 100)}%`);
     },
-  });
+  };
+  try {
+    await wllama.loadModelFromUrl(entry.url, loadOptions);
+  } catch (err) {
+    // An interrupted first download leaves a partial shard set in the origin's OPFS
+    // cache; wllama's getModels() then throws "Model file not found: <shard>" on every
+    // subsequent visit instead of re-downloading (upstream bug in ModelManager —
+    // getAllFiles runs before validation can mark the model INVALID). Clearing the
+    // cache and retrying once turns a permanently bricked origin into one slow reload.
+    if (!(err instanceof Error && err.message.includes('Model file not found'))) throw err;
+    onProgress?.('Cached model was incomplete — re-downloading…');
+    await wllama.cacheManager.clear();
+    await wllama.loadModelFromUrl(entry.url, loadOptions);
+  }
   // Quirks are keyed off the model id; our GGUF ids contain "Qwen3" so the Qwen3
   // thinking soft-switch + <think> stripping apply exactly as on the WebLLM path.
   const quirks = quirksFor(modelId);
