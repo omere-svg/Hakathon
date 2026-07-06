@@ -265,6 +265,21 @@
     color: var(--ink-faint);
   }
 
+  @media print {
+    body { font-size: 13px; }
+    .page { max-width: none; padding: 0 8px; }
+    header { padding-top: 8px; }
+    pre {
+      white-space: pre-wrap;
+      word-break: break-word;
+      overflow-x: visible;
+      font-size: 10.5px;
+    }
+    .prompt, .table-wrap, pre, nav.toc { break-inside: auto; }
+    h2, h3, .prompt-head { break-after: avoid-page; }
+    .purpose { break-inside: avoid-page; }
+  }
+
   @media (max-width: 640px) {
     .page { padding: 0 20px 64px; }
     header { padding-top: 40px; }
